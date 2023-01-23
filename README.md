@@ -31,6 +31,8 @@ Configure the workflow according to your needs via editing the files in the `con
 The following settings are recognized in `config/config.yaml`.
 
 - `manifest`: relative path to run manifest
+- `sample-logbook`: local Excel spreadsheet clone of sample manifest information from Google docs
+  - this is upstream input. a local cloned file is preferred due to the possibility of uncontrolled upstream changes
 - `multiqc-config`: relative path to configuration settings for cross-flowcell multiQC report
 - `genome-build`: requested genome reference build to use for this analysis run. this should match the tags used in the reference data blocks below.
 - `behaviors`: user-configurable modifiers to how the pipeline will run

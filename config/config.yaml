@@ -2,6 +2,7 @@
 # In case of sample based data, it should be complemented by a manifest file that contains
 # one row per sample. It can be parsed easily via pandas.
 manifest: "config/manifest.tsv"
+sample-logbook: "resources/example_logbook.xlsx.xlsx"
 multiqc-config: "config/multiqc_config.yaml"
 genome-build: "grch38"
 

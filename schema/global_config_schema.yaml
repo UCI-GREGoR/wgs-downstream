@@ -3,6 +3,8 @@ description: global configuration
 properties:
   manifest:
     type: string
+  sample-logbook:
+    type: string
   multiqc-config:
     type: string
   genome-build:
@@ -45,6 +47,7 @@ properties:
         additionalProperties: no
 required:
   - manifest
+  - sample-logbook
   - multiqc-config
   - genome-build
   - behaviors
