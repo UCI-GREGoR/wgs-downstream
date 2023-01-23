@@ -6,7 +6,7 @@ rule run_multiqc_cross_flowcell:
     - somalier
     """
     input:
-        bam=manifest["internal-bam-paths"],
+        somalier="results/somalier/relate/somalier.html",
         multiqc_config=config["multiqc-config"],
     output:
         html="results/multiqc/multiqc.cross-flowcell.html",
@@ -17,9 +17,8 @@ rule run_multiqc_cross_flowcell:
         target_dirs=list(
             set(
                 expand(
-                    "results/{toolname}/{projectid}",
+                    "results/{toolname}",
                     toolname=["somalier"],
-                    projectid=list(set(manifest["projectid"])),
                 )
             )
         ),

@@ -45,11 +45,7 @@ manifest["internal-bam-paths"] = [
 reference_build = config["genome-build"]
 
 TARGETS = [
-    expand(
-        "results/multiqc/{projectid}/multiqc.{runtype}.html",
-        projectid=list(manifest["projectid"].unique()),
-        runtype="cross-flowcell",
-    ),
+    "results/multiqc/multiqc.cross-flowcell.html",
 ]
 
 
@@ -60,7 +56,6 @@ TARGETS = [
 ## This is flagged for possible better resolution in the future.
 ruleorder: samtools_index_fasta > download_reference_data
 ruleorder: index_vcf > download_reference_data
-ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: adjust_fasta_formatting > download_reference_data
 
 
