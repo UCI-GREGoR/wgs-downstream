@@ -1,0 +1,64 @@
+max_table_rows:
+  3000
+
+fn_clean_exts:
+   - "_L001.bam"
+   - ".bam"
+   - "_L001"
+   - ".mrkdup.sort.bam"
+   - "_001.fastq.gz"
+   - ".fastq.gz"
+
+
+extra_fn_clean_exts:
+  - type: regex
+    pattern: "_001.*"
+  - type: regex
+    pattern: "_001.*"
+  - type: regex
+    pattern: ".mosdepth.*"
+
+
+log_filesize_limit: 2000000000 # 2GB limit for parsing
+
+picard_config:
+  general_stats_target_coverage:
+    - 10
+    - 15
+    - 20
+    - 30
+    - 50
+
+mosdepth_config:
+  exclude_contigs:
+    - "*_alt"
+    - "*_decoy"
+    - "*_random"
+    - "chrUn*"
+    - "HLA*"
+    - "chrM"
+    - "chrEBV"
+    - "M"
+    - "MT"
+
+custom_data:
+  alignstats:
+    id: 'alignstats'
+    section_name: 'alignstats'
+    description: 'Alignstats data for General Stats'
+    format: 'tsv'
+    plot_type: 'generalstats'
+
+sp:
+  alignstats:
+    fn: "alignstats_summary_mqc.tsv"
+  picard/gcbias:
+    fn_re: ".*gc_bias_metrics.*"
+  picard/markdups:
+    fn_re: ".*mrkdup.score.txt"
+
+module_order:
+  - somalier
+
+exclude_modules:
+  - snippy
