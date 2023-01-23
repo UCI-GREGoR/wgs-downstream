@@ -32,7 +32,7 @@ checkpoint generate_linker:
     input:
         logbook=config["sample-logbook"],
     output:
-        linker="results/export/linker.tsv",
+        linker="results/linker.tsv",
     benchmark:
         "results/performance_benchmarks/generate_linker/linker.tsv"
     conda:
