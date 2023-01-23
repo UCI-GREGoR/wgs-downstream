@@ -12,6 +12,7 @@ import subprocess
 S3 = S3RemoteProvider()
 
 sys.path.insert(0, ".")
+from lib import target_construction as tc
 
 shell.executable("/bin/bash")
 shell.prefix("set -euo pipefail; ")

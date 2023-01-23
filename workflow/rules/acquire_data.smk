@@ -24,6 +24,26 @@ rule copy_bams:
         "else cp {input.bam} {output.bam} ; fi"
 
 
+rule samtools_create_bai:
+    """
+    From a sorted bam file, create a bai-format index
+    """
+    input:
+        bam="results/{prefix}.bam",
+    output:
+        bai="results/{prefix}.bai",
+    benchmark:
+        "results/performance_benchmarks/samtools_create_bai/{prefix}.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 4
+    resources:
+        mem_mb="8000",
+        qname="small",
+    shell:
+        "samtools index -@ {threads} -b -o {output.bai} {input.bam}"
+
+
 checkpoint generate_linker:
     """
     From a sample logbook, generate a simple linker

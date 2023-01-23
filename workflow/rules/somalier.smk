@@ -1,9 +1,13 @@
 def link_bams_by_id(wildcards, suffix):
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_csv(outfn, sep="\t")
-    projectid = linker.loc[linker["pmgrc"] == wildcards.sampleid, "ru"]
-    sampleid = linker.loc[linker["pmgrc"] == wildcards.sampleid, "sq"]
-    return "results/bams/{}/{}.{}".format(projectid, sampleid, suffix)
+    with checkpoints.generate_linker.get().output[0].open() as f:
+        for line in f.readlines():
+            split_line = line.rstrip().split("\t")
+            if split_line[0] == wildcards.sampleid:
+                res = "results/bams/{}/{}.{}".format(
+                    split_line[2], split_line[3], suffix
+                )
+                return res
+    return ""
 
 
 rule somalier_extract:
@@ -35,14 +39,15 @@ rule somalier_extract:
         "{input.bam}"
 
 
-def get_valid_pmgrcs(wildcards, projectids, sampleids):
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_csv(outfn, sep="\t")
+def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
     valid_ids = []
-    for ru, sq, pmgrc in zip(linker["ru"], linker["sq"], linker["pmgrc"]):
-        if (ru in projectids) and (sq in sampleids):
-            valid_ids.append(pmgrc)
-    return valid_ids
+    with checkpoints.generate_linker.get().output[0].open() as f:
+        for line in f.readlines():
+            split_line = line.rstrip().split("\t")
+            if (split_line[2] in projectids) and (split_line[3] in sampleids):
+                valid_ids.append(split_line[0])
+    res = ["{}{}{}".format(prefix, x, suffix) for x in valid_ids]
+    return res
 
 
 rule somalier_relate:
@@ -50,11 +55,12 @@ rule somalier_relate:
     Compute relatedness metrics on preprocessed alignment data with somalier.
     """
     input:
-        somalier=lambda wildcards: expand(
-            "results/somalier/extract/{sampleid}.somalier",
-            sampleid=get_valid_pmgrcs(
-                wildcards, manifest["projectid"], manifest["sampleid"]
-            ),
+        somalier=lambda wildcards: get_valid_pmgrcs(
+            wildcards,
+            manifest["projectid"].to_list(),
+            manifest["sampleid"].to_list(),
+            "results/somalier/extract/",
+            ".somalier",
         ),
         ped="results/somalier/somalier.ped",
     output:
@@ -96,7 +102,11 @@ rule somalier_build_pedfile:
         projectids=lambda wildcards: manifest["projectid"].to_list(),
         subjectids=lambda wildcards: manifest["sampleid"].to_list(),
         pmgrcids=lambda wildcards: get_valid_pmgrcs(
-            wildcards, manifest["projectid"], manifest["sampleid"]
+            wildcards,
+            manifest["projectid"].to_list(),
+            manifest["sampleid"].to_list(),
+            "",
+            "",
         ),
     threads: 1
     resources:
