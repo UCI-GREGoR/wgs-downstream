@@ -1,0 +1,20 @@
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a manifest file that contains
+# one row per sample. It can be parsed easily via pandas.
+manifest: "config/manifest.tsv"
+multiqc-config: "config/multiqc_config.yaml"
+genome-build: "grch38"
+
+behaviors:
+  symlink-bams: no
+
+references:
+  grch38:
+    fasta: "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz"
+    exclusion-regions-bed: "resources/grch38_encodelist_centromeres_telomeres.bed"
+
+somalier:
+  grch37:
+    sites-vcf-gz: "https://github.com/brentp/somalier/files/3412455/sites.GRCh37.vcf.gz"
+  grch38:
+    sites-vcf-gz: "https://github.com/brentp/somalier/files/3412456/sites.hg38.vcf.gz"

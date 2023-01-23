@@ -1,0 +1,71 @@
+# The main entry point of your workflow.
+# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+
+import os
+import pathlib
+import pandas as pd
+from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+from snakemake.utils import validate
+import subprocess
+
+S3 = S3RemoteProvider()
+
+sys.path.insert(0, ".")
+
+shell.executable("/bin/bash")
+shell.prefix("set -euo pipefail; ")
+
+try:
+    pipeline_version = subprocess.check_output(
+        ["git", "describe", "--tags", "HEAD"], encoding="UTF-8"
+    ).strip()
+except subprocess.CalledProcessError:
+    pipeline_version = "{version not detected}"
+print("wgs-downstream version {}".format(pipeline_version))
+
+
+configfile: "config/config.yaml"
+
+
+validate(config, "../schema/global_config_schema.yaml")
+
+tempDir = "temp"
+manifest = config["manifest"]
+manifest = pd.read_csv(manifest, sep="\t")
+
+
+validate(manifest, "../schema/manifest_schema.yaml")
+
+reference_build = config["genome-build"]
+
+TARGETS = [
+    expand(
+        "results/multiqc/{projectid}/multiqc.{runtype}.html",
+        projectid=list(manifest["projectid"].unique()),
+        runtype="cross-flowcell",
+    ),
+]
+
+
+## To deal with the fact that s3 remote provider service is very slow
+## and sometimes buggy, while not interfering with a streamlined
+## reference file naming convention, I'll use a snakemake functionality
+## for resolving ambiguous rule determination that I really dislike otherwise.
+## This is flagged for possible better resolution in the future.
+ruleorder: samtools_index_fasta > download_reference_data
+ruleorder: index_vcf > download_reference_data
+ruleorder: create_sequence_dictionary > download_reference_data
+ruleorder: adjust_fasta_formatting > download_reference_data
+
+
+rule all:
+    input:
+        TARGETS,
+
+
+include: "rules/acquire_data.smk"
+include: "rules/multiqc.smk"
+include: "rules/performance_benchmarks.smk"
+include: "rules/references.smk"
+include: "rules/somalier.smk"

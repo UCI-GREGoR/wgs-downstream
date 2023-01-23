@@ -1,0 +1,53 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: global configuration
+properties:
+  manifest:
+    type: string
+  multiqc-config:
+    type: string
+  genome-build:
+    type: string
+    pattern: "^grch[0-9]+$"
+  behaviors:
+    type: object
+    properties:
+      symlink-bams:
+        type: boolean
+    required:
+      - symlink-bams
+    additionalProperties: no
+  references:
+    type: object
+    patternProperties:
+      "^grch[0-9]+$":
+        type: object
+        properties:
+          fasta:
+            type: string
+          exclusion-regions-bed:
+            type: string
+        required:
+          - fasta
+          - exclusion-regions-bed
+        additionalProperties: no
+    required:
+      - grch38
+  somalier:
+    type: object
+    patternProperties:
+      "^grch[0-9]+$":
+        type: object
+        properties:
+          sites-vcf-gz:
+            type: string
+        required:
+          - sites-vcf-gz
+        additionalProperties: no
+required:
+  - manifest
+  - multiqc-config
+  - genome-build
+  - behaviors
+  - references
+  - somalier
+additionalProperties: no
