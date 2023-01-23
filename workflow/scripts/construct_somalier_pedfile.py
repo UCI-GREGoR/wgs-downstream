@@ -31,7 +31,7 @@ def run_construct_somalier_pedfile(
     linker: str,
     projectids: list,
     sampleids: list,
-    last_sample_sex: str,
+    pmgrcids: list,
     outfn: str,
     problemfn: str,
 ) -> None:
@@ -42,7 +42,7 @@ def run_construct_somalier_pedfile(
     """
     ## Do not tolerate duplicates. This shouldn't actually happen, but hey.
     ids = pd.DataFrame(
-        data={"ruid": projectids, "sampleid": sampleids}
+        data={"ruid": projectids, "sampleid": sampleids, "pmgrcid": pmgrcids}
     ).drop_duplicates()
 
     ## load linker information formatted from the lab logbook
@@ -61,14 +61,11 @@ def run_construct_somalier_pedfile(
         linker_data["pmgrc"], linker_data["ru"], linker_data["sq"]
     ):
         parsed_sample_id = pmgrcid.split("-")
-        parent_data["{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])] = sqid
+        parent_data["{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])] = pmgrcid
 
-    for ruid, sampleid in zip(ids["ruid"], ids["sampleid"]):
+    for ruid, sampleid, pmgrc_id in zip(ids["ruid"], ids["sampleid"], ids["pmgrcid"]):
         sample_sex = linker_data.loc[
             (linker_data["ru"] == ruid) & (linker_data["sq"] == sampleid), "sex"
-        ]
-        pmgrc_id = linker_data.loc[
-            (linker_data["ru"] == ruid) & (linker_data["sq"] == sampleid), "pmgrc"
         ]
         if len(sample_sex) == 1:
             parsed_sample_id = pmgrc_id.to_list()[0].split("-")
@@ -132,14 +129,10 @@ def run_construct_somalier_pedfile(
                 problems, sampleid, "self-reported sex missing from annotations"
             )
 
-    last_sample_sex = convert_sex_representation(last_sample_sex)
-    if last_sample_sex != 0:
-        self_reported_sex[-1] = last_sample_sex
-
     x = pd.DataFrame(
         data={
             "FID": family_id,
-            "Sample": ids["sampleid"],
+            "Sample": ids["pmgrcid"],
             "Pat": pat_id,
             "Mat": mat_id,
             "Sex": self_reported_sex,
@@ -157,6 +150,7 @@ run_construct_somalier_pedfile(
     snakemake.input[0],  # noqa: F821
     snakemake.params["projectids"],  # noqa: F821
     snakemake.params["subjectids"],  # noqa: F821
+    snakemake.params["pmgrcids"],  # noqa: F821
     snakemake.output["ped"],  # noqa: F821
     snakemake.output["problems"],  # noqa: F821
 )

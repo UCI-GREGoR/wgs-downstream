@@ -1,19 +1,27 @@
+def link_bams_by_id(wildcards, suffix):
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    linker = pd.read_csv(outfn, sep="\t")
+    projectid = linker.loc[linker["pmgrc"] == wildcards.sampleid, "ru"]
+    sampleid = linker.loc[linker["pmgrc"] == wildcards.sampleid, "sq"]
+    return "results/bams/{}/{}.{}".format(projectid, sampleid, suffix)
+
+
 rule somalier_extract:
     """
     Run somalier extract on a single bam.
     """
     input:
-        bam="results/{projectid}/{fileprefix}.bam",
-        bai="results/{projectid}/{fileprefix}.bai",
+        bam=lambda wildcards: link_bams_by_id(wildcards, "bam"),
+        bai=lambda wildcards: link_bams_by_id(wildcards, "bai"),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
         sites_vcf="reference_data/somalier/{}/ref.sites.vcf.gz".format(reference_build),
     output:
-        "results/somalier/{projectid}/extract/{fileprefix}.somalier",
+        "results/somalier/extract/{sampleid}.somalier",
     benchmark:
-        "results/performance_benchmarks/somalier_extract/{projectid}/{fileprefix}.tsv"
+        "results/performance_benchmarks/somalier_extract/{sampleid}.tsv"
     params:
-        extract_dir="results/somalier/{projectid}/extract",
+        extract_dir="results/somalier/extract",
     conda:
         "../envs/somalier.yaml"
     threads: 1
@@ -27,15 +35,27 @@ rule somalier_extract:
         "{input.bam}"
 
 
+def get_valid_pmgrcs(wildcards, projectids, sampleids):
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    linker = pd.read_csv(outfn, sep="\t")
+    valid_ids = []
+    for ru, sq, pmgrc in zip(linker["ru"], linker["sq"], linker["pmgrc"]):
+        if (ru in projectids) and (sq in sampleids):
+            valid_ids.append(pmgrc)
+    return valid_ids
+
+
 rule somalier_relate:
     """
     Compute relatedness metrics on preprocessed alignment data with somalier.
     """
     input:
-        somalier=lambda wildcards: [
-            "results/somalier/{}/{}.bam".format(x, y)
-            for x, y in zip(manifest["projectid"], manifest["sampleid"])
-        ],
+        somalier=lambda wildcards: expand(
+            "results/somalier/extract/{sampleid}.somalier",
+            sampleid=get_valid_pmgrcs(
+                wildcards, manifest["projectid"], manifest["sampleid"]
+            ),
+        ),
         ped="results/somalier/somalier.ped",
     output:
         html="results/somalier/relate/somalier.html",
@@ -75,6 +95,9 @@ rule somalier_build_pedfile:
     params:
         projectids=lambda wildcards: manifest["projectid"].to_list(),
         subjectids=lambda wildcards: manifest["sampleid"].to_list(),
+        pmgrcids=lambda wildcards: get_valid_pmgrcs(
+            wildcards, manifest["projectid"], manifest["sampleid"]
+        ),
     threads: 1
     resources:
         mem_mb="1000",
