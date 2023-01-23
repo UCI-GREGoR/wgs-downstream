@@ -69,3 +69,23 @@ rule adjust_fasta_formatting:
         qname="small",
     shell:
         "sed 's/>/_/g' {input} | sed 's/^_/>/' > {output}"
+
+
+rule samtools_index_fasta:
+    """
+    Given a fasta, generate its fai index file.
+    """
+    input:
+        "{prefix}fasta",
+    output:
+        "{prefix}fasta.fai",
+    benchmark:
+        "results/performance_benchmarks/samtools_index_fasta/{prefix}fasta.fai.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 1
+    resources:
+        mem_mb="4000",
+        qname="small",
+    shell:
+        "samtools faidx {input}"
