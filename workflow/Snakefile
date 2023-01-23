@@ -37,6 +37,11 @@ manifest = pd.read_csv(manifest, sep="\t")
 
 validate(manifest, "../schema/manifest_schema.yaml")
 
+manifest["internal-bam-paths"] = [
+    "results/{}/{}.bam".format(x, y)
+    for x, y in zip(manifest["projectid"], manifest["sampleid"])
+]
+
 reference_build = config["genome-build"]
 
 TARGETS = [
@@ -66,6 +71,5 @@ rule all:
 
 include: "rules/acquire_data.smk"
 include: "rules/multiqc.smk"
-include: "rules/performance_benchmarks.smk"
 include: "rules/references.smk"
 include: "rules/somalier.smk"
