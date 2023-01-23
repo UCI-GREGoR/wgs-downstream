@@ -1,0 +1,62 @@
+# deepvariant/parallel efflux
+.parallel
+.keras
+
+# Testing refuse
+.coverage
+
+# ad hoc temp space
+temp/
+
+# Genomic reference data
+references/
+reference_data/
+
+# Logs from cluster submissions
+logs/
+run_*.o*
+run_*.e*
+
+# Emacs backup files
+*~
+
+# Commitizen Infrastructure
+node_modules
+package*json
+
+# Project Folders
+results
+results/*
+!results/README.md
+
+resources
+resources/*
+!resources/README.md
+
+# Workflow Artifacts
+.snakemake/
+
+# C Artifacts
+*.so
+*.o
+
+# Editor Artifacts
+~.*
+[._]*.s[a-v][a-z]
+.vscode/
+.idea/
+*.sublime-project
+
+# Python Artifacts
+__pycache__/
+*.egg-info/
+*.py[cod]
+.ipynb_checkpoints
+.mypy_cache/
+
+# R Artifacts
+.Rhistory
+.RData
+.Rproj.user/
+*_cache/
+/cache/

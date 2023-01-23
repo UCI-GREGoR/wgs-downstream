@@ -1,0 +1,1 @@
+linters: linters_with_defaults(object_name_linter("dotted.case"), line_length_linter(120), object_usage_linter=NULL, cyclocomp_linter(20))
