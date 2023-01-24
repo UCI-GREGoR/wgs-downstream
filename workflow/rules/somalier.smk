@@ -125,7 +125,8 @@ rule somalier_get_reference_files:
         mem_mb="1000",
         qname="small",
     shell:
-        "tar -C {output} zxvf {input} && "
+        "mkdir -p {output} && "
+        "tar --directory={output} -z -x -v -f {input} && "
         "mv {output}/1kg-somalier/*somalier {output} && "
         "rmdir {output}/1kg-somalier"
 
