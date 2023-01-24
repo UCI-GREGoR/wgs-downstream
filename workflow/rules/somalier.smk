@@ -1,22 +1,10 @@
-def link_bams_by_id(wildcards, suffix):
-    with checkpoints.generate_linker.get().output[0].open() as f:
-        for line in f.readlines():
-            split_line = line.rstrip().split("\t")
-            if split_line[0] == wildcards.sampleid:
-                res = "results/bams/{}/{}.{}".format(
-                    split_line[2], split_line[3], suffix
-                )
-                return res
-    return ""
-
-
 rule somalier_extract:
     """
     Run somalier extract on a single bam.
     """
     input:
-        bam=lambda wildcards: link_bams_by_id(wildcards, "bam"),
-        bai=lambda wildcards: link_bams_by_id(wildcards, "bai"),
+        bam="results/bams/{sampleid}.bam",
+        bai="results/bams/{sampleid}.bai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
         sites_vcf="reference_data/somalier/{}/ref.sites.vcf.gz".format(reference_build),

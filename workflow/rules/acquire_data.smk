@@ -1,13 +1,29 @@
+def link_bams_by_id(wildcards, checkpoints):
+    sampleid = ""
+    projectid = ""
+    with checkpoints.generate_linker.get().output[0].open() as f:
+        for line in f.readlines():
+            split_line = line.rstrip().split("\t")
+            if split_line[0] == wildcards.sampleid:
+                projectid = split_line[2]
+                sampleid = split_line[3]
+                break
+    if (sampleid == "") or (projectid == ""):
+        raise ValueError(
+            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
+        )
+    res = manifest.loc[
+        (manifest["sampleid"] == sampleid) & (manifest["projectid"] == projectid), "bam"
+    ]
+    return res
+
+
 rule copy_bams:
     """
     Get a local copy of bams before analysis
     """
     input:
-        bam=lambda wildcards: manifest.loc[
-            (manifest["sampleid"] == wildcards.sampleid)
-            & (manifest["projectid"] == wildcards.projectid),
-            "bam",
-        ],
+        bam=lambda wildcards: link_bams_by_id(wildcards, checkpoints),
     output:
         bam="results/bams/{projectid}/{sampleid}.bam",
     params:
