@@ -42,8 +42,14 @@ properties:
         properties:
           sites-vcf-gz:
             type: string
+          kg-labels-tsv:
+            type: string
+          kg-reference-data-tar-gz:
+            type: string
         required:
           - sites-vcf-gz
+          - kg-labels-tsv
+          - kg-reference-data-tar-gz
         additionalProperties: no
 required:
   - manifest

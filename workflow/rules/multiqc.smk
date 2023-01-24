@@ -6,7 +6,8 @@ rule run_multiqc_cross_flowcell:
     - somalier
     """
     input:
-        somalier="results/somalier/relate/somalier.html",
+        somalier_relate="results/somalier/relate/somalier.html",
+        somalier_ancestry="results/somalier/ancestry/somalier-ancestry.tsv",
         multiqc_config=config["multiqc-config"],
     output:
         html="results/multiqc/multiqc.cross-flowcell.html",

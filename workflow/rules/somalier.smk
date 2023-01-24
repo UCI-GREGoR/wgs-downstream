@@ -108,3 +108,56 @@ rule somalier_build_pedfile:
         qname="small",
     script:
         "../scripts/construct_somalier_pedfile.py"
+
+
+rule somalier_get_reference_files:
+    """
+    Download somalier-provided extracted files
+    """
+    input:
+        "reference_data/somalier/{}/kg.reference.data.tar.gz".format(reference_build),
+    output:
+        directory("results/somalier/references"),
+    benchmark:
+        "results/performance_benchmarks/somalier_get_reference_files/out.tsv"
+    threads: 1
+    resources:
+        mem_mb="1000",
+        qname="small",
+    shell:
+        "tar -C {output} zxvf {input} && "
+        "mv {output}/1kg-somalier/*somalier {output} && "
+        "rmdir {output}/1kg-somalier"
+
+
+rule somalier_ancestry:
+    """
+    Run ancestry inference with somalier
+    """
+    input:
+        reference_labels="reference_data/somalier/{}/kg.labels.tsv".format(
+            reference_build
+        ),
+        somalier_reference="results/somalier/references",
+        somalier_experimental=lambda wildcards: get_valid_pmgrcs(
+            wildcards,
+            manifest["projectid"].to_list(),
+            manifest["sampleid"].to_list(),
+            "results/somalier/extract/",
+            ".somalier",
+        ),
+    output:
+        "results/somalier/ancestry/somalier-ancestry.tsv",
+    params:
+        outprefix="results/somalier/ancestry/somalier-ancestry",
+    benchmark:
+        "results/performance_benchmarks/somalier_ancestry/out.tsv"
+    conda:
+        "../envs/somalier.yaml"
+    threads: 1
+    resources:
+        mem_mb="4000",
+        qname="small",
+    shell:
+        "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "
+        "{input.somalier_reference} ++ {input.somalier_experimental}"
