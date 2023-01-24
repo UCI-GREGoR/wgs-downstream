@@ -158,7 +158,7 @@ def run_construct_somalier_pedfile(
             "Sex": self_reported_sex,
             "Pheno": ["-9" for x in ids["sampleid"]],
         }
-    )
+    ).sort_values(by=["FID", "Sample"])
     x.to_csv(outfn, sep="\t", index=False, header=False)
     for problem_key in problems.keys():
         problems[problem_key] = [problems[problem_key]]
