@@ -79,9 +79,9 @@ def run_construct_somalier_pedfile(
             parent_data[str(ruid) + "_" + str(sqid)] = str(ruid) + "_" + str(sqid)
         else:
             parsed_sample_id = pmgrcid.split("-")
-            parent_data[
-                "{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])
-            ] = pmgrcid
+            parent_data["{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])] = (
+                str(pmgrcid) + "_" + str(sqid)
+            )
 
     for ruid, sampleid, pmgrc_id in zip(ids["ruid"], ids["sampleid"], ids["pmgrcid"]):
         sample_sex = linker_data.loc[
@@ -152,7 +152,10 @@ def run_construct_somalier_pedfile(
     x = pd.DataFrame(
         data={
             "FID": family_id,
-            "Sample": ids["pmgrcid"],
+            "Sample": [
+                pmgrcid if "_SQ" in pmgrcid else pmgrcid + "_" + sqid
+                for pmgrcid, sqid in zip(ids["pmgrcid"], ids["sampleid"])
+            ],
             "Pat": pat_id,
             "Mat": mat_id,
             "Sex": self_reported_sex,
