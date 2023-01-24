@@ -163,8 +163,8 @@ def run_construct_somalier_pedfile(
         }
     ).sort_values(by=["FID", "Sample"])
     x.to_csv(outfn, sep="\t", index=False, header=False)
-    for problem_key in problems.keys():
-        problems[problem_key] = [problems[problem_key]]
+
+    problems = {"sampleid": problems.keys(), "problem": problems.values()}
     problems = pd.DataFrame(data=problems)
     problems.to_csv(problemfn, sep="\t", index=False, header=True)
 
