@@ -7,7 +7,7 @@ rule run_multiqc_cross_flowcell:
     """
     input:
         somalier_relate="results/somalier/relate/somalier.html",
-        somalier_ancestry="results/somalier/ancestry/somalier-ancestry.tsv",
+        somalier_ancestry="results/somalier/ancestry/results.somalier-ancestry.tsv",
         multiqc_config=config["multiqc-config"],
     output:
         html="results/multiqc/multiqc.cross-flowcell.html",
@@ -19,7 +19,7 @@ rule run_multiqc_cross_flowcell:
             set(
                 expand(
                     "results/{toolname}",
-                    toolname=["somalier"],
+                    toolname=["somalier/ancestry", "somalier/relate"],
                 )
             )
         ),

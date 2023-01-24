@@ -148,9 +148,10 @@ rule somalier_ancestry:
             ".somalier",
         ),
     output:
-        "results/somalier/ancestry/somalier-ancestry.tsv",
+        "results/somalier/ancestry/results.somalier-ancestry.tsv",
+        "results/somalier/ancestry/results.somalier-ancestry.html",
     params:
-        outprefix="results/somalier/ancestry/somalier-ancestry",
+        outprefix="results/somalier/ancestry/results.",
     benchmark:
         "results/performance_benchmarks/somalier_ancestry/out.tsv"
     conda:
@@ -161,4 +162,4 @@ rule somalier_ancestry:
         qname="small",
     shell:
         "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "
-        "{input.somalier_reference} ++ {input.somalier_experimental}"
+        "{input.somalier_reference}/*somalier ++ {input.somalier_experimental}"
