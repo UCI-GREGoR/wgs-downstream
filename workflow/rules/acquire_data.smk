@@ -1,12 +1,12 @@
 def link_bams_by_id(wildcards, checkpoints):
     sampleid = ""
-    projectid = ""
+    projectid = wildcards.projectid
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
-    df_projectid = df.loc[df["pmgrc"] == wildcards.sampleid, "ru"]
-    df_sampleid = df.loc[df["pmgrc"] == wildcards.sampleid, "sq"]
-    if len(df_projectid) == 1:
-        projectid = df_projectid.to_list()[0]
+    df_sampleid = df.loc[
+        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+    ]
+    if len(df_sampleid) == 1:
         sampleid = df_sampleid.to_list()[0]
     else:
         raise ValueError(

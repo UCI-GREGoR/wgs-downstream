@@ -3,13 +3,13 @@ rule somalier_extract:
     Run somalier extract on a single bam.
     """
     input:
-        bam="results/bams/{sampleid}.bam",
-        bai="results/bams/{sampleid}.bai",
+        bam="results/bams/{projectid}/{sampleid}.bam",
+        bai="results/bams/{projectid}/{sampleid}.bai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
         sites_vcf="reference_data/somalier/{}/ref.sites.vcf.gz".format(reference_build),
     output:
-        "results/somalier/extract/{sampleid}.somalier",
+        "results/somalier/extract/{projectid}/{sampleid}.somalier",
     benchmark:
         "results/performance_benchmarks/somalier_extract/{sampleid}.tsv"
     params:
@@ -28,14 +28,19 @@ rule somalier_extract:
 
 
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
-    valid_ids = []
+    valid_samples = []
+    valid_projects = []
     outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep = "\t")
+    df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(projectids, sampleids):
         df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "pmgrc"]
         if len(df_matches) == 1:
-            valid_ids.append(df_matches.to_list()[0])
-    res = ["{}{}{}".format(prefix, x, suffix) for x in valid_ids]
+            valid_samples.append(df_matches.to_list()[0])
+            valid_projects.append(projectid)
+    res = [
+        "{}{}/{}{}".format(prefix, projectid, sampleid, suffix)
+        for projectid, sampleid in zip(valid_projects, valid_samples)
+    ]
     return res
 
 
