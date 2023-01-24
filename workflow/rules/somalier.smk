@@ -23,10 +23,8 @@ rule somalier_extract:
     shell:
         "somalier extract -d {params.extract_dir} "
         "--sites {input.sites_vcf} "
-        "-f {input.fasta} {input.bam} && "
-        'sed "s/$(samtools samples {input.bam} | cut -f 1)/{wildcards.sampleid}/g" '
-        "{params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier > {output} && "
-        "rm {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier"
+        "-f {input.fasta} --sample-prefix {wildcards.sampleid}_ {input.bam} && "
+        "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output}"
 
 
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
