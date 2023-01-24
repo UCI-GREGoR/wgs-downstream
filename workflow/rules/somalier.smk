@@ -13,7 +13,7 @@ rule somalier_extract:
     benchmark:
         "results/performance_benchmarks/somalier_extract/{projectid}/{sampleid}.tsv"
     params:
-        extract_dir="results/somalier/extract",
+        extract_dir="results/somalier/extract/{projectid}",
     conda:
         "../envs/somalier.yaml"
     threads: 1
@@ -23,8 +23,10 @@ rule somalier_extract:
     shell:
         "somalier extract -d {params.extract_dir} "
         "--sites {input.sites_vcf} "
-        "-f {input.fasta} "
-        "{input.bam}"
+        "-f {input.fasta} {input.bam} && "
+        'sed "s/$(samtools samples {input.bam} | cut -f 1)/{wildcards.sampleid}/g" '
+        "{params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier > {output} && "
+        "rm {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier"
 
 
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
