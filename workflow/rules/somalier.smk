@@ -97,7 +97,7 @@ rule somalier_build_pedfile:
     params:
         projectids=lambda wildcards: manifest["projectid"].to_list(),
         subjectids=lambda wildcards: manifest["sampleid"].to_list(),
-        pmgrcids=lambda wildcards: get_valid_pmgrcs(
+        valid_pmgrcids=lambda wildcards: get_valid_pmgrcs(
             wildcards,
             manifest["projectid"].to_list(),
             manifest["sampleid"].to_list(),
