@@ -29,11 +29,12 @@ rule somalier_extract:
 
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
     valid_ids = []
-    with checkpoints.generate_linker.get().output[0].open() as f:
-        for line in f.readlines():
-            split_line = line.rstrip().split("\t")
-            if (split_line[2] in projectids) and (split_line[3] in sampleids):
-                valid_ids.append(split_line[0])
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    df = pd.read_table(outfn, sep = "\t")
+    for projectid, sampleid in zip(projectids, sampleids):
+        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "pmgrc"]
+        if len(df_matches) == 1:
+            valid_ids.append(df_matches.to_list()[0])
     res = ["{}{}{}".format(prefix, x, suffix) for x in valid_ids]
     return res
 
