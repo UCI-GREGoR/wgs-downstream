@@ -1,14 +1,14 @@
 def link_bams_by_id(wildcards, checkpoints):
     sampleid = ""
     projectid = ""
-    with checkpoints.generate_linker.get().output[0].open() as f:
-        for line in f.readlines():
-            split_line = line.rstrip().split("\t")
-            if split_line[0] == wildcards.sampleid:
-                projectid = split_line[2]
-                sampleid = split_line[3]
-                break
-    if (sampleid == "") or (projectid == ""):
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    df = pd.read_table(outfn, sep="\t")
+    df_projectid = df.loc[df["pmgrc"] == wildcards.sampleid, "ru"]
+    df_sampleid = df.loc[df["pmgrc"] == wildcards.sampleid, "sq"]
+    if len(df_projectid) == 1:
+        projectid = df_projectid.to_list()[0]
+        sampleid = df_sampleid.to_list()[0]
+    else:
         raise ValueError(
             "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
         )
