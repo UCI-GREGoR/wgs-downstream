@@ -11,7 +11,7 @@ rule somalier_extract:
     output:
         "results/somalier/extract/{projectid}/{sampleid}.somalier",
     benchmark:
-        "results/performance_benchmarks/somalier_extract/{sampleid}.tsv"
+        "results/performance_benchmarks/somalier_extract/{projectid}/{sampleid}.tsv"
     params:
         extract_dir="results/somalier/extract",
     conda:
