@@ -41,6 +41,9 @@ def run_construct_somalier_pedfile(
     Currently, this populates the sex entry for all subjects with placeholder 0 for unknown.
     """
 
+    ## strip ruids
+    valid_pmgrcids = [x.split("/")[1] for x in valid_pmgrcids]
+
     ## load linker information formatted from the lab logbook
     linker_data = pd.read_csv(linker, sep="\t")
 
@@ -55,9 +58,6 @@ def run_construct_somalier_pedfile(
         else:
             aligned_pmgrcids.append(res.to_list()[0])
 
-    print(len(projectids))
-    print(len(sampleids))
-    print(len(aligned_pmgrcids))
     ## Do not tolerate duplicates. This shouldn't actually happen, but hey.
     ids = pd.DataFrame(
         data={"ruid": projectids, "sampleid": sampleids, "pmgrcid": aligned_pmgrcids}
@@ -126,17 +126,17 @@ def run_construct_somalier_pedfile(
             else:
                 self_reported_sex.append(0)
             if (
-                "{}_{}-1".format(ruid, parsed_sample_id[1]) in parent_data
+                "{}-1".format(parsed_sample_id[1]) in parent_data
                 and not invalid_family_structure
             ):
-                pat_id.append(parent_data["{}_{}-1".format(ruid, parsed_sample_id[1])])
+                pat_id.append(parent_data["{}-1".format(parsed_sample_id[1])])
             else:
                 pat_id.append("0")
             if (
-                "{}_{}-2".format(ruid, parsed_sample_id[1]) in parent_data
+                "{}-2".format(parsed_sample_id[1]) in parent_data
                 and not invalid_family_structure
             ):
-                mat_id.append(parent_data["{}_{}-2".format(ruid, parsed_sample_id[1])])
+                mat_id.append(parent_data["{}-2".format(parsed_sample_id[1])])
             else:
                 mat_id.append("0")
             family_id.append(parsed_sample_id[2])
