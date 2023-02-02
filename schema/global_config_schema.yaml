@@ -53,6 +53,14 @@ properties:
           - kg-labels-tsv
           - kg-reference-data-tar-gz
         additionalProperties: no
+  expansionhunter_denovo:
+    type: object
+    properties:
+      repo:
+        type: string
+    required:
+      - repo
+    additionalProperties: no
 required:
   - manifest
   - sample-logbook
@@ -61,4 +69,5 @@ required:
   - behaviors
   - references
   - somalier
+  - expansionhunter_denovo
 additionalProperties: no
