@@ -33,6 +33,9 @@ The following settings are recognized in `config/config.yaml`.
 - `manifest`: relative path to run manifest
 - `sample-logbook`: local Excel spreadsheet clone of sample manifest information from Google docs
   - this is upstream input. a local cloned file is preferred due to the possibility of uncontrolled upstream changes
+- `data-model`: local Excel spreadsheet clone of data model information from Google docs
+  - this file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo
+  - this is a local cloned file for the same reasons as listed above
 - `multiqc-config`: relative path to configuration settings for cross-flowcell multiQC report
 - `genome-build`: requested genome reference build to use for this analysis run. this should match the tags used in the reference data blocks below.
 - `behaviors`: user-configurable modifiers to how the pipeline will run
@@ -40,6 +43,12 @@ The following settings are recognized in `config/config.yaml`.
     less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
 - `parameters`: tool-specific parameters. note that this section is a work in progress, somewhat more than the rest
 - `references`: human genome reference data applicable to multiple tools
+- `somalier`: reference data specific to somalier; split by genome build
+  - `sites-vcf-gz`: for use with somalier extract: sites targets in appropriate genome build
+  - `kg-labels-tsv`: for use with somalier ancestry estimation: ID/ancestry linker for 1KG samples
+  - `kg-reference-data-tar-gz`: for use with somalier ancestry estimation: extract output for 1KG samples
+- `expansionhunter_denovo`: reference data specific to ExpansionHunterDenovo
+  - `repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). this is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. this behavior may be modified at a later date
 
 The following columns are expected in the run manifest, by default at `config/manifest.tsv`:
 - `projectid`: run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`
@@ -81,70 +90,42 @@ the cookiecutter template [here](https://github.com/Snakemake-Profiles/sge).
 
 
 
+#### Runtime Behaviors
+
+At the time of writing, this pipeline will unconditionally run somalier and ExpansionHunterDenovo. I may at some point
+add the option to disable some of the tools in userspace, but there's no need currently. If you want this behavior,
+you can modify the contents of the `TARGETS` list in `workflow/Snakefile`, or adjust the wrapper to specifically
+build the target of one of the rules (e.g. `results/multiqc/multiqc.cross-flowcell.html` for somalier).
+
+The actual files considered by the tools are pulled from the input manifest with certain restrictions:
+
+- somalier considers all bams in the user manifest (e.g. `config/manifest.tsv`).
+- for ExpansionHunterDenovo, which expects some amount of case/control annotation, only samples that are present in both the
+  user manifest (e.g. `config/manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
+  among other things, that the flowcell control low-depth NA24385 samples are always excluded from analysis.
+
+This workflow is expected to be run periodically from the same installation. At some point, if there's enough iteration and
+interest, I may update this workflow to handle perfect updating automatically. In lieu of that, here's how you can make
+sure the pipeline runs the tools again correctly when new input samples are added to the manifest:
+
+- you can always delete the `results/` directory entirely. this will purge all analysis to date. this works perfectly,
+  but obviously involves redundant computation
+- for somalier, reruns are gated on the contents of the linker file the workflow generates from the input. to force the
+  pipeline to reevaluate its inputs and rerun if necessary, delete the file `results/linker.tsv` and relaunch
+- for ExpansionHunterDenovo, reruns are gated on the contents of the linker file the workflow generates as well as
+  the manifest the workflow generates from the combined information from the user manifest and the data model. as such,
+  to force the pipeline to reevaluate its inputs and rerun if necessary, delete the files `results/linker.tsv` and
+  `results/expansionhunter_denovo/manifest.tsv` and relaunch
+
 ### Step 5: Investigate results
 
-#### Read Quality Control
+#### somalier
 
-Quality control data from fastqc and fastp are aggregated in a multiqc report at `results/multiqc/{projectid}/multiqc.fastq.html`.
-This version of the quality control report is split by lane within the report, if per-lane fastqs have been provided
-and annotated in the manifest.
+Somalier's results are processed by MultiQC and emitted as a report `results/multiqc/multiqc.cross-flowcell.html`.
 
-#### Alignment
+#### ExpansionHunterDenovo
 
-Quality control data from the above read QC tools as well as somalier, verifybamid, alignstats,  and assorted gatk4/picard analysis tools
-are aggregated in a multiqc report at `results/multiqc/{projectid}/multiqc.alignment.html`. This version of the quality report is currently
-under active modification, and should only be used for considering alignment QC results (as opposed to pre-alignment read QC) until further notice.
-
-#### Variant Calling
-
-All variant calling in this pipeline is conducted per-subject, ignoring batch data. SNV calls from the user-configured tool
-(e.g. DeepVariant, Octopus) are aggregated in `results/{toolname}/{projectid}/{sampleid}.sorted.vcf.gz`. SV calls from
-ensemble calling based on user-configured tools and exclusion criteria are aggregated in `results/final/{projectid}/{sampleid}.sv.vcf.gz`.
-Note that these paths and filenames are subject to change before stabilization of the workflow.
-
-#### (DeepVariant only) GVCFs for Batch Calling
-
-If the user has selected DeepVariant for SNV calling, gvcf files per-subject will be collected at
-`results/deepvariant/{projectid}/{sampleid}.g.vcf.gz`. These files are not used in the pipeline itself,
-and represent the raw output of `deepvariant postprocess_variants`. At some point, these will likely receive
-further processing in anticipation of use with e.g. GLnexus in a different pipeline. Also at some point,
-I'll probably add a flag for disabling the production of gvcf output, but that's not urgent.
-
-gvcf output is not supported by Octopus and so is not possible in this pipeline.
-
-#### Optional: emit methods description and software version data
-
-Some users may be interested in a specific breakdown of workflow methods, relevant software versions pulled from
-conda, and the effects of certain important user configuration settings. This information can be generated upon
-completion of a workflow with the command `snakemake -j1 summarize_methods`. This will create an additional output
-file, `results/reports/methods_summary.md`, that contains the best description of the workflow as was actually run.
-Note that this information focuses on methodology as opposed to results, and only requires the relevant conda
-environments be installed; so if you want to predict what the workflow will do before actually running it,
-complete user configuration, run `snakemake -j1 --use-conda --conda-create-envs-only`, and then run the `summarize_methods`
-target to generate a markdown description of what _would_ happen if the pipeline were deployed.
-
-#### Data Release
-
-When the pipeline is run in `release` mode, postprocessed output files for each flowcell will be emitted under
-`results/export/{flowcell_id}`. The following files will be present, with modifications as annotated:
-
-- aligned reads, represented as lossless crams
-  - the source reference fasta used for these files is both in the cram header as a `@CO` and also
-    annotated in the output methods html
-- `crai` index files for the above cram files
-- SNV vcfs, bgzip-compressed, with the following modifications (derived from [Pedersen _et al._](https://doi.org/10.1038/s41525-021-00227-3):
-  - only FILTER=PASS variants
-  - multiallelics split to biallelics
-  - GQ >= 20
-  - DP >= 10
-  - for heterozygotes, allele balance on `[0.2, 0.8]`
-  - for homozygous alts, allele balance `<= 0.04`
-  - variants intersected with configured exclusion regions removed
-- tabix indices for the above vcfs
-- md5 sums for all above files
-- a plaintext `manifest.tsv` containing a list of the above data files
-- an immutable `methods_summary.html` representing the rendered version of the above methods description for the version of the pipeline that created the release
-- SVs TBD
+WIP
 
 ### Step 6: Commit changes
 
