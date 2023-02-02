@@ -56,7 +56,9 @@ rule expansionhunter_denovo_profile_subject:
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
     output:
-        json="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.json",
+        json="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.str_profile.json",
+        motif="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.motif.tsv",
+        locus="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.locus.tsv",
     params:
         outprefix="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}",
         min_anchor_mapq=50,
