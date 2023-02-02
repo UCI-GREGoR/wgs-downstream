@@ -66,6 +66,7 @@ rule all:
 
 
 include: "rules/acquire_data.smk"
+include: "rules/expansionhunter_denovo.smk"
 include: "rules/multiqc.smk"
 include: "rules/references.smk"
 include: "rules/somalier.smk"

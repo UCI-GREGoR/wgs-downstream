@@ -5,6 +5,8 @@ properties:
     type: string
   sample-logbook:
     type: string
+  data-model:
+    type: string
   multiqc-config:
     type: string
   genome-build:

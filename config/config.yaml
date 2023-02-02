@@ -3,6 +3,7 @@
 # one row per sample. It can be parsed easily via pandas.
 manifest: "config/manifest.tsv"
 sample-logbook: "resources/example_logbook.xlsx.xlsx"
+data-model: "resources/PMGRC Data Model Conversion - GREGoR Submission.xlsx"
 multiqc-config: "config/multiqc_config.yaml"
 genome-build: "grch38"
 
