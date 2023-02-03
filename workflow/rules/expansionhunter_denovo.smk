@@ -90,12 +90,12 @@ rule expansionhunter_denovo_merge_profiles:
             manifest["projectid"],
             manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
-            "json",
+            "str_profile.json",
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
     output:
-        "results/expansionhunter_denovo/profiles/combined_profiles.json",
+        "results/expansionhunter_denovo/profiles/combined_profiles.multisample_profile.json",
     params:
         outprefix="results/expansionhunter_denovo/profiles/combined_profiles",
     conda:
@@ -124,9 +124,9 @@ rule expansionhunter_denovo_locus_outliers:
             manifest["projectid"],
             manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
-            "json",
+            "str_profile.json",
         ),
-        combined_json="results/expansionhunter_denovo/profiles/combined_profiles.json",
+        combined_json="results/expansionhunter_denovo/profiles/combined_profiles.multisample_profile.json",
     output:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     params:
@@ -150,9 +150,12 @@ rule expansionhunter_denovo_motif_outliers:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
-            wildcards, checkpoints, "results/expansionhunter_denovo/profiles", "json"
+            wildcards,
+            checkpoints,
+            "results/expansionhunter_denovo/profiles",
+            "str_profile.json",
         ),
-        combined_json="results/expansionhunter_denovo/profiles/combined_profiles.json",
+        combined_json="results/expansionhunter_denovo/profiles/combined_profiles.multisample_profile.json",
     output:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
     params:
