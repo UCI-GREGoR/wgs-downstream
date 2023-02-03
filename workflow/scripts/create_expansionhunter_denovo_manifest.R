@@ -27,7 +27,7 @@ run.create.manifest <- function(data.model.xlsx, linker.fn, project.ids, sample.
           "control", "case"
         )
       )
-      samplejson <- c(samplejson, paste(getwd(), "/results/profiles/", ru.id,
+      samplejson <- c(samplejson, paste(getwd(), "/results/expansionhunter_denovo/profiles/", ru.id,
         "/", pmgrc.id, ".str_profile.json",
         sep = ""
       ))
