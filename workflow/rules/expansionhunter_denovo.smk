@@ -152,6 +152,8 @@ rule expansionhunter_denovo_motif_outliers:
         jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
+            manifest["projectid"],
+            manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
