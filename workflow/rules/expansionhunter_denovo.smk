@@ -138,7 +138,7 @@ rule expansionhunter_denovo_locus_outliers:
         mem_mb="8000",
         qname="small",
     shell:
-        "{params.repo}/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
+        "{params.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
 
 rule expansionhunter_denovo_motif_outliers:
@@ -167,4 +167,4 @@ rule expansionhunter_denovo_motif_outliers:
         mem_mb="8000",
         qname="small",
     shell:
-        "{params.repo}/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
+        "{params.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
