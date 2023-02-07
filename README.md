@@ -94,9 +94,7 @@ the cookiecutter template [here](https://github.com/Snakemake-Profiles/sge).
 
 At the time of writing, this pipeline will unconditionally run somalier and ExpansionHunterDenovo. I may at some point
 add the option to disable some of the tools in userspace, but there's no need currently. If you want this behavior,
-you can modify the contents of the `TARGETS` list in `workflow/Snakefile`, or adjust the wrapper to specifically
-build the target of one of the rules (e.g. `results/multiqc/multiqc.cross-flowcell.html` for somalier).
-
+you can run the phony rule named after each tool (e.g. `somalier` or `expansionhunter_denovo`).
 The actual files considered by the tools are pulled from the input manifest with certain restrictions:
 
 - somalier considers all bams in the user manifest (e.g. `config/manifest.tsv`).
