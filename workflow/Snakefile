@@ -67,6 +67,16 @@ rule all:
         TARGETS,
 
 
+rule somalier:
+    input:
+        [x for x in filter(lambda y: "multiqc" in y, TARGETS)],
+
+
+rule expansionhunter_denovo:
+    input:
+        [x for x in filter(lambda y: "expansionhunter" in y, TARGETS)],
+
+
 include: "rules/acquire_data.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/multiqc.smk"
