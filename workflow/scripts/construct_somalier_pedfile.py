@@ -75,6 +75,8 @@ def run_construct_somalier_pedfile(
     for pmgrcid, ruid, sqid in zip(
         linker_data["pmgrc"], linker_data["ru"], linker_data["sq"]
     ):
+        if not (ruid in projectids):
+            continue
         if not (pmgrcid in valid_pmgrcids):
             parent_data[str(ruid) + "_" + str(sqid)] = str(ruid) + "_" + str(sqid)
         else:
