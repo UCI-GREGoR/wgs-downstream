@@ -51,8 +51,8 @@ rule somalier_relate:
     input:
         somalier=lambda wildcards: get_valid_pmgrcs(
             wildcards,
-            manifest["projectid"].to_list(),
-            manifest["sampleid"].to_list(),
+            bam_manifest["projectid"].to_list(),
+            bam_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),
@@ -93,12 +93,12 @@ rule somalier_build_pedfile:
     benchmark:
         "results/performance_benchmarks/somalier_build_pedfile/somalier.tsv"
     params:
-        projectids=lambda wildcards: manifest["projectid"].to_list(),
-        subjectids=lambda wildcards: manifest["sampleid"].to_list(),
+        projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
+        subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
         valid_pmgrcids=lambda wildcards: get_valid_pmgrcs(
             wildcards,
-            manifest["projectid"].to_list(),
-            manifest["sampleid"].to_list(),
+            bam_manifest["projectid"].to_list(),
+            bam_manifest["sampleid"].to_list(),
             "",
             "",
         ),
@@ -142,8 +142,8 @@ rule somalier_ancestry:
         somalier_reference="results/somalier/references",
         somalier_experimental=lambda wildcards: get_valid_pmgrcs(
             wildcards,
-            manifest["projectid"].to_list(),
-            manifest["sampleid"].to_list(),
+            bam_manifest["projectid"].to_list(),
+            bam_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),

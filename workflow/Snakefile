@@ -32,15 +32,15 @@ configfile: "config/config.yaml"
 validate(config, "../schema/global_config_schema.yaml")
 
 tempDir = "temp"
-manifest = config["manifest"]
-manifest = pd.read_csv(manifest, sep="\t")
+bam_manifest = config["bam_manifest"]
+bam_manifest = pd.read_csv(bam_manifest, sep="\t")
 
 
-validate(manifest, "../schema/manifest_schema.yaml")
+validate(bam_manifest, "../schema/bam_manifest_schema.yaml")
 
-manifest["internal-bam-paths"] = [
+bam_manifest["internal-bam-paths"] = [
     "results/{}/{}.bam".format(x, y)
-    for x, y in zip(manifest["projectid"], manifest["sampleid"])
+    for x, y in zip(bam_manifest["projectid"], bam_manifest["sampleid"])
 ]
 
 reference_build = config["genome-build"]

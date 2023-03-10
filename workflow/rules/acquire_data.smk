@@ -13,7 +13,9 @@ def link_bams_by_id(wildcards, checkpoints):
             "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
         )
     res = manifest.loc[
-        (manifest["sampleid"] == sampleid) & (manifest["projectid"] == projectid), "bam"
+        (bam_manifest["sampleid"] == sampleid)
+        & (bam_manifest["projectid"] == projectid),
+        "bam",
     ]
     return res
 

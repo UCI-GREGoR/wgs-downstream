@@ -10,8 +10,8 @@ checkpoint expansionhunter_denovo_create_manifest:
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",
     params:
-        projectids=manifest["projectid"],
-        sampleids=manifest["sampleid"],
+        projectids=bam_manifest["projectid"],
+        sampleids=bam_manifest["sampleid"],
     conda:
         "../envs/r.yaml"
     threads: 1
@@ -87,8 +87,8 @@ rule expansionhunter_denovo_merge_profiles:
         jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
-            manifest["projectid"],
-            manifest["sampleid"],
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -121,8 +121,8 @@ rule expansionhunter_denovo_locus_outliers:
         jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
-            manifest["projectid"],
-            manifest["sampleid"],
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -152,8 +152,8 @@ rule expansionhunter_denovo_motif_outliers:
         jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
-            manifest["projectid"],
-            manifest["sampleid"],
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),

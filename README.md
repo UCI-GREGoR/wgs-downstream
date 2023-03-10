@@ -26,11 +26,11 @@ Note that this requires local git ssh key configuration; see [here](https://docs
 
 ### Step 2: Configure workflow
 
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `manifest.tsv` to specify your sample setup.
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `bam_manifest.tsv` or `gvcf_manifest.tsv` to specify your sample setup.
 
 The following settings are recognized in `config/config.yaml`.
 
-- `manifest`: relative path to run manifest
+- `bam_manifest`: relative path to aligned read file manifest
 - `sample-logbook`: local Excel spreadsheet clone of sample manifest information from Google docs
   - this is upstream input. a local cloned file is preferred due to the possibility of uncontrolled upstream changes
 - `data-model`: local Excel spreadsheet clone of data model information from Google docs
@@ -50,7 +50,7 @@ The following settings are recognized in `config/config.yaml`.
 - `expansionhunter_denovo`: reference data specific to ExpansionHunterDenovo
   - `repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). this is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. this behavior may be modified at a later date
 
-The following columns are expected in the run manifest, by default at `config/manifest.tsv`:
+The following columns are expected in the aligned read (bam) manifest, by default at `config/bam_manifest.tsv`:
 - `projectid`: run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`
 - `sampleid`: sequencing ID for sample
 - `bam`: absolute or relative path to sample alignment (post-BQSR) bam file
@@ -97,21 +97,21 @@ add the option to disable some of the tools in userspace, but there's no need cu
 you can run the phony rule named after each tool (e.g. `somalier` or `expansionhunter_denovo`).
 The actual files considered by the tools are pulled from the input manifest with certain restrictions:
 
-- somalier considers all bams in the user manifest (e.g. `config/manifest.tsv`).
+- somalier considers all bams in the user manifest (e.g. `config/bam_manifest.tsv`).
 - for ExpansionHunterDenovo, which expects some amount of case/control annotation, only samples that are present in both the
-  user manifest (e.g. `config/manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
+  user manifest (e.g. `config/bam_manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
   among other things, that the flowcell control low-depth NA24385 samples are always excluded from analysis.
 
 This workflow is expected to be run periodically from the same installation. At some point, if there's enough iteration and
 interest, I may update this workflow to handle perfect updating automatically. In lieu of that, here's how you can make
-sure the pipeline runs the tools again correctly when new input samples are added to the manifest:
+sure the pipeline runs the tools again correctly when new input samples are added to the bam manifest:
 
 - you can always delete the `results/` directory entirely. this will purge all analysis to date. this works perfectly,
   but obviously involves redundant computation
 - for somalier, reruns are gated on the contents of the linker file the workflow generates from the input. to force the
   pipeline to reevaluate its inputs and rerun if necessary, delete the file `results/linker.tsv` and relaunch
 - for ExpansionHunterDenovo, reruns are gated on the contents of the linker file the workflow generates as well as
-  the manifest the workflow generates from the combined information from the user manifest and the data model. as such,
+  the manifest the workflow generates from the combined information from the user bam manifest and the data model. as such,
   to force the pipeline to reevaluate its inputs and rerun if necessary, delete the files `results/linker.tsv` and
   `results/expansionhunter_denovo/manifest.tsv` and relaunch
 

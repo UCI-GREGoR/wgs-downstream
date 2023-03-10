@@ -1,5 +1,5 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-description: an entry in the sample manifest
+description: an entry in the aligned bam manifest
 properties:
   projectid:
     type: string
