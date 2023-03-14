@@ -12,7 +12,7 @@ def link_bams_by_id(wildcards, checkpoints):
         raise ValueError(
             "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
         )
-    res = manifest.loc[
+    res = bam_manifest.loc[
         (bam_manifest["sampleid"] == sampleid)
         & (bam_manifest["projectid"] == projectid),
         "bam",
