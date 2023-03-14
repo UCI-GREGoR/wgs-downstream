@@ -33,10 +33,12 @@ validate(config, "../schema/global_config_schema.yaml")
 
 tempDir = "temp"
 bam_manifest = config["bam_manifest"]
+gvcf_manifest = config["gvcf_manifest"]
 bam_manifest = pd.read_csv(bam_manifest, sep="\t")
-
+gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t")
 
 validate(bam_manifest, "../schema/bam_manifest_schema.yaml")
+validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
 
 bam_manifest["internal-bam-paths"] = [
     "results/{}/{}.bam".format(x, y)
