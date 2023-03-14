@@ -1,8 +1,8 @@
 # This file should contain everything to configure the workflow on a global scale.
 # In case of sample based data, it should be complemented by a manifest file that contains
 # one row per sample. It can be parsed easily via pandas.
-bam_manifest: "config/bam_manifest.tsv"
-gvcf_manifest: "config/gvcf_manifest.tsv"
+bam_manifest: "config/manifest_bam.tsv"
+gvcf_manifest: "config/manifest_gvcf.tsv"
 sample-logbook: "resources/example_logbook.xlsx.xlsx"
 data-model: "resources/PMGRC Data Model Conversion - GREGoR Submission.xlsx"
 multiqc-config: "config/multiqc_config.yaml"

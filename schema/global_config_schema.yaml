@@ -1,7 +1,9 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: global configuration
 properties:
-  manifest:
+  bam_manifest:
+    type: string
+  gvcf_manifest:
     type: string
   sample-logbook:
     type: string
@@ -70,7 +72,8 @@ properties:
       - version
     additionalProperties: no
 required:
-  - manifest
+  - bam_manifest
+  - gvcf_manifest
   - sample-logbook
   - multiqc-config
   - genome-build
