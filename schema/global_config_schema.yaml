@@ -61,6 +61,14 @@ properties:
     required:
       - repo
     additionalProperties: no
+  glnexus:
+    type: object
+    properties:
+      version:
+        type: string
+    required:
+      - version
+    additionalProperties: no
 required:
   - manifest
   - sample-logbook
@@ -70,4 +78,5 @@ required:
   - references
   - somalier
   - expansionhunter_denovo
+  - glnexus
 additionalProperties: no
