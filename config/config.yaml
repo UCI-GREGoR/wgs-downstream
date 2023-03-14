@@ -29,3 +29,4 @@ expansionhunter_denovo:
   repo: "ExpansionHunterDenovo"
 glnexus:
   version: "1.4.1"
+  calling-ranges: "resources/glnexus_calling_ranges.bed"

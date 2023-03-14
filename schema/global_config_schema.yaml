@@ -68,8 +68,11 @@ properties:
     properties:
       version:
         type: string
+      calling-ranges:
+        type: string
     required:
       - version
+      - calling-ranges
     additionalProperties: no
 required:
   - bam_manifest
