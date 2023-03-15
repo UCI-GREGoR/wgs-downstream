@@ -64,14 +64,14 @@ rule glnexus_joint_calling:
         "../envs/glnexus.yaml"
     threads: 4
     resources:
-        mem_mb="4000",
+        mem_mb="32000",
         qname="small",
     shell:
         "cat {input.tsv} | "
         "LD_PRELOAD=$(jemalloc-config --libdir)/libjemalloc.so.$(jemalloc-config --revision) "
         "xargs glnexus_cli --config DeepVariant "
         "--bed {input.calling_ranges} -a -m {params.memlimit} "
-        "-t {threads} --dir {output.tmp} && touch {output}"
+        "-t {threads} --dir {output.tmp} > {output.bcf}"
 
 
 rule prepare_joint_calling_output:
