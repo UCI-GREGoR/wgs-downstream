@@ -27,7 +27,7 @@ rule glnexus_joint_calling:
         bcf=temp("results/glnexus/merged_callset.bcf"),
     params:
         gvcf_manifest=gvcf_manifest,
-        memlimit="16000",
+        memlimit="16",
     conda:
         "../envs/glnexus.yaml"
     threads: 4
@@ -35,10 +35,11 @@ rule glnexus_joint_calling:
         mem_mb="4000",
         qname="small",
     shell:
+        "cat {input.tsv} | "
         "LD_PRELOAD=$(jemalloc-config --libdir)/libjemalloc.so.$(jemalloc-config --revision) "
-        "glnexus_cli --config DeepVariant "
+        "xargs glnexus_cli --config DeepVariant "
         "--bed {input.calling_ranges} -a -m {params.memlimit} "
-        "-t {threads} -l {input.tsv} > {output} && "
+        "-t {threads} && touch {output} && "
         "rm -Rf GLnexus.DB"
 
 
