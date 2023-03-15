@@ -17,6 +17,9 @@ logs/
 run_*.o*
 run_*.e*
 
+# Temporary output directory from glnexus
+GLnexus.DB/
+
 # Emacs backup files
 *~
 
