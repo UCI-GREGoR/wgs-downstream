@@ -27,7 +27,7 @@ rule run_multiqc_cross_flowcell:
         "../envs/multiqc.yaml"
     threads: 1
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     shell:
         "multiqc {params.target_dirs} "

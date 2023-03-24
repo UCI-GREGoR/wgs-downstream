@@ -22,7 +22,7 @@ rule download_reference_data:
         "../envs/awscli.yaml"
     threads: 1
     resources:
-        mem_mb="2000",
+        mem_mb=2000,
         qname="small",
         tmpdir="temp/",
     shell:
@@ -47,7 +47,7 @@ rule index_vcf:
         "../envs/bcftools.yaml"
     threads: 1
     resources:
-        mem_mb="2000",
+        mem_mb=2000,
         qname="small",
     shell:
         "tabix -p vcf {input}"
@@ -65,7 +65,7 @@ rule adjust_fasta_formatting:
         "reference_data/{{aligner}}/{}/ref.fasta".format(reference_build),
     threads: 1
     resources:
-        mem_mb="1000",
+        mem_mb=1000,
         qname="small",
     shell:
         "sed 's/>/_/g' {input} | sed 's/^_/>/' > {output}"
@@ -85,7 +85,7 @@ rule samtools_index_fasta:
         "../envs/samtools.yaml"
     threads: 1
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     shell:
         "samtools faidx {input}"

@@ -18,7 +18,7 @@ rule somalier_extract:
         "../envs/somalier.yaml"
     threads: 1
     resources:
-        mem_mb="2000",
+        mem_mb=2000,
         qname="small",
     shell:
         "somalier extract -d {params.extract_dir} "
@@ -69,7 +69,7 @@ rule somalier_relate:
         "../envs/somalier.yaml"
     threads: 1
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     shell:
         "somalier relate --ped {input.ped} -o {params.outprefix} {input.somalier}"
@@ -104,7 +104,7 @@ rule somalier_build_pedfile:
         ),
     threads: 1
     resources:
-        mem_mb="1000",
+        mem_mb=1000,
         qname="small",
     script:
         "../scripts/construct_somalier_pedfile.py"
@@ -122,7 +122,7 @@ rule somalier_get_reference_files:
         "results/performance_benchmarks/somalier_get_reference_files/out.tsv"
     threads: 1
     resources:
-        mem_mb="1000",
+        mem_mb=1000,
         qname="small",
     shell:
         "mkdir -p {output} && "
@@ -158,7 +158,7 @@ rule somalier_ancestry:
         "../envs/somalier.yaml"
     threads: 1
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     shell:
         "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "

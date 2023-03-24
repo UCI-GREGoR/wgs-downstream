@@ -16,7 +16,7 @@ checkpoint expansionhunter_denovo_create_manifest:
         "../envs/r.yaml"
     threads: 1
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     script:
         "../scripts/create_expansionhunter_denovo_manifest.R"
@@ -67,7 +67,7 @@ rule expansionhunter_denovo_profile_subject:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
     resources:
-        mem_mb="8000",
+        mem_mb=8000,
         qname="small",
     shell:
         "ExpansionHunterDenovo profile --reads {input.bam} "
@@ -102,7 +102,7 @@ rule expansionhunter_denovo_merge_profiles:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
     resources:
-        mem_mb="8000",
+        mem_mb=8000,
         qname="small",
     shell:
         "ExpansionHunterDenovo merge --reference {input.fasta} "
@@ -135,7 +135,7 @@ rule expansionhunter_denovo_locus_outliers:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
     resources:
-        mem_mb="8000",
+        mem_mb=8000,
         qname="small",
     shell:
         "{params.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
@@ -166,7 +166,7 @@ rule expansionhunter_denovo_motif_outliers:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
     resources:
-        mem_mb="8000",
+        mem_mb=8000,
         qname="small",
     shell:
         "{params.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
