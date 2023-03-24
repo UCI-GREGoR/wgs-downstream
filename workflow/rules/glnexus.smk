@@ -68,7 +68,7 @@ rule glnexus_joint_calling:
         memlimit="16",
         glnexus_config=config["glnexus"]["config"],
     benchmark:
-        "results/performance_benchmarks/glnexus/glnexus_joint_calling_{chrom}.tsv"
+        "results/performance_benchmarks/glnexus_joint_calling/{chrom}.tsv"
     conda:
         "../envs/glnexus.yaml"
     threads: 4
@@ -95,7 +95,7 @@ rule prepare_joint_calling_output:
     output:
         vcf="results/glnexus/merged_callset.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/glnexus/merged_callset.tsv"
+        "results/performance_benchmarks/prepare_joint_calling_output/merged_callset.tsv"
     conda:
         "../envs/bcftools.yaml"
     threads: 4
@@ -121,7 +121,7 @@ rule filter_joint_calling_output:
         pipeline_version=pipeline_version,
         reference_build=tc.format_reference_build(reference_build),
     benchmark:
-        "results/performance_benchmarks/glnexus/merged_callset.filtered.tsv"
+        "results/performance_benchmarks/filtered_joint_calling_output/merged_callset.filtered.tsv"
     conda:
         "../envs/bcftools.yaml"
     threads: 4
