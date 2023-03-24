@@ -104,3 +104,32 @@ rule prepare_joint_calling_output:
         qname="small",
     shell:
         "bcftools concat {input.bcf} --threads {threads} -O z -o {output.vcf}"
+
+
+rule filter_joint_calling_output:
+    """
+    once joint calling is complete, apply standard group filters.
+    the sed conversion from 1/0 to 0/1 is a nonsensical thing that was
+    required to provide single sample vcfs to Moon. don't know if that's
+    still pertinent, but since development is going to stop, now's the time.
+    """
+    input:
+        "results/glnexus/merged_callset.vcf.gz",
+    output:
+        "results/glnexus/merged_callset.filtered.vcf.gz",
+    benchmark:
+        "results/performance_benchmarks/glnexus/merged_callset.filtered.tsv"
+    conda:
+        "../envs/bcftools.yaml"
+    threads: 4
+    resources:
+        mem_mb=4000,
+        qname="small",
+    shell:
+        'bcftools annotate -h <(echo -e "##wgs-downstreamVersion={params.pipeline_version}\\nreference={params.reference_build}") -O u {input} | '
+        'bcftools view -i \'(FILTER = "PASS" | FILTER = ".")\' -O u | '
+        "bcftools norm -m both -O u | "
+        "bcftools view -i 'FORMAT/DP >= 10 & FORMAT/GQ >= 20 & "
+        '((FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) >= 0.2 & FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) <= 0.8 & GT != "1/1") | '
+        ' (FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) <= 0.05 & GT = "1/1"))\' -O v | '
+        "sed 's|\\t1/0:|\\t0/1:|' | bgzip -c > {output}"
