@@ -17,7 +17,7 @@ def link_bams_by_id(wildcards, checkpoints):
         & (bam_manifest["projectid"] == projectid),
         "bam",
     ]
-    return res
+    return [tc.annotate_remote_file(x) for x in res]
 
 
 rule copy_bams:
@@ -68,7 +68,7 @@ checkpoint generate_linker:
     between various sample ID types
     """
     input:
-        logbook=config["sample-logbook"],
+        logbook=tc.annotate_remote_file(config["sample-logbook"]),
     output:
         linker="results/linker.tsv",
     benchmark:
@@ -102,7 +102,7 @@ def link_gvcfs_by_id(wildcards, checkpoints):
         & (gvcf_manifest["projectid"] == projectid),
         "gvcf",
     ]
-    return res
+    return [tc.annotate_remote_file(x) for x in res]
 
 
 rule copy_gvcfs:

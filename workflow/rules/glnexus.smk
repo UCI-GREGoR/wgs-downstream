@@ -31,7 +31,7 @@ def get_calling_range_by_chrom(wildcards: Wildcards, ranges: str):
         all_ranges = [x.rstrip() for x in f.readlines()]
     for fn in all_ranges:
         if re.search("{}.bed".format(wildcards.chrom), fn) is not None:
-            return fn
+            return tc.annotate_remote_file(fn)
 
 
 def get_all_calling_ranges(ranges: str):

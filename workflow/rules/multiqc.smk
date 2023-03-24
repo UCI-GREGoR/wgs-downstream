@@ -8,7 +8,7 @@ rule run_multiqc_cross_flowcell:
     input:
         somalier_relate="results/somalier/relate/somalier.html",
         somalier_ancestry="results/somalier/ancestry/results.somalier-ancestry.tsv",
-        multiqc_config=config["multiqc-config"],
+        multiqc_config=tc.annotate_remote_file(config["multiqc-config"]),
     output:
         html="results/multiqc/multiqc.cross-flowcell.html",
         data_zip="results/multiqc/multiqc.cross-flowcell_data.zip",
