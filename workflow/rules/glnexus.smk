@@ -66,6 +66,7 @@ rule glnexus_joint_calling:
     params:
         gvcf_manifest=gvcf_manifest,
         memlimit="16",
+        glnexus_config=config["glnexus"]["config"],
     benchmark:
         "results/performance_benchmarks/glnexus/glnexus_joint_calling_{chrom}.tsv"
     conda:
@@ -77,7 +78,7 @@ rule glnexus_joint_calling:
     shell:
         "cat {input.tsv} | "
         "LD_PRELOAD=$(jemalloc-config --libdir)/libjemalloc.so.$(jemalloc-config --revision) "
-        "xargs glnexus_cli --config DeepVariant "
+        "xargs glnexus_cli --config {params.glnexus_config} "
         "--bed {input.calling_ranges} -a -m {params.memlimit} "
         "-t {threads} --dir {output.tmp} > {output.bcf}"
 

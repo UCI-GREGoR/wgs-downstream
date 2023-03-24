@@ -29,4 +29,5 @@ expansionhunter_denovo:
   repo: "ExpansionHunterDenovo"
 glnexus:
   version: "1.4.1"
+  config: "DeepVariant_unfiltered"
   calling-ranges: "resources/glnexus_calling_ranges.tsv"

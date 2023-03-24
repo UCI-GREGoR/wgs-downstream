@@ -68,10 +68,13 @@ properties:
     properties:
       version:
         type: string
+      config:
+        type: string
       calling-ranges:
         type: string
     required:
       - version
+      - config
       - calling-ranges
     additionalProperties: no
 required:
