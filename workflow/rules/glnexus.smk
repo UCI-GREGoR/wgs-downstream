@@ -66,6 +66,8 @@ rule glnexus_joint_calling:
     params:
         gvcf_manifest=gvcf_manifest,
         memlimit="16",
+    benchmark:
+        "results/performance_benchmarks/glnexus/glnexus_joint_calling_{chrom}.tsv"
     conda:
         "../envs/glnexus.yaml"
     threads: 4
@@ -91,6 +93,8 @@ rule prepare_joint_calling_output:
         ),
     output:
         vcf="results/glnexus/merged_callset.vcf.gz",
+    benchmark:
+        "results/performance_benchmarks/glnexus/merged_callset.tsv"
     conda:
         "../envs/bcftools.yaml"
     threads: 4
