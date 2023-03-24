@@ -8,7 +8,13 @@ rule glnexus_create_gvcf_list:
     for glnexus
     """
     input:
-        gvcfs=gvcf_manifest["gvcf"],
+        gvcfs=lambda wildcards: get_valid_pmgrcs(
+            wildcards,
+            gvcf_manifest["projectid"].to_list(),
+            gvcf_manifest["sampleid"].to_list(),
+            "results/gvcfs/",
+            ".g.vcf.gz",
+        ),
     output:
         tsv="results/glnexus/gvcf_list.tsv",
     run:
@@ -64,7 +70,7 @@ rule glnexus_joint_calling:
         "../envs/glnexus.yaml"
     threads: 4
     resources:
-        mem_mb="32000",
+        mem_mb=64000,
         qname="small",
     shell:
         "cat {input.tsv} | "
@@ -89,7 +95,7 @@ rule prepare_joint_calling_output:
         "../envs/bcftools.yaml"
     threads: 4
     resources:
-        mem_mb="4000",
+        mem_mb=4000,
         qname="small",
     shell:
         "bcftools concat {input.bcf} --threads {threads} -O z -o {output.vcf}"
