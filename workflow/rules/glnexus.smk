@@ -117,6 +117,9 @@ rule filter_joint_calling_output:
         "results/glnexus/merged_callset.vcf.gz",
     output:
         "results/glnexus/merged_callset.filtered.vcf.gz",
+    params:
+        pipeline_version=pipeline_version,
+        reference_build=tc.format_reference_build(reference_build),
     benchmark:
         "results/performance_benchmarks/glnexus/merged_callset.filtered.tsv"
     conda:
