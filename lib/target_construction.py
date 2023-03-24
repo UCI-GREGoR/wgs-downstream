@@ -2,12 +2,10 @@ import os
 
 import pandas as pd
 from snakemake.io import AnnotatedString, Namedlist
-from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 S3 = S3RemoteProvider()
-GS = GSRemoteProvider()
 HTTP = HTTPRemoteProvider()
 
 
@@ -22,8 +20,6 @@ def annotate_remote_file(fn: str):
     """
     if fn.startswith("https://") or fn.startswith("http://"):
         return HTTP.remote(fn)
-    if fn.startswith("gs://"):
-        return GS.remote(fn)
     if fn.startswith("s3://"):
         return S3.remote(fn)
     return fn
