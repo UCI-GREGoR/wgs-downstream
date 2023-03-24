@@ -49,6 +49,10 @@ The following settings are recognized in `config/config.yaml`.
   - `kg-reference-data-tar-gz`: for use with somalier ancestry estimation: extract output for 1KG samples
 - `expansionhunter_denovo`: reference data specific to ExpansionHunterDenovo
   - `repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). this is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. this behavior may be modified at a later date
+- `glnexus`: reference data and settings specific to glnexus
+  - `version`: version string of glnexus docker image to use for analysis. example: `1.4.1`
+  - `config`: glnexus configuration preset name. examples: `DeepVariant`, `DeepVariant_unfiltered`
+  - `calling-ranges`: path to file containing list of filenames of calling range bedfiles
 
 The following columns are expected in the aligned read (bam) manifest, by default at `config/bam_manifest.tsv`:
 - `projectid`: run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`
