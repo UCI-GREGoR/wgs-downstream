@@ -81,6 +81,11 @@ rule expansionhunter_denovo:
         [x for x in filter(lambda y: "expansionhunter" in y, TARGETS)],
 
 
+rule glnexus:
+    input:
+        "results/glnexus/merged_callset.filtered.vcf.gz",
+
+
 include: "rules/acquire_data.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/glnexus.smk"
