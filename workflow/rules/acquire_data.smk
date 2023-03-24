@@ -34,7 +34,7 @@ rule copy_bams:
         "results/performance_benchmarks/copy_bams/{projectid}/{sampleid}.tsv"
     threads: 1
     resources:
-        mem_mb="500",
+        mem_mb=500,
         qname="small",
     shell:
         'if [[ "{params.symlink_target}" == "True" ]] ; then '
@@ -56,7 +56,7 @@ rule samtools_create_bai:
         "../envs/samtools.yaml"
     threads: 4
     resources:
-        mem_mb="8000",
+        mem_mb=8000,
         qname="small",
     shell:
         "samtools index -@ {threads} -b -o {output.bai} {input.bam}"
@@ -77,7 +77,50 @@ checkpoint generate_linker:
         "../envs/r.yaml"
     threads: 1
     resources:
-        mem_mb="2000",
+        mem_mb=2000,
         qname="small",
     script:
         "../scripts/construct_linker_from_labbook.R"
+
+
+def link_gvcfs_by_id(wildcards, checkpoints):
+    sampleid = ""
+    projectid = wildcards.projectid
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    df = pd.read_table(outfn, sep="\t")
+    df_sampleid = df.loc[
+        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+    ]
+    if len(df_sampleid) == 1:
+        sampleid = df_sampleid.to_list()[0]
+    else:
+        raise ValueError(
+            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
+        )
+    res = gvcf_manifest.loc[
+        (gvcf_manifest["sampleid"] == sampleid)
+        & (gvcf_manifest["projectid"] == projectid),
+        "gvcf",
+    ]
+    return res
+
+
+rule copy_gvcfs:
+    """
+    Get a local copy of gvcfs before analysis
+    """
+    input:
+        gvcf=lambda wildcards: link_gvcfs_by_id(wildcards, checkpoints),
+    output:
+        gvcf="results/gvcfs/{projectid}/{sampleid}.g.vcf.gz",
+    conda:
+        "../envs/bcftools.yaml"
+    benchmark:
+        "results/performance_benchmarks/copy_gvcfs/{projectid}/{sampleid}.tsv"
+    threads: 1
+    resources:
+        mem_mb=1000,
+        qname="small",
+    shell:
+        "gunzip -c {input} | awk -v id={wildcards.sampleid} "
+        "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"
