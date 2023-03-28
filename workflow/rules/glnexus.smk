@@ -129,9 +129,9 @@ rule filter_joint_calling_output:
         mem_mb=4000,
         qname="small",
     shell:
-        'bcftools annotate -h <(echo -e "##wgs-downstreamVersion={params.pipeline_version}\\nreference={params.reference_build}") -O u {input} | '
+        'bcftools annotate -h <(echo -e "##wgs-downstreamVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O u {input} | '
         'bcftools view -i \'(FILTER = "PASS" | FILTER = ".")\' -O u | '
-        "bcftools norm -m both -O u | "
+        "bcftools norm -m -both -O u | "
         "bcftools view -i 'FORMAT/DP >= 10 & FORMAT/GQ >= 20 & "
         '((FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) >= 0.2 & FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) <= 0.8 & GT != "1/1") | '
         ' (FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) <= 0.05 & GT = "1/1"))\' -O v | '
