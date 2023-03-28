@@ -93,7 +93,7 @@ rule prepare_joint_calling_output:
             chrom=get_all_calling_ranges(config["glnexus"]["calling-ranges"]),
         ),
     output:
-        vcf="results/glnexus/merged_callset.vcf.gz",
+        vcf=temp("results/glnexus/merged_callset.vcf.gz"),
     benchmark:
         "results/performance_benchmarks/prepare_joint_calling_output/merged_callset.tsv"
     conda:
