@@ -50,7 +50,7 @@ reference_build = config["genome-build"]
 
 TARGETS = [
     "results/multiqc/multiqc.cross-flowcell.html",
-    "results/glnexus/merged_callset.vcf.gz",
+    "results/glnexus/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
 ]
@@ -83,7 +83,7 @@ rule expansionhunter_denovo:
 
 rule glnexus:
     input:
-        "results/glnexus/merged_callset.filtered.vcf.gz",
+        "results/glnexus/merged_callset.filtered.regions.vcf.gz",
 
 
 include: "rules/acquire_data.smk"
