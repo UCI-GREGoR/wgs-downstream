@@ -28,18 +28,21 @@ rule somalier_extract:
 
 
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
-    valid_samples = []
-    valid_projects = []
+    valid_samples = {}
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(projectids, sampleids):
         df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "pmgrc"]
         if len(df_matches) == 1:
-            valid_samples.append(df_matches.to_list()[0])
-            valid_projects.append(projectid)
+            ## ad hoc handler for rerun samples: pick the later project id
+            if df_matches.to_list()[0] in valid_samples.keys():
+                if projectid > valid_samples[df_matches.to_list()[0]]:
+                    valid_samples[df_matches.to_list()[0]] = projectid
+            else:
+                valid_samples[df_matches.to_list()[0]] = projectid
     res = [
         "{}{}/{}{}".format(prefix, projectid, sampleid, suffix)
-        for projectid, sampleid in zip(valid_projects, valid_samples)
+        for sampleid, projectid in valid_samples.items()
     ]
     return res
 
