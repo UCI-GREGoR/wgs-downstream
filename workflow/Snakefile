@@ -66,7 +66,6 @@ ruleorder: samtools_index_fasta > download_reference_data
 ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: index_vcf > download_reference_data
 ruleorder: adjust_fasta_formatting > download_reference_data
-ruleorder: sort_intermediate_vcf > index_vcf
 
 
 rule all:
