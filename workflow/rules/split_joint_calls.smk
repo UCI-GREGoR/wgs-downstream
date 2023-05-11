@@ -146,7 +146,7 @@ rule apply_single_sample_qc:
     of excluding the genotype entirely.
     """
     input:
-        "results/split_joint_calls/{subject_id}_gatk_left_align_and_trim_variants.vcf",
+        "results/split_joint_calls/{subject_id}_nist-filters.vcf.gz",
     output:
         "results/split_joint_calls/{subject_id}_{lsid}_{sqid}.snv.vcf.gz",
     params:
