@@ -40,7 +40,7 @@ rule index_vcf:
     input:
         "{prefix}.vcf.gz",
     output:
-        "{prefix}.vcf.gz.tbi",
+        temp("{prefix}.vcf.gz.tbi"),
     benchmark:
         "results/performance_benchmarks/index_vcf/{prefix}.tsv"
     conda:

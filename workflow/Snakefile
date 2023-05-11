@@ -11,6 +11,7 @@ from snakemake.utils import validate
 import subprocess
 
 S3 = S3RemoteProvider()
+HTTP = HTTPRemoteProvider()
 
 sys.path.insert(0, ".")
 from lib import target_construction as tc
@@ -62,8 +63,10 @@ TARGETS = [
 ## for resolving ambiguous rule determination that I really dislike otherwise.
 ## This is flagged for possible better resolution in the future.
 ruleorder: samtools_index_fasta > download_reference_data
+ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: index_vcf > download_reference_data
 ruleorder: adjust_fasta_formatting > download_reference_data
+ruleorder: sort_intermediate_vcf > index_vcf
 
 
 rule all:
@@ -83,12 +86,14 @@ rule expansionhunter_denovo:
 
 rule glnexus:
     input:
-        "results/glnexus/merged_callset.filtered.regions.vcf.gz",
+        "results/split_joint_calls/.joint_calls_split",
 
 
 include: "rules/acquire_data.smk"
 include: "rules/expansionhunter_denovo.smk"
+include: "rules/gatk.smk"
 include: "rules/glnexus.smk"
 include: "rules/multiqc.smk"
 include: "rules/references.smk"
 include: "rules/somalier.smk"
+include: "rules/split_joint_calls.smk"
