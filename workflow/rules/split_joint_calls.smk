@@ -136,67 +136,6 @@ rule remove_all_problematic_regions:
         "bedtools intersect -a {input.vcf} -b {input.regions} -wa -v -header | bgzip -c > {output}"
 
 
-rule sort_intermediate_vcf:
-    """
-    It seems like the vcf becomes unsorted, technically, at some point in the processing chain,
-    and this causes issues with gatk. Sort the file before providing it to gatk.
-    """
-    input:
-        vcf="results/split_joint_calls/{subject_id}_nist-filters.vcf.gz",
-    output:
-        vcf=temp("results/split_joint_calls/{subject_id}_nist-filters.sorted.vcf"),
-        idx=temp("results/split_joint_calls/{subject_id}_nist-filters.sorted.vcf.idx"),
-    params:
-        tmpdir="temp/",
-        java_args="-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx4000m",
-    conda:
-        "../envs/gatk4.yaml"
-    threads: 1
-    resources:
-        mem_mb=8000,
-        qname="small",
-    shell:
-        'gatk --java-options "{params.java_args}" SortVcf -O {output.vcf} -I {input.vcf}'
-
-
-rule gatk_left_align_and_trim_variants:
-    """
-    This logic flow is designed for use in preparing trios for within-trio analyses.
-    As such, the vcfs end up with some variants, derived from multiallelics, with non-simplified
-    allele representations. This is causing some amount of confusion downstream, and as such,
-    let's use gatk LeftAlignAndTrimVariants to remove one layer of complexity from this nonsense.
-    """
-    input:
-        vcf="results/split_joint_calls/{subject_id}_nist-filters.sorted.vcf",
-        fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
-        dict="reference_data/bwa/{}/ref.fasta.dict".format(reference_build),
-    output:
-        vcf=temp(
-            "results/split_joint_calls/{subject_id}_gatk_left_align_and_trim_variants.vcf"
-        ),
-        idx=temp(
-            "results/split_joint_calls/{subject_id}_gatk_left_align_and_trim_variants.vcf.idx"
-        ),
-    params:
-        tmpdir="temp",
-        java_args="-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=1 -Xmx12000m",
-        max_indel_length=400,
-    conda:
-        "../envs/gatk4.yaml"
-    threads: 2
-    resources:
-        mem_mb=32000,
-        qname="small",
-    shell:
-        "mkdir -p {params.tmpdir} && "
-        "gatk LeftAlignAndTrimVariants "
-        "-R {input.fasta} "
-        "-V {input.vcf} "
-        "-O {output.vcf} "
-        "--split-multi-allelics "
-        "--max-indel-length {params.max_indel_length}"
-
-
 rule apply_single_sample_qc:
     """
     Mirroring behavior from the upstream
