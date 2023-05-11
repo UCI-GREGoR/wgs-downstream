@@ -16,7 +16,7 @@ rule glnexus_create_gvcf_list:
             ".g.vcf.gz",
         ),
     output:
-        tsv="results/glnexus/gvcf_list.tsv",
+        tsv="results/glnexus/{subset}/gvcf_list.tsv",
     run:
         with open(output.tsv, "w") as f:
             f.writelines([x + "\n" for x in input.gvcfs])
@@ -56,19 +56,19 @@ rule glnexus_joint_calling:
     Given gvcfs, create a joint called dataset.
     """
     input:
-        tsv="results/glnexus/gvcf_list.tsv",
+        tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: get_calling_range_by_chrom(
             wildcards, config["glnexus"]["calling-ranges"]
         ),
     output:
-        bcf=temp("results/glnexus/merged_callset_{chrom}.bcf"),
-        tmp=temp(directory("results/glnexus/tmp_{chrom}")),
+        bcf=temp("results/glnexus/{subset}/merged_callset_{chrom}.bcf"),
+        tmp=temp(directory("results/glnexus/{subset}/tmp_{chrom}")),
     params:
         gvcf_manifest=gvcf_manifest,
         memlimit="16",
         glnexus_config=config["glnexus"]["config"],
     benchmark:
-        "results/performance_benchmarks/glnexus_joint_calling/{chrom}.tsv"
+        "results/performance_benchmarks/glnexus_joint_calling/{subset}/{chrom}.tsv"
     conda:
         "../envs/glnexus.yaml"
     threads: 4
@@ -89,13 +89,13 @@ rule prepare_joint_calling_output:
     """
     input:
         bcf=lambda wildcards: expand(
-            "results/glnexus/merged_callset_{chrom}.bcf",
+            "results/glnexus/{{subset}}/merged_callset_{chrom}.bcf",
             chrom=get_all_calling_ranges(config["glnexus"]["calling-ranges"]),
         ),
     output:
-        vcf=temp("results/glnexus/merged_callset.vcf.gz"),
+        vcf=temp("results/glnexus/{subset}/merged_callset.vcf.gz"),
     benchmark:
-        "results/performance_benchmarks/prepare_joint_calling_output/merged_callset.tsv"
+        "results/performance_benchmarks/prepare_joint_calling_output/{subset}/merged_callset.tsv"
     conda:
         "../envs/bcftools.yaml"
     threads: 4
@@ -114,14 +114,14 @@ rule filter_joint_calling_output:
     still pertinent, but since development is going to stop, now's the time.
     """
     input:
-        "results/glnexus/merged_callset.vcf.gz",
+        "results/glnexus/{subset}/merged_callset.vcf.gz",
     output:
-        "results/glnexus/merged_callset.filtered.vcf.gz",
+        "results/glnexus/{subset}/merged_callset.filtered.vcf.gz",
     params:
         pipeline_version=pipeline_version,
         reference_build=tc.format_reference_build(reference_build),
     benchmark:
-        "results/performance_benchmarks/filtered_joint_calling_output/merged_callset.filtered.tsv"
+        "results/performance_benchmarks/filtered_joint_calling_output/{subset}/merged_callset.filtered.tsv"
     conda:
         "../envs/bcftools.yaml"
     threads: 4
@@ -142,14 +142,14 @@ rule remove_snv_region_exclusions:
     These are intended to be pulled from https://github.com/Boyle-Lab/Blacklist
     """
     input:
-        vcf="results/glnexus/merged_callset.filtered.vcf.gz",
+        vcf="results/glnexus/{subset}/merged_callset.filtered.vcf.gz",
         bed="reference_data/references/{}/ref.exclusion.regions.bed".format(
             reference_build
         ),
     output:
-        vcf="results/glnexus/merged_callset.filtered.regions.vcf.gz",
+        vcf="results/glnexus/{subset}/merged_callset.filtered.regions.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/remove_snv_region_exclusions/results.tsv"
+        "results/performance_benchmarks/remove_snv_region_exclusions/{subset}/results.tsv"
     conda:
         "../envs/bedtools.yaml"
     threads: 1

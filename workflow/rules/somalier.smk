@@ -27,6 +27,19 @@ rule somalier_extract:
         "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output}"
 
 
+def get_fid(sampleid):
+    """
+    From a subject ID, extract the effective family cluster identifier.
+    For PGMRC IDs, this will be PMGRC-{numeric sample id}-{numeric family id}-{relationship code}.
+    For other IDs, at this point, just treat the ID itself as its own cluster.
+    """
+    split_id = sampleid.split("-")
+    if len(split_id) == 1:
+        return split_id[0]
+    else:
+        return split_id[2]
+
+
 def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
     valid_samples = {}
     outfn = str(checkpoints.generate_linker.get().output[0])
@@ -40,10 +53,14 @@ def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
                     valid_samples[df_matches.to_list()[0]] = projectid
             else:
                 valid_samples[df_matches.to_list()[0]] = projectid
-    res = [
-        "{}{}/{}{}".format(prefix, projectid, sampleid, suffix)
-        for sampleid, projectid in valid_samples.items()
-    ]
+    res = []
+    for sampleid, projectid in valid_samples.items():
+        if "subset" in wildcards:
+            fid = get_fid(sampleid)
+            if wildcards.subset == "all" or wildcards.subset == fid:
+                res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
+        else:
+            res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
     return res
 
 

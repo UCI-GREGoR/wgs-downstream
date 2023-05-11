@@ -51,7 +51,7 @@ reference_build = config["genome-build"]
 
 TARGETS = [
     "results/multiqc/multiqc.cross-flowcell.html",
-    "results/glnexus/merged_callset.filtered.regions.vcf.gz",
+    "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
 ]
