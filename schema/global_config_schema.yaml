@@ -14,6 +14,8 @@ properties:
   genome-build:
     type: string
     pattern: "^grch[0-9]+$"
+  tmpdir:
+    type: string
   behaviors:
     type: object
     properties:
@@ -83,6 +85,7 @@ required:
   - sample-logbook
   - multiqc-config
   - genome-build
+  - tmpdir
   - behaviors
   - references
   - somalier

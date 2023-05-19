@@ -7,7 +7,7 @@ sample-logbook: "resources/example_logbook.xlsx.xlsx"
 data-model: "resources/PMGRC Data Model Conversion - GREGoR Submission.xlsx"
 multiqc-config: "config/multiqc_config.yaml"
 genome-build: "grch38"
-
+tmpdir: "/scratch/cpalmer"
 behaviors:
   symlink-bams: yes
 
