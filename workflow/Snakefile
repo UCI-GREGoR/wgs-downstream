@@ -33,7 +33,7 @@ configfile: "config/config.yaml"
 
 validate(config, "../schema/global_config_schema.yaml")
 
-tempDir = "temp"
+tempDir = config["tmpdir"]
 bam_manifest = config["bam_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
 bam_manifest = pd.read_csv(bam_manifest, sep="\t")
@@ -86,6 +86,7 @@ rule expansionhunter_denovo:
 rule glnexus:
     input:
         "results/split_joint_calls/.joint_calls_split",
+        "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
 
 
 include: "rules/acquire_data.smk"

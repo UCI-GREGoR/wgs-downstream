@@ -3,9 +3,9 @@ checkpoint get_sample_list_from_vcf:
     Extract actual sample list from joint called vcf
     """
     input:
-        "results/glnexus/merged_callset.filtered.regions.vcf.gz",
+        "results/glnexus/{subset}/merged_callset.filtered.regions.vcf.gz",
     output:
-        temp("results/glnexus/joint_called_samples.tsv"),
+        temp("results/glnexus/{subset}/joint_called_samples.tsv"),
     conda:
         "../envs/bcftools.yaml"
     threads: 1
@@ -64,7 +64,7 @@ rule create_family_list:
     file for use with bcftools
     """
     input:
-        "results/glnexus/joint_called_samples.tsv",
+        "results/glnexus/{family_cluster}/joint_called_samples.tsv",
     output:
         temp("results/split_joint_calls/{family_cluster}.tsv"),
     shell:
@@ -78,7 +78,7 @@ rule split_joint_calls_by_family:
     information, redundancy, and quality
     """
     input:
-        vcf="results/glnexus/merged_callset.filtered.regions.vcf.gz",
+        vcf="results/glnexus/{family_cluster}/merged_callset.filtered.regions.vcf.gz",
         tsv="results/split_joint_calls/{family_cluster}.tsv",
     output:
         vcf=temp(
@@ -103,7 +103,7 @@ rule split_joint_calls_single_sample:
     Provide an alternative filtering path for samples with no family identifier
     """
     input:
-        vcf="results/glnexus/merged_callset.filtered.regions.vcf.gz",
+        vcf="results/glnexus/NA{giab_code}/merged_callset.filtered.regions.vcf.gz",
     output:
         vcf=temp("results/split_joint_calls/NA{giab_code}_family-variants.vcf.gz"),
     conda:

@@ -19,7 +19,15 @@ rule glnexus_create_gvcf_list:
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
     run:
         with open(output.tsv, "w") as f:
-            f.writelines([x + "\n" for x in input.gvcfs])
+            valid_targets = []
+            for x in input.gvcfs:
+                if (
+                    wildcards.subset == "all"
+                    or "-{}-".format(wildcards.subset) in x
+                    or "/{}.g.vcf.gz".format(wildcards.subset) in x
+                ):
+                    valid_targets.append(x)
+            f.writelines([x + "\n" for x in valid_targets])
 
 
 def get_calling_range_by_chrom(wildcards: Wildcards, ranges: str):
@@ -62,11 +70,11 @@ rule glnexus_joint_calling:
         ),
     output:
         bcf=temp("results/glnexus/{subset}/merged_callset_{chrom}.bcf"),
-        tmp=temp(directory("results/glnexus/{subset}/tmp_{chrom}")),
     params:
         gvcf_manifest=gvcf_manifest,
         memlimit="16",
         glnexus_config=config["glnexus"]["config"],
+        tmp="{}/results/glnexus/{subset}/tmp_{chrom}".format(tempDir),
     benchmark:
         "results/performance_benchmarks/glnexus_joint_calling/{subset}/{chrom}.tsv"
     conda:
@@ -76,11 +84,12 @@ rule glnexus_joint_calling:
         mem_mb=64000,
         qname="small",
     shell:
+        "mkdir -p $(dirname {params.tmp}) && "
         "cat {input.tsv} | "
         "LD_PRELOAD=$(jemalloc-config --libdir)/libjemalloc.so.$(jemalloc-config --revision) "
         "xargs glnexus_cli --config {params.glnexus_config} "
         "--bed {input.calling_ranges} -a -m {params.memlimit} "
-        "-t {threads} --dir {output.tmp} > {output.bcf}"
+        "-t {threads} --dir {params.tmp} > {output.bcf}"
 
 
 rule prepare_joint_calling_output:

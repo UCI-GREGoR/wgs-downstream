@@ -24,7 +24,6 @@ rule download_reference_data:
     resources:
         mem_mb=2000,
         qname="small",
-        tmpdir="temp/",
     shell:
         'if [[ "{params}" == "s3://"* ]] ; then aws s3 cp {params} {output}.staging ; '
         'elif [[ "{params}" == "http://"* ]] || [[ "{params}" == "https://"* ]] || [[ "{params}" == "ftp://"* ]] ; then wget -O {output}.staging {params} ; '

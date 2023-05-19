@@ -13,17 +13,19 @@ rule create_sequence_dictionary:
     benchmark:
         "results/performance_benchmarks/create_sequence_dictionary/{prefix}fasta.tsv"
     params:
-        tmpdir="temp",
-        java_args="-Djava.io.tmpdir=temp/ -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx2000m",
+        tmpdir=tempDir,
+        java_args="-Djava.io.tmpdir={} -XX:CompressedClassSpaceSize=200m -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xmx2000m".format(
+            tempDir
+        ),
     conda:
         "../envs/gatk4.yaml"
     threads: 1
     resources:
         mem_mb="10000",
         qname="small",
-        tmpdir="temp",
+        tmpdir=tempDir,
     shell:
-        "mkdir -p temp/ && "
+        "mkdir -p {params.tmpdir} && "
         'gatk --java-options "{params.java_args}" CreateSequenceDictionary '
         "-REFERENCE {input} "
         "-OUTPUT {output.standard} "
