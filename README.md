@@ -30,34 +30,50 @@ Configure the workflow according to your needs via editing the files in the `con
 
 The following settings are recognized in `config/config.yaml`.
 
-- `bam_manifest`: relative path to aligned read file manifest
-- `sample-logbook`: local Excel spreadsheet clone of sample manifest information from Google docs
-  - this is upstream input. a local cloned file is preferred due to the possibility of uncontrolled upstream changes
-- `data-model`: local Excel spreadsheet clone of data model information from Google docs
-  - this file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo
-  - this is a local cloned file for the same reasons as listed above
-- `multiqc-config`: relative path to configuration settings for cross-flowcell multiQC report
-- `genome-build`: requested genome reference build to use for this analysis run. this should match the tags used in the reference data blocks below.
-- `behaviors`: user-configurable modifiers to how the pipeline will run
-  - `symlink-bams`: whether to copy (no) or symlink (yes) input bams into workspace. symlinking is faster and more memory-efficient, but
-    less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
-- `parameters`: tool-specific parameters. note that this section is a work in progress, somewhat more than the rest
-- `references`: human genome reference data applicable to multiple tools
-- `somalier`: reference data specific to somalier; split by genome build
-  - `sites-vcf-gz`: for use with somalier extract: sites targets in appropriate genome build
-  - `kg-labels-tsv`: for use with somalier ancestry estimation: ID/ancestry linker for 1KG samples
-  - `kg-reference-data-tar-gz`: for use with somalier ancestry estimation: extract output for 1KG samples
-- `expansionhunter_denovo`: reference data specific to ExpansionHunterDenovo
-  - `repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). this is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. this behavior may be modified at a later date
-- `glnexus`: reference data and settings specific to glnexus
-  - `version`: version string of glnexus docker image to use for analysis. example: `1.4.1`
-  - `config`: glnexus configuration preset name. examples: `DeepVariant`, `DeepVariant_unfiltered`
-  - `calling-ranges`: path to file containing list of filenames of calling range bedfiles
+|Configuration Setting|Description|
+|---|---|
+|`bam_manifest`|Relative path to aligned read file manifest|
+|`gvcf_manifest`|Relative path to g.vcf file manifest|
+|`sample-logbook`|Local Excel spreadsheet clone of sample manifest information from Google docs. This is upstream input. A local cloned file is preferred due to the possibility of uncontrolled upstream changes|
+|`data-model`|Local Excel spreadsheet clone of data model information from Google docs. This file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo. This is a local cloned file for the same reasons as listed above|
+|`multiqc-config`|Relative path to configuration settings for cross-flowcell multiQC report|
+|`genome-build`|Requested genome reference build to use for this analysis run. This should match the tags used in the reference data blocks below|
+|`behaviors`|User-configurable modifiers to how the pipeline will run|
+||- `symlink-bams`: whether to copy (no) or symlink (yes) input bams into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
+|`references`|Human genome reference data applicable to multiple tools. An arbitrary number of groupings can be specified under this key, meant to be named after the relevant human reference build. `grch38` is minimally required|
+||- `fasta`: human sequence fasta file|
+||- `exclusion-regions-bed`: set of bed regions to be excluded from output SNV data. expected to be from https://doi.org/10.1038/s41598-019-45839-z|
+|`somalier`|Reference data specific to somalier; split by genome build, as above|
+||- `sites-vcf-gz`: for use with somalier extract: sites targets in appropriate genome build|
+||- `kg-labels-tsv`: for use with somalier ancestry estimation: ID/ancestry linker for 1KG samples|
+||- `kg-reference-data-tar-gz`: for use with somalier ancestry estimation: extract output for 1KG samples|
+|`expansionhunter_denovo`|Reference data specific to ExpansionHunterDenovo|
+||`repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). This is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. This behavior may be modified at a later date|
+|`glnexus`|Reference data and settings specific to glnexus|
+||- `version`: version string of glnexus docker image to use for analysis. example: `1.4.1`|
+||- `config`: glnexus configuration preset name. examples: `DeepVariant`, `DeepVariant_unfiltered`|
+||- `calling-ranges`: path to file containing list of filenames of calling range bedfiles|
+|`deeptrio`|Settings specific to DeepTrio|
+||- `docker-version`: which docker tag to use when pulling the official DeepTrio docker image|
+||- `number-shards`: how many shards to break calling into. needs to be at most the number of available threads in the submission queue|
+||Reference data specific to DeepTrio. An arbitrary number of groupings can be specified under genome-specific keys, of the form `grch.*`. `grch38` is minimally required|
+||- `calling-ranges`: path to file containing list of filenames of calling range bedfiles|
 
 The following columns are expected in the aligned read (bam) manifest, by default at `config/bam_manifest.tsv`:
-- `projectid`: run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`
-- `sampleid`: sequencing ID for sample
-- `bam`: absolute or relative path to sample alignment (post-BQSR) bam file
+
+|Column Header|Description|
+|---|---|
+|`projectid`|Run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
+|`sampleid`|Sequencing ID for sample|
+|`bam`|Absolute or relative path to sample alignment (post-BQSR) bam file|
+
+The following columns are expected in the g.vcf manifest, by default at `config/gvcf_manifest.tsv`:
+
+|Column Header|Description|
+|---|---|
+|`projectid`|Run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
+|`sampleid`|Sequencing ID for sample|
+|`gvcf`|Absolute or relative path to sample gvcf file|
 
 ### Step 3: Install Snakemake
 
