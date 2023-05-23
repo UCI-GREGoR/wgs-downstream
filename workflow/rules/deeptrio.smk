@@ -63,9 +63,7 @@ rule deeptrio_make_examples:
         ),
         tmpdir="/tmp",
     container:
-        "docker://google/deepvariant:{}".format(
-            config["parameters"]["deeptrio"]["docker-version"]
-        )
+        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
@@ -111,9 +109,7 @@ rule deeptrio_call_variants:
         ),
         docker_model="/opt/models/wgs/model.ckpt",
     container:
-        "docker://google/deepvariant:{}".format(
-            config["parameters"]["deeptrio"]["docker-version"]
-        )
+        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["call_variants_memory"],
@@ -163,9 +159,7 @@ rule deeptrio_postprocess_variants:
     benchmark:
         "results/performance_benchmarks/deeptrio_postprocess_variants/{projectid}/{sampleid}.{splitnum}.tsv"
     container:
-        "docker://google/deepvariant:{}".format(
-            config["parameters"]["deeptrio"]["docker-version"]
-        )
+        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
     threads: 1
     resources:
         mem_mb=config_resources["deeptrio"]["postprocess_variants_memory"],
