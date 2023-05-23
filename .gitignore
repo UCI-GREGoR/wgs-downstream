@@ -49,6 +49,7 @@ resources/*
 .vscode/
 .idea/
 *.sublime-project
+*.swp
 
 # Python Artifacts
 __pycache__/
