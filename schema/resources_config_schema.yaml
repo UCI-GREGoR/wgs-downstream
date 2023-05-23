@@ -50,7 +50,7 @@ properties:
     <<: *defaults
   bedtools:
     <<: *defaults
-  deepvariant:
+  deeptrio:
     type: object
     properties:
       threads:
@@ -86,7 +86,7 @@ required:
   - awscli
   - bcftools
   - bedtools
-  - deepvariant
+  - deeptrio
   - r
   - samtools
   - somalier
