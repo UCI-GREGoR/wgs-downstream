@@ -8,8 +8,9 @@ rule glnexus_create_gvcf_list:
     for glnexus
     """
     input:
-        gvcfs=lambda wildcards: get_valid_pmgrcs(
+        gvcfs=lambda wildcards: tc.get_valid_pmgrcs(
             wildcards,
+            checkpoints,
             gvcf_manifest["projectid"].to_list(),
             gvcf_manifest["sampleid"].to_list(),
             "results/gvcfs/",
@@ -30,42 +31,13 @@ rule glnexus_create_gvcf_list:
             f.writelines([x + "\n" for x in valid_targets])
 
 
-def get_calling_range_by_chrom(wildcards: Wildcards, ranges: str):
-    """
-    Report a particular calling range as specified by chromosome
-    """
-    all_ranges = []
-    with open(ranges, "r") as f:
-        all_ranges = [x.rstrip() for x in f.readlines()]
-    for fn in all_ranges:
-        if re.search("{}.bed".format(wildcards.chrom), fn) is not None:
-            return tc.annotate_remote_file(fn)
-
-
-def get_all_calling_ranges(ranges: str):
-    """
-    Report all calling ranges from user-specified range list file
-    """
-    all_ranges = []
-    with open(ranges, "r") as f:
-        all_ranges = [x.rstrip() for x in f.readlines()]
-    res = []
-    for fn in all_ranges:
-        current_match = re.match("^.*/(.*)\\.bed$", fn)
-        if current_match is None:
-            raise ValueError("unable to find match in {}".format(fn))
-        else:
-            res.append(current_match[1])
-    return res
-
-
 rule glnexus_joint_calling:
     """
     Given gvcfs, create a joint called dataset.
     """
     input:
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
-        calling_ranges=lambda wildcards: get_calling_range_by_chrom(
+        calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(
             wildcards, config["glnexus"]["calling-ranges"]
         ),
     output:
@@ -99,7 +71,7 @@ rule prepare_joint_calling_output:
     input:
         bcf=lambda wildcards: expand(
             "results/glnexus/{{subset}}/merged_callset_{chrom}.bcf",
-            chrom=get_all_calling_ranges(config["glnexus"]["calling-ranges"]),
+            chrom=tc.get_all_calling_ranges(config["glnexus"]["calling-ranges"]),
         ),
     output:
         vcf=temp("results/glnexus/{subset}/merged_callset.vcf.gz"),

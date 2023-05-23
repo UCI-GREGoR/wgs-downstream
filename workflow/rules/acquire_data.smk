@@ -1,31 +1,9 @@
-def link_bams_by_id(wildcards, checkpoints):
-    sampleid = ""
-    projectid = wildcards.projectid
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    df_sampleid = df.loc[
-        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
-    ]
-    if len(df_sampleid) == 1:
-        sampleid = df_sampleid.to_list()[0]
-    else:
-        raise ValueError(
-            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
-        )
-    res = bam_manifest.loc[
-        (bam_manifest["sampleid"] == sampleid)
-        & (bam_manifest["projectid"] == projectid),
-        "bam",
-    ]
-    return [tc.annotate_remote_file(x) for x in res]
-
-
 rule copy_bams:
     """
     Get a local copy of bams before analysis
     """
     input:
-        bam=lambda wildcards: link_bams_by_id(wildcards, checkpoints),
+        bam=lambda wildcards: tc.link_bams_by_id(wildcards, checkpoints, bam_manifest),
     output:
         bam="results/bams/{projectid}/{sampleid}.bam",
     params:
@@ -83,34 +61,14 @@ checkpoint generate_linker:
         "../scripts/construct_linker_from_labbook.R"
 
 
-def link_gvcfs_by_id(wildcards, checkpoints):
-    sampleid = ""
-    projectid = wildcards.projectid
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    df_sampleid = df.loc[
-        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
-    ]
-    if len(df_sampleid) == 1:
-        sampleid = df_sampleid.to_list()[0]
-    else:
-        raise ValueError(
-            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
-        )
-    res = gvcf_manifest.loc[
-        (gvcf_manifest["sampleid"] == sampleid)
-        & (gvcf_manifest["projectid"] == projectid),
-        "gvcf",
-    ]
-    return [tc.annotate_remote_file(x) for x in res]
-
-
 rule copy_gvcfs:
     """
     Get a local copy of gvcfs before analysis
     """
     input:
-        gvcf=lambda wildcards: link_gvcfs_by_id(wildcards, checkpoints),
+        gvcf=lambda wildcards: tc.link_gvcfs_by_id(
+            wildcards, checkpoints, gvcf_manifest
+        ),
     output:
         gvcf="results/gvcfs/{projectid}/{sampleid}.g.vcf.gz",
     conda:

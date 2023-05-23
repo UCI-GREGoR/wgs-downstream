@@ -22,30 +22,6 @@ checkpoint expansionhunter_denovo_create_manifest:
         "../scripts/create_expansionhunter_denovo_manifest.R"
 
 
-def select_expansionhunter_denovo_subjects(
-    wildcards, checkpoints, projectids, sampleids, prefix, suffix
-) -> list:
-    """
-    Access checkpoint output to determine the subset of input manifest
-    subjects that also have available phenotype information in the input
-    data model
-    """
-    fn = str(checkpoints.expansionhunter_denovo_create_manifest.get().output[0])
-    df = pd.read_table(fn, sep="\t", header=None, names=["sample", "status", "json"])
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_table(outfn, sep="\t")
-    res = []
-    for projectid, sampleid in zip(projectids, sampleids):
-        linker_sampleid = linker.loc[
-            (linker["ru"] == projectid) & (linker["sq"] == sampleid), "pmgrc"
-        ]
-        if len(linker_sampleid) == 1:
-            pmgrcid = linker_sampleid.to_list()[0]
-            if pmgrcid in df["sample"].to_list():
-                res.append("{}/{}/{}.{}".format(prefix, projectid, pmgrcid, suffix))
-    return res
-
-
 rule expansionhunter_denovo_profile_subject:
     """
     Run single-sample STR profiling with expansionhunter_denovo
@@ -84,7 +60,7 @@ rule expansionhunter_denovo_merge_profiles:
     """
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
-        jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
+        jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
             bam_manifest["projectid"],
@@ -118,7 +94,7 @@ rule expansionhunter_denovo_locus_outliers:
     """
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
-        jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
+        jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
             bam_manifest["projectid"],
@@ -149,7 +125,7 @@ rule expansionhunter_denovo_motif_outliers:
     """
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
-        jsons=lambda wildcards: select_expansionhunter_denovo_subjects(
+        jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             wildcards,
             checkpoints,
             bam_manifest["projectid"],

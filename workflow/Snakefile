@@ -4,7 +4,6 @@
 import os
 import pathlib
 import pandas as pd
-from snakemake.io import Wildcards
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.utils import validate

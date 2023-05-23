@@ -16,41 +16,6 @@ checkpoint get_sample_list_from_vcf:
         "bcftools query -l {input} > {output}"
 
 
-def get_family_clusters(checkpoints):
-    """
-    From the joint call set, compute the
-    set of family clusters present in the
-    filtered vcf
-    """
-    subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get().output[0].open() as f:
-        subject_ids = f.readlines()
-    family_ids = []
-    for subject_id in subject_ids:
-        split_id = subject_id.split("-")
-        if len(split_id) == 4:
-            family_ids.append(split_id[2])
-    return family_ids
-
-
-def get_subjects_by_family(checkpoints, family_id):
-    """
-    From the joint call set, find the set of
-    subjects that belong to a specified family
-    cluster
-    """
-    subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get().output[0].open() as f:
-        subject_ids = f.readlines()
-    family_subjects = []
-    for subject_id in subject_ids:
-        split_id = subject_id.split("-")
-        if len(split_id) == 4:
-            if split_id[2] == family_id:
-                family_subjects.append(subject_id)
-    return family_subjects
-
-
 localrules:
     create_family_list,
     aggregate_split_joint_calls,
@@ -163,47 +128,13 @@ rule apply_single_sample_qc:
         "sed 's|\\t1/0:|\\t0/1:|' | bgzip -c > {output}"
 
 
-def compute_expected_single_samples(manifest, checkpoints):
-    valid_samples = {}
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    for projectid, sampleid in zip(manifest["projectid"], manifest["sampleid"]):
-        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), :]
-        if len(df_matches["pmgrc"]) == 1:
-            ## ad hoc handler for rerun samples: pick the later project id
-            if df_matches["pmgrc"].to_list()[0] in valid_samples.keys():
-                if projectid > valid_samples[df_matches["pmgrc"].to_list()[0]]:
-                    valid_samples[df_matches["pmgrc"].to_list()[0]] = (
-                        projectid,
-                        "{}_{}_{}".format(
-                            df_matches["pmgrc"].to_list()[0],
-                            df_matches["ls"].to_list()[0],
-                            df_matches["sq"].to_list()[0],
-                        ),
-                    )
-            else:
-                valid_samples[df_matches["pmgrc"].to_list()[0]] = (
-                    projectid,
-                    "{}_{}_{}".format(
-                        df_matches["pmgrc"].to_list()[0],
-                        df_matches["ls"].to_list()[0],
-                        df_matches["sq"].to_list()[0],
-                    ),
-                )
-    res = [
-        "results/split_joint_calls/{}.snv.vcf.gz".format(x[1][1])
-        for x in valid_samples.items()
-    ]
-    return res
-
-
 rule aggregate_split_joint_calls:
     """
     Determine the full set of expected output vcfs
     from a single sample split of a joint call run
     """
     input:
-        lambda wildcards: compute_expected_single_samples(gvcf_manifest, checkpoints),
+        lambda wildcards: tc.compute_expected_single_samples(gvcf_manifest, checkpoints),
     output:
         temp("results/split_joint_calls/.joint_calls_split"),
     shell:

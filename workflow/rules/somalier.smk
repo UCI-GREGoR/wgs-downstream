@@ -27,50 +27,14 @@ rule somalier_extract:
         "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output}"
 
 
-def get_fid(sampleid):
-    """
-    From a subject ID, extract the effective family cluster identifier.
-    For PGMRC IDs, this will be PMGRC-{numeric sample id}-{numeric family id}-{relationship code}.
-    For other IDs, at this point, just treat the ID itself as its own cluster.
-    """
-    split_id = sampleid.split("-")
-    if len(split_id) == 1:
-        return split_id[0]
-    else:
-        return split_id[2]
-
-
-def get_valid_pmgrcs(wildcards, projectids, sampleids, prefix, suffix):
-    valid_samples = {}
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    for projectid, sampleid in zip(projectids, sampleids):
-        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "pmgrc"]
-        if len(df_matches) == 1:
-            ## ad hoc handler for rerun samples: pick the later project id
-            if df_matches.to_list()[0] in valid_samples.keys():
-                if projectid > valid_samples[df_matches.to_list()[0]]:
-                    valid_samples[df_matches.to_list()[0]] = projectid
-            else:
-                valid_samples[df_matches.to_list()[0]] = projectid
-    res = []
-    for sampleid, projectid in valid_samples.items():
-        if "subset" in wildcards:
-            fid = get_fid(sampleid)
-            if wildcards.subset == "all" or wildcards.subset == fid:
-                res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
-        else:
-            res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
-    return res
-
-
 rule somalier_relate:
     """
     Compute relatedness metrics on preprocessed alignment data with somalier.
     """
     input:
-        somalier=lambda wildcards: get_valid_pmgrcs(
+        somalier=lambda wildcards: tc.get_valid_pmgrcs(
             wildcards,
+            checkpoints,
             bam_manifest["projectid"].to_list(),
             bam_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
@@ -115,8 +79,9 @@ rule somalier_build_pedfile:
     params:
         projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
         subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
-        valid_pmgrcids=lambda wildcards: get_valid_pmgrcs(
+        valid_pmgrcids=lambda wildcards: tc.get_valid_pmgrcs(
             wildcards,
+            checkpoints,
             bam_manifest["projectid"].to_list(),
             bam_manifest["sampleid"].to_list(),
             "",
@@ -160,8 +125,9 @@ rule somalier_ancestry:
             reference_build
         ),
         somalier_reference="results/somalier/references",
-        somalier_experimental=lambda wildcards: get_valid_pmgrcs(
+        somalier_experimental=lambda wildcards: tc.get_valid_pmgrcs(
             wildcards,
+            checkpoints,
             bam_manifest["projectid"].to_list(),
             bam_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
