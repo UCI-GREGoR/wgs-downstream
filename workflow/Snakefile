@@ -15,6 +15,7 @@ HTTP = HTTPRemoteProvider()
 
 sys.path.insert(0, ".")
 from lib import target_construction as tc
+from lib import resource_calculator as rc
 
 shell.executable("/bin/bash")
 shell.prefix("set -euo pipefail; ")
