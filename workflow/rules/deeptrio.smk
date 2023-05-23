@@ -26,10 +26,10 @@ rule deeptrio_make_examples:
         bam="results/bams/{projectid}/{sampleid}.bam",
         bai="results/bams/{projectid}/{sampleid}.bai",
         fasta="reference_data/{}/{}/ref.fasta".format(
-            config["behaviors"]["aligner"], reference_build
+            config["behaviors"]["deeptrio"], reference_build
         ),
         fai="reference_data/{}/{}/ref.fasta.fai".format(
-            config["behaviors"]["aligner"], reference_build
+            config["behaviors"]["deeptrio"], reference_build
         ),
         intervals="results/deeptrio/split_ranges/{splitnum}.ssv",
     output:
@@ -139,7 +139,7 @@ rule deeptrio_postprocess_variants:
     input:
         gz="results/deeptrio/{projectid}/call_variants/{sampleid}.{splitnum}.tfrecord.gz",
         fasta="reference_data/{}/{}/ref.fasta".format(
-            config["behaviors"]["aligner"], reference_build
+            config["behaviors"]["deeptrio"], reference_build
         ),
         gvcf=expand(
             "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
@@ -150,7 +150,7 @@ rule deeptrio_postprocess_variants:
             shardmax=str(config_resources["deeptrio"]["threads"]).rjust(5, "0"),
         ),
         fai="reference_data/{}/{}/ref.fasta.fai".format(
-            config["behaviors"]["aligner"], reference_build
+            config["behaviors"]["deeptrio"], reference_build
         ),
     output:
         vcf=temp(
