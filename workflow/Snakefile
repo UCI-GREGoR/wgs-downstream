@@ -8,6 +8,7 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.utils import validate
 import subprocess
+import yaml
 
 S3 = S3RemoteProvider()
 HTTP = HTTPRemoteProvider()
@@ -30,7 +31,12 @@ print("wgs-downstream version {}".format(pipeline_version))
 configfile: "config/config.yaml"
 
 
+with open("config/config_resources.yaml", "r") as f:
+    config_resources = yaml.safe_load(f)
+
 validate(config, "../schema/global_config_schema.yaml")
+validate(config_resources, "../schema/resources_config_schema.yaml")
+
 
 tempDir = config["tmpdir"]
 bam_manifest = config["bam_manifest"]

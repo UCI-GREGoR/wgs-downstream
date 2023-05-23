@@ -1,0 +1,93 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: tool/rule-specific resource configuration
+properties:
+  queues:
+    patternProperties:
+      "^.*$":
+        type: array
+        items:
+          type: string
+  tmpdir:
+    type: string
+  default: &defaults
+    type: object
+    properties:
+      threads:
+        type: integer
+        min: 1
+      memory:
+        type: integer
+        min: 100
+      queue:
+        type: string
+    required:
+      - threads
+      - memory
+      - queue
+    additionalProperties: false
+  default_with_java: &defaults_with_java
+    type: object
+    properties:
+      threads:
+        type: integer
+        min: 1
+      memory:
+        type: integer
+        min: 100
+      queue:
+        type: string
+      java_args:
+        type: string
+    required:
+      - threads
+      - memory
+      - queue
+      - java_args
+    additionalProperties: false
+  awscli:
+    <<: *defaults
+  bcftools:
+    <<: *defaults
+  bedtools:
+    <<: *defaults
+  deepvariant:
+    type: object
+    properties:
+      threads:
+        type: integer
+        min: 1
+      make_examples_memory:
+        type: integer
+        min: 100
+      call_variants_memory:
+        type: integer
+        min: 100
+      postprocess_variants_memory:
+        type: integer
+        min: 100
+      queue:
+        type: string
+    required:
+      - threads
+      - make_examples_memory
+      - call_variants_memory
+      - postprocess_variants_memory
+      - queue
+    additionalProperties: false
+  r:
+    <<: *defaults
+  samtools:
+    <<: *defaults
+  somalier:
+    <<: *defaults
+required:
+  - queues
+  - default
+  - awscli
+  - bcftools
+  - bedtools
+  - deepvariant
+  - r
+  - samtools
+  - somalier
+additionalProperties: false
