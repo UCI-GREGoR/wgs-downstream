@@ -89,6 +89,7 @@ rule glnexus:
 
 
 include: "rules/acquire_data.smk"
+include: "rules/deeptrio.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
 include: "rules/glnexus.smk"
