@@ -31,3 +31,8 @@ glnexus:
   version: "1.4.1"
   config: "DeepVariant_unfiltered"
   calling-ranges: "resources/glnexus_calling_ranges.tsv"
+deeptrio:
+  docker-version: "deeptrio-1.4.0"
+  number-shards: 16
+  grch38:
+    calling-ranges: "resources/deeptrio_calling_ranges_grch38.tsv"

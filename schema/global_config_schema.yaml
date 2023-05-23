@@ -79,6 +79,28 @@ properties:
       - config
       - calling-ranges
     additionalProperties: no
+  deeptrio:
+    type: object
+    properties:
+      docker-version:
+        type: string
+      number-shards:
+        type: integer
+        min: 1
+    patternProperties:
+      "^grch.*$":
+        type: object
+        properties:
+          calling-ranges:
+            type: string
+        required:
+          - calling-ranges
+        additionalProperties: no
+    required:
+      - docker-version
+      - number-shards
+      - grch38
+    additionalProperties: no
 required:
   - bam_manifest
   - gvcf_manifest
@@ -91,4 +113,5 @@ required:
   - somalier
   - expansionhunter_denovo
   - glnexus
+  - deeptrio
 additionalProperties: no
