@@ -269,7 +269,7 @@ def get_probands_with_structure(checkpoints):
     with at least one parent also present in the dataset
     """
     subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get().output[0].open() as f:
+    with checkpoints.get_sample_list_from_vcf.get(subset="all").output[0].open() as f:
         subject_ids = f.readlines()
     parents = {}
     children = {}

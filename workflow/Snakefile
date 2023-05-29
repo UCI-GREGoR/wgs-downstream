@@ -4,6 +4,7 @@
 import os
 import pathlib
 import pandas as pd
+import re
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.utils import validate
@@ -98,7 +99,6 @@ rule glnexus:
 
 
 include: "rules/acquire_data.smk"
-include: "rules/deeptrio.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
 include: "rules/glnexus.smk"
@@ -106,3 +106,4 @@ include: "rules/multiqc.smk"
 include: "rules/references.smk"
 include: "rules/somalier.smk"
 include: "rules/split_joint_calls.smk"
+include: "rules/deeptrio.smk"

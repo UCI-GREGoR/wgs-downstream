@@ -8,20 +8,22 @@ rule glnexus_create_gvcf_list:
     for glnexus
     """
     input:
+        linker="results/linker.tsv",
+    output:
+        tsv="results/glnexus/{subset}/gvcf_list.tsv",
+    params:
         gvcfs=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             checkpoints,
             gvcf_manifest["projectid"].to_list(),
             gvcf_manifest["sampleid"].to_list(),
-            "results/gvcfs/",
-            ".g.vcf.gz",
+            "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
+            ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
         ),
-    output:
-        tsv="results/glnexus/{subset}/gvcf_list.tsv",
     run:
         with open(output.tsv, "w") as f:
             valid_targets = []
-            for x in input.gvcfs:
+            for x in params.gvcfs:
                 if (
                     wildcards.subset == "all"
                     or "-{}-".format(wildcards.subset) in x
@@ -36,6 +38,28 @@ rule glnexus_joint_calling:
     Given gvcfs, create a joint called dataset.
     """
     input:
+        gvcfs=lambda wildcards: [
+            "results/{}/{}.sorted.g.vcf.gz".format(
+            "gvcfs" if wildcards.subset == "all" else "deeptrio", x
+        )
+        for x in tc.get_valid_subjectids(
+            wildcards,
+            checkpoints,
+            gvcf_manifest["projectid"].to_list()
+        if wildcards.subset == "all"
+                else bam_manifest["projectid"].to_list(),
+                gvcf_manifest["sampleid"].to_list()
+                if wildcards.subset == "all"
+                else bam_manifest["sampleid"].to_list(),
+                "",
+            "",
+        )
+        if (
+            re.search(r"^[^/]+/PMGRC-[^-]+-{}-[0-2]$".format(wildcards.subset), x)
+        or wildcards.subset == "all"
+                or re.search(r"^[^/]+/{}$".format(wildcards.subset), x)
+            )
+        ],
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(
             wildcards, config["glnexus"]["calling-ranges"]
