@@ -7,6 +7,14 @@ properties:
     type: string
   sample-logbook:
     type: string
+  sample-linking:
+    type: object
+    properties:
+      sex:
+        type: string
+      external-ids:
+        type: string
+    additionalProperties: false
   data-model:
     type: string
   multiqc-config:
@@ -105,6 +113,7 @@ required:
   - bam_manifest
   - gvcf_manifest
   - sample-logbook
+  - sample-linking
   - multiqc-config
   - genome-build
   - tmpdir

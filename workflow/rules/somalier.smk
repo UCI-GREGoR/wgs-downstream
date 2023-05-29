@@ -23,8 +23,10 @@ rule somalier_extract:
     shell:
         "somalier extract -d {params.extract_dir} "
         "--sites {input.sites_vcf} "
-        "-f {input.fasta} --sample-prefix {wildcards.sampleid}_ {input.bam} && "
-        "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output}"
+        "-f {input.fasta} --sample-prefix {wildcards.sampleid}_ {input.bam} ; "
+        'if [[ "$(samtools samples {input.bam} | cut -f 1)" != "{wildcards.sampleid}" ]] ; then '
+        "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output} ; "
+        "fi"
 
 
 rule somalier_relate:
@@ -32,7 +34,7 @@ rule somalier_relate:
     Compute relatedness metrics on preprocessed alignment data with somalier.
     """
     input:
-        somalier=lambda wildcards: tc.get_valid_pmgrcs(
+        somalier=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             checkpoints,
             bam_manifest["projectid"].to_list(),
@@ -79,7 +81,7 @@ rule somalier_build_pedfile:
     params:
         projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
         subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
-        valid_pmgrcids=lambda wildcards: tc.get_valid_pmgrcs(
+        valid_subjectids=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             checkpoints,
             bam_manifest["projectid"].to_list(),
@@ -125,7 +127,7 @@ rule somalier_ancestry:
             reference_build
         ),
         somalier_reference="results/somalier/references",
-        somalier_experimental=lambda wildcards: tc.get_valid_pmgrcs(
+        somalier_experimental=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             checkpoints,
             bam_manifest["projectid"].to_list(),

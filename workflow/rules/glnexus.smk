@@ -8,7 +8,7 @@ rule glnexus_create_gvcf_list:
     for glnexus
     """
     input:
-        gvcfs=lambda wildcards: tc.get_valid_pmgrcs(
+        gvcfs=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             checkpoints,
             gvcf_manifest["projectid"].to_list(),
@@ -46,7 +46,7 @@ rule glnexus_joint_calling:
         gvcf_manifest=gvcf_manifest,
         memlimit="16",
         glnexus_config=config["glnexus"]["config"],
-        tmp="{}/results/glnexus/{subset}/tmp_{chrom}".format(tempDir),
+        tmp="{}/results/glnexus/{{subset}}/tmp_{{chrom}}".format(tempDir),
     benchmark:
         "results/performance_benchmarks/glnexus_joint_calling/{subset}/{chrom}.tsv"
     conda:

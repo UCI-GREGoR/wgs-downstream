@@ -98,12 +98,19 @@ def get_fid(sampleid):
         return split_id[2]
 
 
-def get_valid_pmgrcs(wildcards, checkpoints, projectids, sampleids, prefix, suffix):
+def get_valid_subjectids(wildcards, checkpoints, projectids, sampleids, prefix, suffix):
     valid_samples = {}
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(projectids, sampleids):
-        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "pmgrc"]
+        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "subject"]
+        if len(df_matches) == 0:
+            ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
+            ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+            df_matches = df.loc[
+                (df["sq"].isna()) & (df["ru"].isna()) & (df["subject"] == sampleid),
+                "subject",
+            ]
         if len(df_matches) == 1:
             ## ad hoc handler for rerun samples: pick the later project id
             if df_matches.to_list()[0] in valid_samples.keys():
@@ -128,13 +135,24 @@ def link_bams_by_id(wildcards, checkpoints, bam_manifest):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     df_sampleid = df.loc[
-        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+        (df["subject"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
     ]
+    if len(df_sampleid) == 0:
+        ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
+        ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+        df_sampleid = df.loc[
+            (df["sq"].isna())
+            & (df["ru"].isna())
+            & (df["subject"] == wildcards.sampleid),
+            "subject",
+        ]
     if len(df_sampleid) == 1:
         sampleid = df_sampleid.to_list()[0]
     else:
         raise ValueError(
-            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
+            "cannot find subject id in manifest: {}, {}".format(
+                wildcards.sampleid, wildcards.projectid
+            )
         )
     res = bam_manifest.loc[
         (bam_manifest["sampleid"] == sampleid)
@@ -150,13 +168,22 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     df_sampleid = df.loc[
-        (df["pmgrc"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+        (df["subject"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
     ]
+    if len(df_sampleid) == 0:
+        ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
+        ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+        df_sampleid = df.loc[
+            (df["sq"].isna())
+            & (df["ru"].isna())
+            & (df["subject"] == wildcards.sampleid),
+            "subject",
+        ]
     if len(df_sampleid) == 1:
         sampleid = df_sampleid.to_list()[0]
     else:
         raise ValueError(
-            "cannot find pmgrc id in manifest: {}".format(wildcards.sampleid)
+            "cannot find subject id in manifest: {}".format(wildcards.sampleid)
         )
     res = gvcf_manifest.loc[
         (gvcf_manifest["sampleid"] == sampleid)
@@ -181,12 +208,12 @@ def select_expansionhunter_denovo_subjects(
     res = []
     for projectid, sampleid in zip(projectids, sampleids):
         linker_sampleid = linker.loc[
-            (linker["ru"] == projectid) & (linker["sq"] == sampleid), "pmgrc"
+            (linker["ru"] == projectid) & (linker["sq"] == sampleid), "subject"
         ]
         if len(linker_sampleid) == 1:
-            pmgrcid = linker_sampleid.to_list()[0]
-            if pmgrcid in df["sample"].to_list():
-                res.append("{}/{}/{}.{}".format(prefix, projectid, pmgrcid, suffix))
+            subjectid = linker_sampleid.to_list()[0]
+            if subjectid in df["sample"].to_list():
+                res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
     return res
 
 
@@ -287,23 +314,23 @@ def compute_expected_single_samples(manifest, checkpoints):
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(manifest["projectid"], manifest["sampleid"]):
         df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), :]
-        if len(df_matches["pmgrc"]) == 1:
+        if len(df_matches["subject"]) == 1:
             ## ad hoc handler for rerun samples: pick the later project id
-            if df_matches["pmgrc"].to_list()[0] in valid_samples.keys():
-                if projectid > valid_samples[df_matches["pmgrc"].to_list()[0]]:
-                    valid_samples[df_matches["pmgrc"].to_list()[0]] = (
+            if df_matches["subject"].to_list()[0] in valid_samples.keys():
+                if projectid > valid_samples[df_matches["subject"].to_list()[0]]:
+                    valid_samples[df_matches["subject"].to_list()[0]] = (
                         projectid,
                         "{}_{}_{}".format(
-                            df_matches["pmgrc"].to_list()[0],
+                            df_matches["subject"].to_list()[0],
                             df_matches["ls"].to_list()[0],
                             df_matches["sq"].to_list()[0],
                         ),
                     )
             else:
-                valid_samples[df_matches["pmgrc"].to_list()[0]] = (
+                valid_samples[df_matches["subject"].to_list()[0]] = (
                     projectid,
                     "{}_{}_{}".format(
-                        df_matches["pmgrc"].to_list()[0],
+                        df_matches["subject"].to_list()[0],
                         df_matches["ls"].to_list()[0],
                         df_matches["sq"].to_list()[0],
                     ),
@@ -313,3 +340,15 @@ def compute_expected_single_samples(manifest, checkpoints):
         for x in valid_samples.items()
     ]
     return res
+
+
+def caller_interval_file_count(config: dict) -> int:
+    """
+    Get simple line count of a file; this is intended to
+    count a tiny text file containing <100 interval filenames.
+    """
+    fn = config["deeptrio"][config["genome-build"]]["calling-ranges"]
+    x = 0
+    with open(fn, "r") as f:
+        x = len(f.readlines())
+    return x

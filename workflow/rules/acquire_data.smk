@@ -45,20 +45,30 @@ checkpoint generate_linker:
     From a sample logbook, generate a simple linker
     between various sample ID types
     """
-    input:
-        logbook=tc.annotate_remote_file(config["sample-logbook"]),
     output:
         linker="results/linker.tsv",
+    params:
+        logbook=config["sample-logbook"] if "sample-logbook" in config else None,
+        sex_linker=config["sample-linking"]["sex"]
+        if "sample-linking" in config and "sex" in config["sample-linking"]
+        else None,
+        external_id_linker=config["sample-linking"]["external-ids"]
+        if "sample-linking" in config and "external-ids" in config["sample-linking"]
+        else None,
     benchmark:
         "results/performance_benchmarks/generate_linker/linker.tsv"
     conda:
-        "../envs/r.yaml"
-    threads: 1
+        "../envs/r.yaml" if not use_containers else None
+    container:
+        "{}/r.sif".format(apptainer_images) if use_containers else None
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
-        "../scripts/construct_linker_from_labbook.R"
+        "../scripts/construct_linker_from_inputs.R"
 
 
 rule copy_gvcfs:

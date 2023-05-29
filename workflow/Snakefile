@@ -54,6 +54,8 @@ bam_manifest["internal-bam-paths"] = [
 ]
 
 reference_build = config["genome-build"]
+caller_num_intervals = tc.caller_interval_file_count(config)
+use_containers = False
 
 TARGETS = [
     "results/multiqc/multiqc.cross-flowcell.html",

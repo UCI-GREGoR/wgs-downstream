@@ -31,7 +31,7 @@ def run_construct_somalier_pedfile(
     linker: str,
     projectids: list,
     sampleids: list,
-    valid_pmgrcids: list,
+    valid_subjectids: list,
     outfn: str,
     problemfn: str,
 ) -> None:
@@ -42,25 +42,30 @@ def run_construct_somalier_pedfile(
     """
 
     ## strip ruids
-    valid_pmgrcids = [x.split("/")[1] for x in valid_pmgrcids]
+    valid_subjectids = [x.split("/")[1] for x in valid_subjectids]
 
     ## load linker information formatted from the lab logbook
     linker_data = pd.read_csv(linker, sep="\t")
 
-    ## Grab pmgrcids from linker
-    aligned_pmgrcids = []
+    ## Grab subjectids from linker
+    aligned_subjectids = []
     for projectid, sampleid in zip(projectids, sampleids):
         res = linker_data.loc[
-            (linker_data["ru"] == projectid) & (linker_data["sq"] == sampleid), "pmgrc"
+            (linker_data["ru"] == projectid) & (linker_data["sq"] == sampleid),
+            "subject",
         ]
         if len(res) == 0:
-            aligned_pmgrcids.append(projectid + "_" + sampleid)
+            aligned_subjectids.append(projectid + "_" + sampleid)
         else:
-            aligned_pmgrcids.append(res.to_list()[0])
+            aligned_subjectids.append(res.to_list()[0])
 
     ## Do not tolerate duplicates. This shouldn't actually happen, but hey.
     ids = pd.DataFrame(
-        data={"ruid": projectids, "sampleid": sampleids, "pmgrcid": aligned_pmgrcids}
+        data={
+            "ruid": projectids,
+            "sampleid": sampleids,
+            "subjectid": aligned_subjectids,
+        }
     ).drop_duplicates()
 
     ## track detected problems with ID consistency
@@ -72,25 +77,27 @@ def run_construct_somalier_pedfile(
     mat_id = []
     pat_id = []
     parent_data = {}
-    for pmgrcid, ruid, sqid in zip(
-        linker_data["pmgrc"], linker_data["ru"], linker_data["sq"]
+    for subjectid, ruid, sqid in zip(
+        linker_data["subject"], linker_data["ru"], linker_data["sq"]
     ):
         if not (ruid in projectids):
             continue
-        if not (pmgrcid in valid_pmgrcids):
+        if not (subjectid in valid_subjectids):
             parent_data[str(ruid) + "_" + str(sqid)] = str(ruid) + "_" + str(sqid)
         else:
-            parsed_sample_id = pmgrcid.split("-")
+            parsed_sample_id = subjectid.split("-")
             parent_data["{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])] = (
-                str(pmgrcid) + "_" + str(sqid)
+                str(subjectid) + "_" + str(sqid)
             )
 
-    for ruid, sampleid, pmgrc_id in zip(ids["ruid"], ids["sampleid"], ids["pmgrcid"]):
+    for ruid, sampleid, subject_id in zip(
+        ids["ruid"], ids["sampleid"], ids["subjectid"]
+    ):
         sample_sex = linker_data.loc[
             (linker_data["ru"] == ruid) & (linker_data["sq"] == sampleid), "sex"
         ]
         if len(sample_sex) == 1:
-            parsed_sample_id = pmgrc_id.split("-")
+            parsed_sample_id = subject_id.split("-")
             invalid_family_structure = False
             if (
                 parsed_sample_id[1] == parsed_sample_id[2]
@@ -155,8 +162,8 @@ def run_construct_somalier_pedfile(
         data={
             "FID": family_id,
             "Sample": [
-                pmgrcid if "_SQ" in pmgrcid else pmgrcid + "_" + sqid
-                for pmgrcid, sqid in zip(ids["pmgrcid"], ids["sampleid"])
+                subjectid if "_SQ" in subjectid else subjectid + "_" + sqid
+                for subjectid, sqid in zip(ids["subjectid"], ids["sampleid"])
             ],
             "Pat": pat_id,
             "Mat": mat_id,
@@ -175,7 +182,7 @@ run_construct_somalier_pedfile(
     snakemake.input[0],  # noqa: F821
     snakemake.params["projectids"],  # noqa: F821
     snakemake.params["subjectids"],  # noqa: F821
-    snakemake.params["valid_pmgrcids"],  # noqa: F821
+    snakemake.params["valid_subjectids"],  # noqa: F821
     snakemake.output["ped"],  # noqa: F821
     snakemake.output["problems"],  # noqa: F821
 )
