@@ -1,4 +1,5 @@
 import os
+import pathlib
 import re
 from warnings import warn
 
@@ -290,20 +291,31 @@ def get_probands_with_structure(checkpoints):
     return results
 
 
-def get_subjects_by_family(checkpoints, family_id):
+def get_subjects_by_family(
+    wildcards,
+    checkpoints,
+    family_id,
+    relationship_code,
+    projectids,
+    sampleids,
+    prefix,
+    suffix,
+):
     """
     From the joint call set, find the set of
     subjects that belong to a specified family
     cluster
     """
-    subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get().output[0].open() as f:
-        subject_ids = f.readlines()
+    subject_ids = get_valid_subjectids(
+        wildcards, checkpoints, projectids, sampleids, prefix, suffix
+    )
     family_subjects = []
     for subject_id in subject_ids:
-        split_id = subject_id.split("-")
+        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
         if len(split_id) == 4:
-            if split_id[2] == family_id:
+            if split_id[2] == str(family_id) and re.search(
+                r"^{}\.".format(relationship_code), split_id[3]
+            ):
                 family_subjects.append(subject_id)
     return family_subjects
 

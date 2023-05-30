@@ -75,6 +75,7 @@ ruleorder: samtools_index_fasta > download_reference_data
 ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: index_vcf > download_reference_data
 ruleorder: adjust_fasta_formatting > download_reference_data
+ruleorder: deeptrio_make_examples > copy_gvcfs
 
 
 rule all:
@@ -99,6 +100,7 @@ rule glnexus:
 
 
 include: "rules/acquire_data.smk"
+include: "rules/apptainer.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
 include: "rules/glnexus.smk"

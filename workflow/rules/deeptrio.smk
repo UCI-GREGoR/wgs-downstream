@@ -23,15 +23,58 @@ rule deeptrio_make_examples:
     embarrassingly parallel fashion.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        child_bam="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bam",
+        child_bai="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bai",
+        parent1_bam=lambda wildcards: tc.get_subjects_by_family(
+            wildcards,
+            checkpoints,
+            wildcards.childid,
+            1,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams/",
+            ".bam",
+        ),
+        parent1_bai=lambda wildcards: tc.get_subjects_by_family(
+            wildcards,
+            checkpoints,
+            wildcards.childid,
+            1,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams/",
+            ".bai",
+        ),
+        parent2_bam=lambda wildcards: tc.get_subjects_by_family(
+            wildcards,
+            checkpoints,
+            wildcards.childid,
+            2,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams/",
+            ".bam",
+        ),
+        parent2_bai=lambda wildcards: tc.get_subjects_by_family(
+            wildcards,
+            checkpoints,
+            wildcards.childid,
+            2,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams/",
+            ".bai",
+        ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
         intervals="results/deeptrio/split_ranges/{splitnum}.ssv",
+        sif="results/apptainer_images/deepvariant_{}.sif".format(
+            config["deeptrio"]["docker-version"]
+        ),
     output:
-        temp(
+        child_examples=temp(
             expand(
-                "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.{suffix}",
+                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.{suffix}",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -40,9 +83,9 @@ rule deeptrio_make_examples:
                 suffix=["gz", "gz.example_info.json"],
             )
         ),
-        temp(
+        child_gvcfs=temp(
             expand(
-                "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -51,19 +94,17 @@ rule deeptrio_make_examples:
             )
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_make_examples/{projectid}/{sampleid}.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_make_examples/{projectid0}/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
     params:
         shard_string=expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         gvcf_string=expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         tmpdir="/tmp",
-    container:
-        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
@@ -72,13 +113,15 @@ rule deeptrio_make_examples:
         ),
         tmpdir="/tmp",
     shell:
-        "mkdir -p {params.tmpdir} && "
+        'echo "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
-        '--ref {input.fasta} --reads {input.bam} --regions "$(cat {input.intervals})" '
+        "--ref {input.fasta} "
+        "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} --reads_parent2 {input.parent2_bam} "
+        '--regions \\"$(cat {input.intervals})\\" '
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
-        "--task {{}}"
+        '--task {{}}" | xargs singularity exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif}'
 
 
 rule deeptrio_call_variants:
