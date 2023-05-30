@@ -24,7 +24,6 @@ rule deeptrio_make_examples:
     """
     input:
         child_bam="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bam",
-        child_bai="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bai",
         parent1_bam=lambda wildcards: tc.get_subjects_by_family(
             wildcards,
             checkpoints,
@@ -35,16 +34,6 @@ rule deeptrio_make_examples:
             "results/bams/",
             ".bam",
         ),
-        parent1_bai=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            1,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bai",
-        ),
         parent2_bam=lambda wildcards: tc.get_subjects_by_family(
             wildcards,
             checkpoints,
@@ -54,16 +43,6 @@ rule deeptrio_make_examples:
             bam_manifest["sampleid"],
             "results/bams/",
             ".bam",
-        ),
-        parent2_bai=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            2,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bai",
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
