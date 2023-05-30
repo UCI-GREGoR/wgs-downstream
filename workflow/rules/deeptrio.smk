@@ -92,7 +92,7 @@ rule deeptrio_make_examples:
         ),
         tmpdir="/tmp",
     shell:
-        'echo "mkdir -p {params.tmpdir} && '
+        'singularity exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
@@ -100,7 +100,7 @@ rule deeptrio_make_examples:
         '--regions \\"$(cat {input.intervals})\\" '
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
-        '--task {{}}" | xargs singularity exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif}'
+        '--task {{}}"'
 
 
 rule deeptrio_call_variants:
