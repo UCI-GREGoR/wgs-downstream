@@ -25,7 +25,7 @@ bedtools:
   queue: "small"
 deeptrio:
   threads: 16
-  make_examples_memory: 192000
+  make_examples_memory: 384000
   call_variants_memory: 480000
   postprocess_variants_memory: 32000
   queue: "large"
