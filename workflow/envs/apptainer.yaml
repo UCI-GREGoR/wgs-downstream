@@ -3,3 +3,4 @@ channels:
 dependencies:
     - apptainer
     - squashfs-tools
+    - squashfuse

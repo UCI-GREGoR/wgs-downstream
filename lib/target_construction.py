@@ -314,7 +314,7 @@ def get_subjects_by_family(
         split_id = pathlib.PurePosixPath(subject_id).name.split("-")
         if len(split_id) == 4:
             if split_id[2] == str(family_id) and re.search(
-                r"^{}\.".format(relationship_code), split_id[3]
+                r"^{}[\._]".format(relationship_code), split_id[3]
             ):
                 family_subjects.append(subject_id)
     return family_subjects

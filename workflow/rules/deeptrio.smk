@@ -51,20 +51,31 @@ rule deeptrio_make_examples:
             config["deeptrio"]["docker-version"]
         ),
     output:
-        child_examples=temp(
+        examples=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.{suffix}",
+                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+                shardnum=[
+                    str(i).rjust(5, "0")
+                    for i in range(config_resources["deeptrio"]["threads"])
+                ],
+                relation=["child", "parent1", "parent2"],
+                shardmax=str(config_resources["deeptrio"]["threads"]).rjust(5, "0"),
+            )
+        ),
+        gvcfs=temp(
+            expand(
+                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                relation=["child", "parent1", "parent2"],
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
                 ],
                 shardmax=str(config_resources["deeptrio"]["threads"]).rjust(5, "0"),
-                suffix=["gz", "gz.example_info.json"],
             )
         ),
-        child_gvcfs=temp(
+        jsons=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/{{projectid0}}/make_examples/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -84,6 +95,8 @@ rule deeptrio_make_examples:
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         tmpdir="/tmp",
+    conda:
+        "../envs/apptainer.yaml" if not use_containers else None
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
@@ -92,7 +105,7 @@ rule deeptrio_make_examples:
         ),
         tmpdir="/tmp",
     shell:
-        'singularity exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
@@ -109,29 +122,34 @@ rule deeptrio_call_variants:
     embarrassingly parallel fashion.
     """
     input:
-        expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.{suffix}",
+        gz=expand(
+            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+            relation=["child", "parent1", "parent2"],
             shardnum=[
                 str(i).rjust(5, "0")
                 for i in range(config_resources["deeptrio"]["threads"])
             ],
             shardmax=str(config_resources["deeptrio"]["threads"]).rjust(5, "0"),
-            suffix=["gz", "gz.example_info.json"],
+        ),
+        sif="results/apptainer_images/deepvariant_{}.sif".format(
+            config["deeptrio"]["docker-version"]
         ),
     output:
         gz=temp(
-            "results/deeptrio/{projectid}/call_variants/{sampleid}.{splitnum}.tfrecord.gz"
+            "results/deeptrio/{projectid}/call_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.tfrecord.gz",
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_call_variants/{projectid}/{sampleid}.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_call_variants/{projectid}/{sampleid}.{splitnum}.{relation}.tsv"
     params:
         shard_string=expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}_{{relation}}.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
-        docker_model="/opt/models/wgs/model.ckpt",
-    container:
-        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
+        docker_model=lambda wildcards: "/opt/models/deeptrio/wgs/{}/model.ckpt".format(
+            "child" if wildcards.relation == "child" else "parent"
+        ),
+    conda:
+        "../envs/apptainer.yaml" if not use_containers else None
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["call_variants_memory"],
@@ -139,10 +157,11 @@ rule deeptrio_call_variants:
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
+        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "'
         "call_variants "
         "--outfile {output.gz} "
         "--examples {params.shard_string} "
-        '--checkpoint "{params.docker_model}"'
+        '--checkpoint \\"{params.docker_model}\\""'
 
 
 rule deeptrio_postprocess_variants:
@@ -151,10 +170,10 @@ rule deeptrio_postprocess_variants:
     embarrassingly parallel fashion.
     """
     input:
-        gz="results/deeptrio/{projectid}/call_variants/{sampleid}.{splitnum}.tfrecord.gz",
+        gz="results/deeptrio/{projectid}/call_variants/{sampleid}_{relation}.{splitnum}.tfrecord.gz",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         gvcf=expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
             shardnum=[
                 str(i).rjust(5, "0")
                 for i in range(config_resources["deeptrio"]["threads"])
@@ -162,26 +181,31 @@ rule deeptrio_postprocess_variants:
             shardmax=str(config_resources["deeptrio"]["threads"]).rjust(5, "0"),
         ),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
+        sif="results/apptainer_images/deepvariant_{}.sif".format(
+            config["deeptrio"]["docker-version"]
+        ),
     output:
         vcf=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}.{splitnum}.vcf.gz"
+            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz",
         ),
         gvcf=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}.{splitnum}.g.vcf.gz"
+            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.g.vcf.gz",
         ),
         tbi=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}.{splitnum}.vcf.gz.tbi"
+            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz.tbi",
         ),
-        html="results/deeptrio/{projectid}/postprocess_variants/{sampleid}.{splitnum}.visual_report.html",
+        html=temp(
+            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.visual_report.html"
+        ),
     params:
         gvcf_string=expand(
-            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{{projectid}}/make_examples/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_postprocess_variants/{projectid}/{sampleid}.{splitnum}.tsv"
-    container:
-        "docker://google/deepvariant:{}".format(config["deeptrio"]["docker-version"])
+        "results/performance_benchmarks/deeptrio_postprocess_variants/{projectid}/{sampleid}.{relation}.{splitnum}.tsv"
+    conda:
+        "../envs/apptainer.yaml" if not use_containers else None
     threads: 1
     resources:
         mem_mb=config_resources["deeptrio"]["postprocess_variants_memory"],
@@ -189,12 +213,13 @@ rule deeptrio_postprocess_variants:
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
+        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "'
         "postprocess_variants "
         "--ref {input.fasta} "
         "--infile {input.gz} "
         "--nonvariant_site_tfrecord_path {params.gvcf_string} "
         "--gvcf_outfile {output.gvcf} "
-        "--outfile {output.vcf}"
+        '--outfile {output.vcf}"'
 
 
 rule deeptrio_combine_regions:
@@ -204,13 +229,13 @@ rule deeptrio_combine_regions:
     """
     input:
         expand(
-            "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}.{splitnum}.vcf.gz",
+            "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}_{{relation}}.{splitnum}.vcf.gz",
             splitnum=[i + 1 for i in range(caller_num_intervals)],
         ),
     output:
-        "results/deeptrio/{projectid}/{sampleid}.sorted.vcf.gz",
+        "results/deeptrio/{projectid}/{sampleid}_{relation,child|parent1|parent2}.sorted.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/deeptrio_combine_regions/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/deeptrio_combine_regions/{projectid}/{sampleid}_{relation}.tsv"
     conda:
         "../envs/bcftools.yaml" if not use_containers else None
     container:
@@ -228,13 +253,41 @@ rule deeptrio_combine_regions:
 use rule deeptrio_combine_regions as deeptrio_combine_gvcfs with:
     input:
         expand(
-            "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}.{splitnum}.g.vcf.gz",
+            "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}_{{relation}}.{splitnum}.g.vcf.gz",
             splitnum=[i + 1 for i in range(caller_num_intervals)],
         ),
     output:
-        "results/deeptrio/{projectid}/{sampleid}.sorted.g.vcf.gz",
+        temp(
+            "results/deeptrio/{projectid}/{sampleid}_{relation,child|parent1|parent2}.sorted.g.vcf.gz"
+        ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_combine_gvcfs/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/deeptrio_combine_gvcfs/{projectid}/{sampleid}_{relation}.tsv"
+
+
+rule deeptrio_rename_vcf_outputs:
+    """
+    Rename the deeptrio-internal "parent1/parent2/child" labels to more reasonable
+    things that the rest of the logic understands
+    """
+    input:
+        lambda wildcards: "{}.sorted.{{suffix}}".format(
+            tc.get_subjects_by_family(
+                wildcards,
+                checkpoints,
+                wildcards.probandid,
+                0,
+                bam_manifest["projectid"],
+                bam_manifest["sampleid"],
+                "results/deeptrio/",
+                "_parent{}".format(wildcards.relcode)
+                if wildcards.sampleid != wildcards.probandid
+                else "_child",
+            )[0]
+        ),
+    output:
+        "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode}.sorted.{suffix}",
+    shell:
+        "cp {input} {output}"
 
 
 rule rtg_create_sdf:
