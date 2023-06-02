@@ -436,7 +436,7 @@ def determine_trio_structure(
         "sample_id"
     ].str.split("_", n=1, expand=True)
     somalier_samples_df = somalier_samples_df.set_index("sample")
-    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] < 1
+    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] > 0
 
     if mother_id == "":
         return "father_only"
