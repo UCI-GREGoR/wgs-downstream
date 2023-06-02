@@ -498,7 +498,7 @@ rule deeptrio_rename_vcf_outputs:
                 "_parent{}".format(wildcards.relcode)
                 if wildcards.sampleid != wildcards.probandid
                 else "_child",
-            )[0].replace("/", "/postprocess_variants/")
+            )[0]
         ),
     output:
         "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode,[0-9]}.sorted.{suffix}",
