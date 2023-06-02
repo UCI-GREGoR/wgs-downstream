@@ -443,9 +443,9 @@ rule deeptrio_combine_regions:
     into a single mega vcf.
     """
     input:
-        expand(
+        lambda wildcards: expand(
             "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}_{{relation}}.{splitnum}.vcf.gz",
-            splitnum=[i + 1 for i in range(caller_num_intervals)],
+            splitnum=tc.caller_relevant_intervals(config, wildcards.relation),
         ),
     output:
         "results/deeptrio/{projectid}/{sampleid}_{relation,child|parent1|parent2}.sorted.vcf.gz",
@@ -467,9 +467,9 @@ rule deeptrio_combine_regions:
 
 use rule deeptrio_combine_regions as deeptrio_combine_gvcfs with:
     input:
-        expand(
+        lambda wildcards: expand(
             "results/deeptrio/{{projectid}}/postprocess_variants/{{sampleid}}_{{relation}}.{splitnum}.g.vcf.gz",
-            splitnum=[i + 1 for i in range(caller_num_intervals)],
+            splitnum=tc.caller_relevant_intervals(config, wildcards.relation),
         ),
     output:
         temp(

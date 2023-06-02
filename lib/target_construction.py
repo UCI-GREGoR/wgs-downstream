@@ -366,6 +366,31 @@ def caller_interval_file_count(config: dict) -> int:
     return x
 
 
+def caller_relevant_intervals(config: dict, relation: str) -> list:
+    """
+    Determine the set of gvcf intervals that should be present for
+    a sample
+    """
+    fn = config["deeptrio"][config["genome-build"]]["calling-ranges"]
+    lines = []
+    with open(fn, "r") as f:
+        lines = f.readlines()
+    res = []
+    linecount = 0
+    for line in lines:
+        interval = line.rstrip()
+        if "chrX" in interval and "non-PAR" in interval:
+            if relation != "parent1":
+                res.append(linecount)
+        elif "chrY" in interval and "non-PAR" in interval:
+            if relation != "parent2":
+                res.append(linecount)
+        else:
+            res.append(linecount)
+        linecount = linecount + 1
+    return res
+
+
 def determine_trio_structure(
     wildcards, checkpoints, config, manifest, sampleid, chrcode
 ) -> str:
