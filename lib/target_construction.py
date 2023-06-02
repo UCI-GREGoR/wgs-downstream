@@ -415,13 +415,13 @@ def determine_trio_structure(
         (somalier_pairs_df["sample_a"] == mother_id)
         | (somalier_pairs_df["sample_b"] == mother_id)
     ]
-    if mother_relatedness["relatedness"] < 0.3535534:
+    if mother_relatedness["relatedness"][0] < 0.3535534:
         mother_id = ""
     father_relatedness = somalier_pairs_df[
         (somalier_pairs_df["sample_a"] == father_id)
         | (somalier_pairs_df["sample_b"] == father_id)
     ]
-    if father_relatedness["relatedness"] < 0.3535534:
+    if father_relatedness["relatedness"][0] < 0.3535534:
         father_id = ""
     if mother_id == "" and father_id == "":
         raise ValueError("cannot solve family structure for {}".format(sampleid))
@@ -432,7 +432,7 @@ def determine_trio_structure(
         "sample_id"
     ].str.split("_", n=1, expand=True)
     somalier_samples_df = somalier_samples_df.set_index("sample")
-    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] < 1
+    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"][0] < 1
 
     if mother_id == "":
         return "father_only"
