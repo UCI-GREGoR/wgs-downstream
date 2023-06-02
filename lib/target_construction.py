@@ -446,7 +446,7 @@ def determine_trio_structure(
     lines = []
     with open(fn, "r") as f:
         lines = f.readlines()
-    interval = lines[int(chrcode)].rstrip()
+    interval = lines[int(chrcode) - 1].rstrip()
     if "chrX" in interval:
         if "non-PAR" in interval and sample_is_male:
             return "mother_only"
