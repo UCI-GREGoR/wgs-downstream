@@ -20,5 +20,7 @@ resources/deeptrio-calling-ranges-grch38/chr19.tsv
 resources/deeptrio-calling-ranges-grch38/chr20.tsv
 resources/deeptrio-calling-ranges-grch38/chr21.tsv
 resources/deeptrio-calling-ranges-grch38/chr22.tsv
-resources/deeptrio-calling-ranges-grch38/chrX.tsv
-resources/deeptrio-calling-ranges-grch38/chrY.tsv
+resources/deeptrio-calling-ranges-grch38/chrX_non-PAR.tsv
+resources/deeptrio-calling-ranges-grch38/chrX_PAR.tsv
+resources/deeptrio-calling-ranges-grch38/chrY_non-PAR.tsv
+resources/deeptrio-calling-ranges-grch38/chrY_PAR.tsv

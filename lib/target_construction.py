@@ -364,3 +364,91 @@ def caller_interval_file_count(config: dict) -> int:
     with open(fn, "r") as f:
         x = len(f.readlines())
     return x
+
+
+def determine_trio_structure(
+    wildcards, checkpoints, config, manifest, sampleid, chrcode
+) -> str:
+    """
+    Use somalier relatedness/sexcheck output and expected pedigree to determine
+    which version of deeptrio should be run for a particular chromosome.
+
+    somalier IDs have format "PMGRC..._SQ" for whatever reason. this creates theoretical
+    ambiguities
+
+    somalier.samples.tsv column 25 "Y_n" should be 0 for female samples, >0 for male
+
+    somalier.pairs.tsv column 3 "relatedness" should be >= 0.3535534
+
+    chrcode is the index of the line in the tsv file defining the calling regions
+    """
+    somalier_samples = str(checkpoints.somalier_relate.get().output["samples"])
+    somalier_pairs = str(checkpoints.somalier_relate.get().output["pairs"])
+
+    subject_ids = get_valid_subjectids(
+        wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
+    )
+    family_id = sampleid.split("-")[3]
+    mother_id = ""
+    father_id = ""
+    for subject_id in subject_ids:
+        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
+        if len(split_id) == 4:
+            if split_id[2] == str(family_id) and re.search(r"^1[\._]", split_id[3]):
+                father_id = subject_id
+            if split_id[2] == str(family_id) and re.search(r"^2[\._]", split_id[3]):
+                mother_id = subject_id
+
+    # check for parent relatedness in somalier output
+    somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
+    somalier_pairs_df[["sample_a", "suffix_a"]] = somalier_pairs_df[
+        "#sample_a"
+    ].str.split("_", n=1, expand=True)
+    somalier_pairs_df[["sample_b", "suffix_b"]] = somalier_pairs_df[
+        "sample_b"
+    ].str.split("_", n=1, expand=True)
+    somalier_pairs_df = somalier_pairs_df[
+        (somalier_pairs_df["sample_a"] == sampleid)
+        | (somalier_pairs_df["sample_b"] == sampleid)
+    ]
+    mother_relatedness = somalier_pairs_df[
+        (somalier_pairs_df["sample_a"] == mother_id)
+        | (somalier_pairs_df["sample_b"] == mother_id)
+    ]
+    if mother_relatedness["relatedness"] < 0.3535534:
+        mother_id = ""
+    father_relatedness = somalier_pairs_df[
+        (somalier_pairs_df["sample_a"] == father_id)
+        | (somalier_pairs_df["sample_b"] == father_id)
+    ]
+    if father_relatedness["relatedness"] < 0.3535534:
+        father_id = ""
+    if mother_id == "" and father_id == "":
+        raise ValueError("cannot solve family structure for {}".format(sampleid))
+
+    # check for proband sex in somalier output
+    somalier_samples_df = pd.read_table(somalier_samples, sep="\t")
+    somalier_samples_df[["sample", "suffix"]] = somalier_samples_df[
+        "sample_id"
+    ].str.split("_", n=1, expand=True)
+    somalier_samples_df = somalier_samples_df.set_index("sample")
+    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] < 1
+
+    if mother_id == "":
+        return "father_only"
+    if father_id == "":
+        return "mother_only"
+
+    # use chrcode as line index to probe region file and determine whether it's an X/Y/par nonsense
+    fn = config["deeptrio"][config["genome-build"]]["calling-ranges"]
+    lines = []
+    with open(fn, "r") as f:
+        lines = f.readlines()
+    interval = lines[chrcode].rstrip()
+    if "chrX" in interval:
+        if "non-PAR" in interval and sample_is_male:
+            return "mother_only"
+    if "chrY" in interval:
+        if "non-PAR" in interval and sample_is_male:
+            return "father_only"
+    return "full_trio"

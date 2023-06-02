@@ -1,4 +1,4 @@
-rule somalier_extract:
+checkpoint somalier_extract:
     """
     Run somalier extract on a single bam.
     """
