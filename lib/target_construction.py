@@ -376,7 +376,7 @@ def caller_relevant_intervals(config: dict, relation: str) -> list:
     with open(fn, "r") as f:
         lines = f.readlines()
     res = []
-    linecount = 0
+    linecount = 1
     for line in lines:
         interval = line.rstrip()
         if "chrX" in interval and "non-PAR" in interval:
