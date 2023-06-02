@@ -1,4 +1,4 @@
-checkpoint somalier_extract:
+rule somalier_extract:
     """
     Run somalier extract on a single bam.
     """
@@ -29,7 +29,7 @@ checkpoint somalier_extract:
         "fi"
 
 
-rule somalier_relate:
+checkpoint somalier_relate:
     """
     Compute relatedness metrics on preprocessed alignment data with somalier.
     """

@@ -374,8 +374,10 @@ rule deeptrio_postprocess_variants:
         gvcf=lambda wildcards: expand(
             "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
+                wildcards,
                 checkpoints,
-                wildcards.projectid,
+                config,
+                bam_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -406,8 +408,10 @@ rule deeptrio_postprocess_variants:
         gvcf_string=lambda wildcards: expand(
             "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
+                wildcards,
                 checkpoints,
-                wildcards.projectid,
+                config,
+                bam_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -481,7 +485,8 @@ rule deeptrio_rename_vcf_outputs:
     things that the rest of the logic understands
     """
     input:
-        lambda wildcards: "{}.sorted.{{suffix}}".format(
+        lambda wildcards: "results/deeptrio/"
+        + "{}.sorted.{{suffix}}".format(
             tc.get_subjects_by_family(
                 wildcards,
                 checkpoints,
@@ -489,14 +494,14 @@ rule deeptrio_rename_vcf_outputs:
                 0,
                 bam_manifest["projectid"],
                 bam_manifest["sampleid"],
-                "results/deeptrio/",
+                "",
                 "_parent{}".format(wildcards.relcode)
                 if wildcards.sampleid != wildcards.probandid
                 else "_child",
-            )[0]
+            )[0].replace("/", "/postprocess_variants/")
         ),
     output:
-        "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode}.sorted.{suffix}",
+        "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode,[0-9]}.sorted.{suffix}",
     shell:
         "cp {input} {output}"
 
