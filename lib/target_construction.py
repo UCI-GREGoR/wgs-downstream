@@ -383,12 +383,14 @@ def determine_trio_structure(
     chrcode is the index of the line in the tsv file defining the calling regions
     """
     somalier_samples = str(checkpoints.somalier_relate.get().output["samples"])
-    somalier_pairs = str(checkpoints.somalier_relate.get().output["pairs"])
 
     subject_ids = get_valid_subjectids(
         wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
     )
     family_id = sampleid.split("-")[2]
+    somalier_pairs = str(
+        checkpoints.somalier_split_by_family.get(family_id=family_id).output["pairs"]
+    )
     mother_id = ""
     father_id = ""
     for subject_id in subject_ids:

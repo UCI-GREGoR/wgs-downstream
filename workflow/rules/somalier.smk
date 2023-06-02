@@ -61,6 +61,23 @@ checkpoint somalier_relate:
         "somalier relate --ped {input.ped} -o {params.outprefix} {input.somalier}"
 
 
+checkpoint somalier_split_by_family:
+    """
+    Try to improve DAG solving performance by creating subsets of the pairs
+    file that just contain results from a particular family
+    """
+    input:
+        tsv="results/somalier/relate/somalier.pairs.tsv",
+    output:
+        pairs="results/somalier/relate/by_family/{family_id}.pairs.tsv",
+    threads: 1
+    resources:
+        mem_mb=1000,
+        qname="small",
+    shell:
+        'grep -E "#sample|-{wildcards.family_id}-" {input.tsv} > {output.pairs}'
+
+
 rule somalier_build_pedfile:
     """
     Generate a pedfile for sex check for somalier.
