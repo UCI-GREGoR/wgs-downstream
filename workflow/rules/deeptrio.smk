@@ -332,7 +332,7 @@ rule deeptrio_call_variants:
     benchmark:
         "results/performance_benchmarks/deeptrio_call_variants/{projectid}/{sampleid}.{splitnum}.{relation}.tsv"
     params:
-        shard_string=expand(
+        shard_string=lambda wildcards: expand(
             "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.tfrecord@{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
                 wildcards,
