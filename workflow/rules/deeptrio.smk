@@ -293,7 +293,7 @@ rule deeptrio_make_examples_father_only:
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
-        "--reads {input.child_bam} --reads_parent2 {input.parent2_bam} "
+        "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} "
         '--regions \\"$(cat {input.intervals})\\" '
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
