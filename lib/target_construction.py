@@ -388,16 +388,16 @@ def determine_trio_structure(
     subject_ids = get_valid_subjectids(
         wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
     )
-    family_id = sampleid.split("-")[3]
+    family_id = sampleid.split("-")[2]
     mother_id = ""
     father_id = ""
     for subject_id in subject_ids:
         split_id = pathlib.PurePosixPath(subject_id).name.split("-")
         if len(split_id) == 4:
-            if split_id[2] == str(family_id) and re.search(r"^1[\._]", split_id[3]):
-                father_id = subject_id
-            if split_id[2] == str(family_id) and re.search(r"^2[\._]", split_id[3]):
-                mother_id = subject_id
+            if split_id[2] == str(family_id) and split_id[3] == "1":
+                father_id = subject_id.split("/")[1]
+            if split_id[2] == str(family_id) and split_id[3] == "2":
+                mother_id = subject_id.split("/")[1]
 
     # check for parent relatedness in somalier output
     somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
@@ -411,18 +411,20 @@ def determine_trio_structure(
         (somalier_pairs_df["sample_a"] == sampleid)
         | (somalier_pairs_df["sample_b"] == sampleid)
     ]
-    mother_relatedness = somalier_pairs_df[
-        (somalier_pairs_df["sample_a"] == mother_id)
-        | (somalier_pairs_df["sample_b"] == mother_id)
-    ]
-    if mother_relatedness["relatedness"][0] < 0.3535534:
-        mother_id = ""
-    father_relatedness = somalier_pairs_df[
-        (somalier_pairs_df["sample_a"] == father_id)
-        | (somalier_pairs_df["sample_b"] == father_id)
-    ]
-    if father_relatedness["relatedness"][0] < 0.3535534:
-        father_id = ""
+    if mother_id != "":
+        mother_relatedness = somalier_pairs_df[
+            (somalier_pairs_df["sample_a"] == mother_id)
+            | (somalier_pairs_df["sample_b"] == mother_id)
+        ]
+        if (mother_relatedness["relatedness"] < 0.3535534).bool():
+            mother_id = ""
+    if father_id != "":
+        father_relatedness = somalier_pairs_df[
+            (somalier_pairs_df["sample_a"] == father_id)
+            | (somalier_pairs_df["sample_b"] == father_id)
+        ]
+        if (father_relatedness["relatedness"] < 0.3535534).bool():
+            father_id = ""
     if mother_id == "" and father_id == "":
         raise ValueError("cannot solve family structure for {}".format(sampleid))
 
@@ -432,7 +434,7 @@ def determine_trio_structure(
         "sample_id"
     ].str.split("_", n=1, expand=True)
     somalier_samples_df = somalier_samples_df.set_index("sample")
-    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"][0] < 1
+    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] < 1
 
     if mother_id == "":
         return "father_only"
@@ -444,7 +446,7 @@ def determine_trio_structure(
     lines = []
     with open(fn, "r") as f:
         lines = f.readlines()
-    interval = lines[chrcode].rstrip()
+    interval = lines[int(chrcode)].rstrip()
     if "chrX" in interval:
         if "non-PAR" in interval and sample_is_male:
             return "mother_only"
