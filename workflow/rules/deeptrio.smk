@@ -10,11 +10,11 @@ rule caller_scatter_tasks:
     input:
         lambda wildcards: config["deeptrio"][reference_build]["calling-ranges"],
     output:
-        "results/{caller}/split_ranges/{splitnum}.ssv",
+        "results/{caller}/split_ranges/{splitnum}.bed",
     benchmark:
         "results/performance_benchmarks/{caller}/split_ranges/{splitnum}.tsv"
     shell:
-        "cat $(awk 'NR == {wildcards.splitnum}' {input}) | tr '\\n' ' ' > {output}"
+        "cp $(awk 'NR == {wildcards.splitnum}' {input}) {output}"
 
 
 rule deeptrio_make_examples_full_trio:
@@ -48,7 +48,7 @@ rule deeptrio_make_examples_full_trio:
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
-        intervals="results/deeptrio/split_ranges/{splitnum}.ssv",
+        intervals="results/deeptrio/split_ranges/{splitnum}.bed",
         sif="results/apptainer_images/deepvariant_{}.sif".format(
             config["deeptrio"]["docker-version"]
         ),
@@ -112,7 +112,7 @@ rule deeptrio_make_examples_full_trio:
         "make_examples --mode calling "
         "--ref {input.fasta} "
         "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} --reads_parent2 {input.parent2_bam} "
-        '--regions \\"$(cat {input.intervals})\\" '
+        "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
         '--task {{}}"'
@@ -139,7 +139,7 @@ rule deeptrio_make_examples_mother_only:
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
-        intervals="results/deeptrio/split_ranges/{splitnum}.ssv",
+        intervals="results/deeptrio/split_ranges/{splitnum}.bed",
         sif="results/apptainer_images/deepvariant_{}.sif".format(
             config["deeptrio"]["docker-version"]
         ),
@@ -203,7 +203,7 @@ rule deeptrio_make_examples_mother_only:
         "make_examples --mode calling "
         "--ref {input.fasta} "
         "--reads {input.child_bam} --reads_parent2 {input.parent2_bam} "
-        '--regions \\"$(cat {input.intervals})\\" '
+        "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
         '--task {{}}"'
@@ -230,7 +230,7 @@ rule deeptrio_make_examples_father_only:
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
-        intervals="results/deeptrio/split_ranges/{splitnum}.ssv",
+        intervals="results/deeptrio/split_ranges/{splitnum}.bed",
         sif="results/apptainer_images/deepvariant_{}.sif".format(
             config["deeptrio"]["docker-version"]
         ),
@@ -294,7 +294,7 @@ rule deeptrio_make_examples_father_only:
         "make_examples --mode calling "
         "--ref {input.fasta} "
         "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} "
-        '--regions \\"$(cat {input.intervals})\\" '
+        "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
         '--task {{}}"'
@@ -333,7 +333,8 @@ rule deeptrio_call_variants:
         "results/performance_benchmarks/deeptrio_call_variants/{projectid}/{sampleid}.{splitnum}.{relation}.tsv"
     params:
         shard_string=lambda wildcards: expand(
-            "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{projectid}/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.tfrecord@{shardmax}.gz",
+            projectid=wildcards.projectid,
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
@@ -342,6 +343,9 @@ rule deeptrio_call_variants:
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
+            sampleid=wildcards.sampleid,
+            relation=wildcards.relation,
+            splitnum=wildcards.splitnum,
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         docker_model=lambda wildcards: "/opt/models/deeptrio/wgs/{}/model.ckpt".format(
@@ -406,7 +410,8 @@ rule deeptrio_postprocess_variants:
         ),
     params:
         gvcf_string=lambda wildcards: expand(
-            "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/{projectid}/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.gvcf.tfrecord@{shardmax}.gz",
+            projectid=wildcards.projectid,
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
@@ -415,6 +420,9 @@ rule deeptrio_postprocess_variants:
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
+            sampleid=wildcards.sampleid,
+            relation=wildcards.relation,
+            splitnum=wildcards.splitnum,
             shardmax=config_resources["deeptrio"]["threads"],
         ),
     benchmark:
