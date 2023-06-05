@@ -112,7 +112,9 @@ the cookiecutter template [here](https://github.com/Snakemake-Profiles/sge).
 
 #### Runtime Behaviors
 
-At the time of writing, this pipeline will unconditionally run somalier and ExpansionHunterDenovo. I may at some point
+This pipeline contains an assortment of utilities. Execution via `snakemake -jN` with no other arguments will
+unconditionally run somalier, ExpansionHunterDenovo, and glnexus
+for a single combined joint call across all input gvcfs. I may at some point
 add the option to disable some of the tools in userspace, but there's no need currently. If you want this behavior,
 you can run the phony rule named after each tool (e.g. `somalier` or `expansionhunter_denovo`).
 The actual files considered by the tools are pulled from the input manifest with certain restrictions:
@@ -121,6 +123,14 @@ The actual files considered by the tools are pulled from the input manifest with
 - for ExpansionHunterDenovo, which expects some amount of case/control annotation, only samples that are present in both the
   user manifest (e.g. `config/bam_manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
   among other things, that the flowcell control low-depth NA24385 samples are always excluded from analysis.
+- glnexus pulls all gvcfs from the relevant user manifest (by default, `config/gvcf_manifest.tsv`).
+- DeepTrio is still in initial development, but the draft behavior is that the workflow will detect probands with at
+  least one parent present in the inputs, and use DeepTrio to regenerate gvcfs for those individuals. Those gvcfs will
+  then be joint called together, excluding all other subjects, with glnexus, and the resulting vcf will be annotated
+  for _de novo_ variation. how exactly this will interact with glnexus as the primary analysis target is TBD, largely
+  based on how well it turns out DeepTrio performs.
+
+#### Triggering Reruns
 
 This workflow is expected to be run periodically from the same installation. At some point, if there's enough iteration and
 interest, I may update this workflow to handle perfect updating automatically. In lieu of that, here's how you can make
@@ -134,6 +144,30 @@ sure the pipeline runs the tools again correctly when new input samples are adde
   the manifest the workflow generates from the combined information from the user bam manifest and the data model. as such,
   to force the pipeline to reevaluate its inputs and rerun if necessary, delete the files `results/linker.tsv` and
   `results/expansionhunter_denovo/manifest.tsv` and relaunch
+- both DeepTrio and glnexus joint calling are tracked via single tracking files installed under `results/`. as always,
+  just removing the respective results subdirectories will do the job, but the compute can be rather costly if you don't
+  actually require a full rerun. you can individually remove whichever targets you want rerun, plus the trackers
+  `results/split_joint_calls/.joint_calls_split` or `results/deeptrio/.deeptrio_calls_split`, to force the DAG to be
+  reevaluated. note that this behavior is extremely WIP and likely to change to something more sensible.
+
+#### A Discussion about DeepTrio
+
+Per the tool's documentation, notably [here](https://github.com/google/deepvariant/blob/r1.5/docs/deeptrio-details.md),
+DeepTrio uses the following logic for `make_examples`, the first step of the DeepVariant processing chain:
+
+- for female proband, all available parents are use in `make_examples` for all chromosomes (excluding mitochondrion)
+- for male proband:
+    - for autosomes, all available parents are used
+    - for chrX and chrY pseudoautosomal regions, all available parents are used
+    - for the chrX non-pseudoautosomal region, only the maternal sample is used
+    - for the chrY non-pseudoautosomal region, only the paternal sample is used
+
+The default configuration of calling regions for GRCh38 is compatible with this calling logic. If you want to create
+a different set of calling regions, e.g. for a different genome build, the above DAG logic is controlled by detecting
+`chrX`, `chrY`, and `non-PAR` in the calling region filenames as appropriate.
+
+Note that the above logic does not currently have a solution for the situation of a male proband, non-PAR regions,
+one present and one absent parent in dataset. This is flagged for update.
 
 ### Step 5: Investigate results
 
