@@ -26,7 +26,10 @@ rule glnexus_create_gvcf_list:
             for x in params.gvcfs:
                 if (
                     wildcards.subset == "all"
-                    or "-{}-".format(wildcards.subset) in x
+                    or (
+                        "-{}-".format(wildcards.subset) in x
+                        and re.search("-[012].sorted.g.vcf.gz$", x)
+                    )
                     or "/{}.g.vcf.gz".format(wildcards.subset) in x
                 ):
                     valid_targets.append(x)

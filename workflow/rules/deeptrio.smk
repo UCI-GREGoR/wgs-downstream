@@ -470,7 +470,7 @@ rule deeptrio_combine_regions:
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
-        "bcftools concat --threads {threads} -O z -o {output} {input}"
+        "bcftools concat --threads {threads} -O u {input} | bcftools sort -O z -o {output}"
 
 
 use rule deeptrio_combine_regions as deeptrio_combine_gvcfs with:
