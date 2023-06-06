@@ -510,8 +510,22 @@ rule deeptrio_rename_vcf_outputs:
         ),
     output:
         "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode,[0-9]}.sorted.{suffix}",
+    params:
+        full_id="PMGRC-{sampleid}-{probandid}-{relcode}",
+    conda:
+        "../envs/bcftools.yaml" if not use_containers else None
+    container:
+        "{}/bcftools.sif".format(apptainer_images) if use_containers else None
+    threads: config_resources["bcftools"]["threads"]
+    resources:
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "cp {input} {output}"
+        "gunzip -c {input} | "
+        'awk -v var="{params.full_id}" \'! /^#CHROM/ ; /^#CHROM/ {{OFS = "\\t" ; $10 = var ; print $0}}\' | '
+        "bgzip -c > {output}"
 
 
 rule rtg_create_sdf:
