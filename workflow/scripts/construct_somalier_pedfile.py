@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 
 
@@ -27,11 +29,24 @@ def add_problem(problems: dict, sampleid: str, problem: str) -> dict:
     return problems
 
 
+def construct_final_id(sampleid: str, sqid: str, use_somalier_id: bool) -> str:
+    """
+    Adjust sample ID format for use in either somalier or, really, everything else
+    """
+    if use_somalier_id:
+        res = sampleid if "_SQ" in sampleid else sampleid + "_" + sqid
+    else:
+        id_parse = re.match("^(.*)_SQ[0-9]{4}$", sampleid)
+        res = id_parse[1] if id_parse else sampleid
+    return res
+
+
 def run_construct_somalier_pedfile(
     linker: str,
     projectids: list,
     sampleids: list,
     valid_subjectids: list,
+    use_somalier_ids: bool,
     outfn: str,
     problemfn: str,
 ) -> None:
@@ -162,11 +177,11 @@ def run_construct_somalier_pedfile(
         data={
             "FID": family_id,
             "Sample": [
-                subjectid if "_SQ" in subjectid else subjectid + "_" + sqid
+                construct_final_id(subjectid, sqid, use_somalier_ids)
                 for subjectid, sqid in zip(ids["subjectid"], ids["sampleid"])
             ],
-            "Pat": pat_id,
-            "Mat": mat_id,
+            "Pat": [construct_final_id(str(y), "", use_somalier_ids) for y in pat_id],
+            "Mat": [construct_final_id(str(y), "", use_somalier_ids) for y in mat_id],
             "Sex": self_reported_sex,
             "Pheno": ["-9" for x in ids["sampleid"]],
         }
@@ -183,6 +198,7 @@ run_construct_somalier_pedfile(
     snakemake.params["projectids"],  # noqa: F821
     snakemake.params["subjectids"],  # noqa: F821
     snakemake.params["valid_subjectids"],  # noqa: F821
+    snakemake.params["use_somalier_ids"],  # noqa: F821
     snakemake.output["ped"],  # noqa: F821
     snakemake.output["problems"],  # noqa: F821
 )

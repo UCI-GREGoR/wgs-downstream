@@ -106,6 +106,7 @@ rule somalier_build_pedfile:
             "",
             "",
         ),
+        use_somalier_ids=True,
     threads: 1
     resources:
         mem_mb=1000,

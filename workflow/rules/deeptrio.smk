@@ -554,6 +554,18 @@ use rule somalier_build_pedfile as rtg_create_cluster_pedigree with:
         problems=temp("results/deeptrio/{subset}.discordant_annotations.tsv"),
     benchmark:
         "results/performance_benchmarks/rtg_create_cluster_pedigree/{subset}.tsv"
+    params:
+        projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
+        subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
+        valid_subjectids=lambda wildcards: tc.get_valid_subjectids(
+            wildcards,
+            checkpoints,
+            bam_manifest["projectid"].to_list(),
+            bam_manifest["sampleid"].to_list(),
+            "",
+            "",
+        ),
+        use_somalier_ids=False,
 
 
 rule rtg_annotate_vcf:
