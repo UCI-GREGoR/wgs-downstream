@@ -4,6 +4,7 @@ import re
 from warnings import warn
 
 import pandas as pd
+from snakemake.checkpoints import Checkpoint, Checkpoints
 from snakemake.io import AnnotatedString, Namedlist, Wildcards
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
@@ -163,7 +164,7 @@ def link_bams_by_id(wildcards, checkpoints, bam_manifest):
     return [annotate_remote_file(x) for x in res]
 
 
-def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest):
+def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
     sampleid = ""
     projectid = wildcards.projectid
     outfn = str(checkpoints.generate_linker.get().output[0])
@@ -189,7 +190,7 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest):
     res = gvcf_manifest.loc[
         (gvcf_manifest["sampleid"] == sampleid)
         & (gvcf_manifest["projectid"] == projectid),
-        "gvcf",
+        "gvcf" if use_gvcf else "vcf",
     ]
     return [annotate_remote_file(x) for x in res]
 
@@ -366,10 +367,17 @@ def caller_interval_file_count(config: dict) -> int:
     return x
 
 
-def caller_relevant_intervals(config: dict, relation: str) -> list:
+def caller_relevant_intervals(
+    wildcards: Wildcards,
+    config: dict,
+    checkpoints: Checkpoints,
+    gvcf_manifest: pd.DataFrame,
+    use_gvcf: bool,
+) -> list:
     """
     Determine the set of gvcf intervals that should be present for
-    a sample
+    a sample. When necessary, specify a file that is sliced out of
+    an input vcf, e.g. when a male parent of male proband needs X-nonPAR.
     """
     fn = config["deeptrio"][config["genome-build"]]["calling-ranges"]
     lines = []
@@ -380,13 +388,67 @@ def caller_relevant_intervals(config: dict, relation: str) -> list:
     for line in lines:
         interval = line.rstrip()
         if "chrX" in interval and "non-PAR" in interval:
-            if relation != "parent1":
-                res.append(linecount)
+            if wildcards.relation == "parent1":
+                res.append(
+                    get_subjects_by_family(
+                        wildcards,
+                        checkpoints,
+                        wildcards.sampleid.split("-")[2],
+                        1,
+                        gvcf_manifest["projectid"],
+                        gvcf_manifest["sampleid"],
+                        "results/{}/slices/{}".format(
+                            "gvcfs" if use_gvcf else "vcfs", linecount
+                        ),
+                        ".g.vcf.gz" if use_gvcf else ".vcf.gz",
+                    )
+                )
+            else:
+                res.append(
+                    "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
+                        wildcards.projectid,
+                        wildcards.sampleid,
+                        wildcards.relation,
+                        linecount,
+                        "g.vcf" if use_gvcf else "vcf",
+                    )
+                )
         elif "chrY" in interval and "non-PAR" in interval:
-            if relation != "parent2":
-                res.append(linecount)
+            if wildcards.relation == "parent2":
+                res.append(
+                    get_subjects_by_family(
+                        wildcards,
+                        checkpoints,
+                        wildcards.sampleid.split("-")[2],
+                        2,
+                        gvcf_manifest["projectid"],
+                        gvcf_manifest["sampleid"],
+                        "results/{}/slices/{}".format(
+                            "gvcfs" if use_gvcf else "vcfs", linecount
+                        ),
+                        ".g.vcf.gz" if use_gvcf else ".vcf.gz",
+                    )
+                )
+            else:
+                res.append(
+                    "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
+                        wildcards.projectid,
+                        wildcards.sampleid,
+                        wildcards.relation,
+                        linecount,
+                        "g.vcf" if use_gvcf else "vcf",
+                    )
+                )
         else:
-            res.append(linecount)
+            res.append(
+                "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
+                    wildcards.projectid,
+                    wildcards.sampleid,
+                    wildcards.relation,
+                    linecount,
+                    "g.vcf" if use_gvcf else "vcf",
+                )
+            )
         linecount = linecount + 1
     return res
 

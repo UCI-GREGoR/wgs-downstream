@@ -77,7 +77,7 @@ rule copy_gvcfs:
     """
     input:
         gvcf=lambda wildcards: tc.link_gvcfs_by_id(
-            wildcards, checkpoints, gvcf_manifest
+            wildcards, checkpoints, gvcf_manifest, True
         ),
     output:
         gvcf="results/gvcfs/{projectid}/{sampleid}.g.vcf.gz",
@@ -92,3 +92,49 @@ rule copy_gvcfs:
     shell:
         "gunzip -c {input} | awk -v id={wildcards.sampleid} "
         "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"
+
+
+rule copy_vcfs:
+    """
+    Get a local copy of vcfs before analysis
+    """
+    input:
+        vcf=lambda wildcards: tc.link_gvcfs_by_id(
+            wildcards, checkpoints, gvcf_manifest, False
+        ),
+    output:
+        vcf="results/gvcfs/{projectid}/{sampleid}.vcf.gz",
+    conda:
+        "../envs/bcftools.yaml"
+    benchmark:
+        "results/performance_benchmarks/copy_vcfs/{projectid}/{sampleid}.tsv"
+    threads: 1
+    resources:
+        mem_mb=1000,
+        qname="small",
+    shell:
+        "gunzip -c {input} | awk -v id={wildcards.sampleid} "
+        "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"
+
+
+rule slice_vcf:
+    """
+    Select a subset of a (g)vcf for use in various applications
+    """
+    input:
+        vcf="{prefix}/{filename}.{suffix}.gz",
+        bed="results/deeptrio/split_ranges/{splitnum}.bed",
+    output:
+        vcf="{prefix}/slices/{splitnum}/{filename}.{suffix}.gz",
+    benchmark:
+        "results/performance_benchmarks/slice_vcf/{prefix}/{splitnum}/{filename}.{suffix}.tsv"
+    conda:
+        "../envs/bedtools.yaml" if not use_containers else None
+    threads: config_resources["bedtools"]["threads"]
+    resources:
+        mem_mb=config_resources["bedtools"]["memory"],
+        qname=rc.select_queue(
+            config_resources["bedtools"]["queue"], config_resources["queues"]
+        ),
+    shell:
+        "bedtools intersect -a {input.vcf} -b {input.bed} -wa -header | bgzip -c > {output.vcf}"
