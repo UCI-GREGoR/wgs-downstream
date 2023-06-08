@@ -103,7 +103,7 @@ rule copy_vcfs:
             wildcards, checkpoints, gvcf_manifest, False
         ),
     output:
-        vcf="results/gvcfs/{projectid}/{sampleid}.vcf.gz",
+        vcf="results/vcfs/{projectid}/{sampleid}.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
     benchmark:
