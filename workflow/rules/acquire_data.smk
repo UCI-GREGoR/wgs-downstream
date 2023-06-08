@@ -122,12 +122,12 @@ rule slice_vcf:
     Select a subset of a vcf for use in various applications
     """
     input:
-        vcf="results/vcfs/{filename}.vcf.gz",
+        vcf="results/vcfs/{projectid}/{filename}.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="results/vcfs/slices/{splitnum}/{filename}.vcf.gz",
+        vcf="results/vcfs/{projectid}/slices/{splitnum}/{filename}.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/slice_vcf/{splitnum}/{filename}.vcf.tsv"
+        "results/performance_benchmarks/slice_vcf/{projectid}/{splitnum}/{filename}.vcf.tsv"
     conda:
         "../envs/bedtools.yaml" if not use_containers else None
     threads: config_resources["bedtools"]["threads"]
@@ -142,9 +142,9 @@ rule slice_vcf:
 
 use rule slice_vcf as slice_gvcf with:
     input:
-        vcf="results/gvcfs/{filename}.g.vcf.gz",
+        vcf="results/gvcfs/{projectid}/{filename}.g.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="results/gvcfs/slices/{splitnum}/{filename}.g.vcf.gz",
+        vcf="results/gvcfs/{projectid}/slices/{splitnum}/{filename}.g.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/slice_gvcf/{splitnum}/{filename}.g.vcf.tsv"
+        "results/performance_benchmarks/slice_gvcf/{projectid}/{splitnum}/{filename}.g.vcf.tsv"
