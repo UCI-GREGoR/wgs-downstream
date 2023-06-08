@@ -7,6 +7,9 @@ properties:
   sampleid:
     type: string
     description: "sequencing ID for sample"
+  vcf:
+    type: string
+    description: "absolute or relative path to .vcf.gz file for sample"
   gvcf:
     type: string
     description: "absolute or relative path to g.vcf.gz file for sample"
