@@ -18,6 +18,7 @@ references:
   grch38:
     fasta: "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz"
     exclusion-regions-bed: "resources/grch38_encodelist_centromeres_telomeres.bed"
+    genes-gff3-gz: "https://ftp.ensembl.org/pub/current_gff3/homo_sapiens/Homo_sapiens.GRCh38.109.gff3.gz"
 
 somalier:
   grch37:
@@ -39,3 +40,9 @@ deeptrio:
   number-shards: 16
   grch38:
     calling-ranges: "resources/deeptrio_calling_ranges_grch38.tsv"
+slivar:
+  functions-js: "https://raw.githubusercontent.com/brentp/slivar/master/js/slivar-functions.js"
+  grch38:
+    gnomad-zip: "https://slivar.s3.amazonaws.com/gnomad.hg38.genomes.v3.fix.zip"
+    topmed-zip: "https://slivar.s3.amazonaws.com/topmed.hg38.dbsnp.151.zip"
+    low-complexity-bed-gz: "https://github.com/lh3/varcmp/raw/master/scripts/LCR-hs38.bed.gz"

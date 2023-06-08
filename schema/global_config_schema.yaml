@@ -42,9 +42,12 @@ properties:
             type: string
           exclusion-regions-bed:
             type: string
+          genes-gff3-gz:
+            type: string
         required:
           - fasta
           - exclusion-regions-bed
+          - genes-gff3-gz
         additionalProperties: no
     required:
       - grch38
@@ -107,6 +110,28 @@ properties:
     required:
       - docker-version
       - number-shards
+      - grch38
+    additionalProperties: no
+  slivar:
+    type: object
+    properties:
+      functions-js:
+        type: string
+    patternProperties:
+      "^grch[0-9]+$":
+        type: object
+        properties:
+          gnomad-zip:
+            type: string
+          topmed-zip:
+            type: string
+          low-complexity-bed-gz:
+            type: string
+        required:
+          - gnomad-zip
+          - low-complexity-bed-gz
+    required:
+      - functions-js
       - grch38
     additionalProperties: no
 required:
