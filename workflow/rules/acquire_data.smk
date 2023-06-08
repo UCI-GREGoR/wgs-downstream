@@ -125,7 +125,7 @@ rule slice_vcf:
         vcf="results/vcfs/{projectid}/{filename}.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="results/vcfs/{projectid}/slices/{splitnum}/{filename}.vcf.gz",
+        vcf="results/sliced_vcfs/{projectid}/{splitnum}/{filename}.vcf.gz",
     benchmark:
         "results/performance_benchmarks/slice_vcf/{projectid}/{splitnum}/{filename}.vcf.tsv"
     conda:
@@ -145,6 +145,6 @@ use rule slice_vcf as slice_gvcf with:
         vcf="results/gvcfs/{projectid}/{filename}.g.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="results/gvcfs/{projectid}/slices/{splitnum}/{filename}.g.vcf.gz",
+        vcf="results/sliced_gvcfs/{projectid}/{splitnum}/{filename}.g.vcf.gz",
     benchmark:
         "results/performance_benchmarks/slice_gvcf/{projectid}/{splitnum}/{filename}.g.vcf.tsv"

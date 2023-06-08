@@ -397,7 +397,7 @@ def caller_relevant_intervals(
                         1,
                         gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
-                        "results/{}/slices/{}".format(
+                        "results/sliced_{}/{}".format(
                             "gvcfs" if use_gvcf else "vcfs", linecount
                         ),
                         ".g.vcf.gz" if use_gvcf else ".vcf.gz",
@@ -423,7 +423,7 @@ def caller_relevant_intervals(
                         2,
                         gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
-                        "results/{}/slices/{}".format(
+                        "results/sliced_{}/{}".format(
                             "gvcfs" if use_gvcf else "vcfs", linecount
                         ),
                         ".g.vcf.gz" if use_gvcf else ".vcf.gz",
