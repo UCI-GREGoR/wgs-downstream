@@ -389,7 +389,7 @@ def caller_relevant_intervals(
         interval = line.rstrip()
         if "chrX" in interval and "non-PAR" in interval:
             if wildcards.relation == "parent1":
-                res.append(
+                res.extend(
                     get_subjects_by_family(
                         wildcards,
                         checkpoints,
@@ -415,7 +415,7 @@ def caller_relevant_intervals(
                 )
         elif "chrY" in interval and "non-PAR" in interval:
             if wildcards.relation == "parent2":
-                res.append(
+                res.extend(
                     get_subjects_by_family(
                         wildcards,
                         checkpoints,
