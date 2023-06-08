@@ -125,7 +125,7 @@ rule slice_vcf:
         vcf="{prefix}/{filename}.{suffix}.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="{prefix}/slices/{splitnum}/{filename}.{suffix}.gz",
+        vcf="{prefix}/slices/{splitnum}/{filename}.{suffix,g.vcf|vcf}.gz",
     benchmark:
         "results/performance_benchmarks/slice_vcf/{prefix}/{splitnum}/{filename}.{suffix}.tsv"
     conda:
