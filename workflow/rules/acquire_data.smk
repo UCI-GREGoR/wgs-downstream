@@ -119,15 +119,15 @@ rule copy_vcfs:
 
 rule slice_vcf:
     """
-    Select a subset of a (g)vcf for use in various applications
+    Select a subset of a vcf for use in various applications
     """
     input:
-        vcf="{prefix}/{filename}.{suffix}.gz",
+        vcf="results/vcfs/{filename}.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf="{prefix}/slices/{splitnum}/{filename}.{suffix,g.vcf|vcf}.gz",
+        vcf="results/vcfs/slices/{splitnum}/{filename}.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/slice_vcf/{prefix}/{splitnum}/{filename}.{suffix}.tsv"
+        "results/performance_benchmarks/slice_vcf/{splitnum}/{filename}.vcf.tsv"
     conda:
         "../envs/bedtools.yaml" if not use_containers else None
     threads: config_resources["bedtools"]["threads"]
@@ -138,3 +138,13 @@ rule slice_vcf:
         ),
     shell:
         "bedtools intersect -a {input.vcf} -b {input.bed} -wa -header | bgzip -c > {output.vcf}"
+
+
+use rule slice_vcf as slice_gvcf with:
+    input:
+        vcf="results/gvcfs/{filename}.g.vcf.gz",
+        bed="results/deeptrio/split_ranges/{splitnum}.bed",
+    output:
+        vcf="results/gvcfs/slices/{splitnum}/{filename}.g.vcf.gz",
+    benchmark:
+        "results/performance_benchmarks/slice_gvcf/{splitnum}/{filename}.g.vcf.tsv"
