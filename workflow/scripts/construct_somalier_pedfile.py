@@ -1,5 +1,6 @@
 import re
 
+import numpy as np
 import pandas as pd
 
 
@@ -41,8 +42,22 @@ def construct_final_id(sampleid: str, sqid: str, use_somalier_id: bool) -> str:
     return res
 
 
+def add_affected_status(df: pd.DataFrame, affected_status: str) -> pd.DataFrame:
+    """
+    Suck in user annotations of sample affected status and add to results data
+    frame column "Pheno"
+    """
+    affected = pd.read_table(affected_status, sep="\t").set_index("participant_id")
+    df = df.join([affected])
+    df["Pheno"] = df["affected_status"].map(
+        {"Affected": 2, "Unaffected": 1, np.nan: -9}
+    )
+    return df[df.columns[range(6)]]
+
+
 def run_construct_somalier_pedfile(
     linker: str,
+    affected_status: str,
     projectids: list,
     sampleids: list,
     valid_subjectids: list,
@@ -173,19 +188,29 @@ def run_construct_somalier_pedfile(
                 problems, sampleid, "self-reported sex missing from annotations"
             )
 
-    x = pd.DataFrame(
-        data={
-            "FID": family_id,
-            "Sample": [
-                construct_final_id(subjectid, sqid, use_somalier_ids)
-                for subjectid, sqid in zip(ids["subjectid"], ids["sampleid"])
-            ],
-            "Pat": [construct_final_id(str(y), "", use_somalier_ids) for y in pat_id],
-            "Mat": [construct_final_id(str(y), "", use_somalier_ids) for y in mat_id],
-            "Sex": self_reported_sex,
-            "Pheno": ["-9" for x in ids["sampleid"]],
-        }
-    ).sort_values(by=["FID", "Sample"])
+    x = (
+        pd.DataFrame(
+            data={
+                "FID": family_id,
+                "Sample": [
+                    construct_final_id(subjectid, sqid, use_somalier_ids)
+                    for subjectid, sqid in zip(ids["subjectid"], ids["sampleid"])
+                ],
+                "Pat": [
+                    construct_final_id(str(y), "", use_somalier_ids) for y in pat_id
+                ],
+                "Mat": [
+                    construct_final_id(str(y), "", use_somalier_ids) for y in mat_id
+                ],
+                "Sex": self_reported_sex,
+                "Pheno": ["-9" for x in ids["sampleid"]],
+            }
+        )
+        .sort_values(by=["FID", "Sample"])
+        .set_index("Sample", drop=False)
+    )
+    if affected_status is not None:
+        x = add_affected_status(x, affected_status)
     x.to_csv(outfn, sep="\t", index=False, header=False)
 
     problems = {"sampleid": problems.keys(), "problem": problems.values()}
@@ -194,7 +219,10 @@ def run_construct_somalier_pedfile(
 
 
 run_construct_somalier_pedfile(
-    snakemake.input[0],  # noqa: F821
+    snakemake.input["linker"],  # noqa: F821
+    snakemake.input["affected_status"]  # noqa: F821
+    if "affected_status" in snakemake.input.keys()  # noqa: F821
+    else None,
     snakemake.params["projectids"],  # noqa: F821
     snakemake.params["subjectids"],  # noqa: F821
     snakemake.params["valid_subjectids"],  # noqa: F821

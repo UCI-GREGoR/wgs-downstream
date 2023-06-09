@@ -547,6 +547,9 @@ rule rtg_create_sdf:
 
 
 use rule somalier_build_pedfile as rtg_create_cluster_pedigree with:
+    input:
+        linker="results/linker.tsv",
+        affected_status="reference_data/slivar/affected.status.tsv",
     output:
         ped="results/deeptrio/{subset}.ped",
         problems=temp("results/deeptrio/{subset}.discordant_annotations.tsv"),

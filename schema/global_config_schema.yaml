@@ -117,6 +117,8 @@ properties:
     properties:
       functions-js:
         type: string
+      affected-status-tsv:
+        type: string
     patternProperties:
       "^grch[0-9]+$":
         type: object
@@ -132,6 +134,7 @@ properties:
           - low-complexity-bed-gz
     required:
       - functions-js
+      - affected-status-tsv
       - grch38
     additionalProperties: no
 required:

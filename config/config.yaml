@@ -42,6 +42,7 @@ deeptrio:
     calling-ranges: "resources/deeptrio_calling_ranges_grch38.tsv"
 slivar:
   functions-js: "https://raw.githubusercontent.com/brentp/slivar/master/js/slivar-functions.js"
+  affected-status-tsv: "config/affected_status.tsv"
   grch38:
     gnomad-zip: "https://slivar.s3.amazonaws.com/gnomad.hg38.genomes.v3.fix.zip"
     topmed-zip: "https://slivar.s3.amazonaws.com/topmed.hg38.dbsnp.151.zip"
