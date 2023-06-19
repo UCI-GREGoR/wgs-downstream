@@ -73,17 +73,21 @@ rule glnexus_joint_calling:
         bcf=temp("results/glnexus/{subset}/merged_callset_{chrom}.bcf"),
     params:
         gvcf_manifest=gvcf_manifest,
-        memlimit="16",
+        memlimit=config_resources["glnexus"]["memory"]
+        / config_resources["glnexus"]["threads"],
         glnexus_config=config["glnexus"]["config"],
         tmp="{}/results/glnexus/{{subset}}/tmp_{{chrom}}".format(tempDir),
     benchmark:
         "results/performance_benchmarks/glnexus_joint_calling/{subset}/{chrom}.tsv"
     conda:
         "../envs/glnexus.yaml"
-    threads: 4
+    threads: config_resources["glnexus"]["threads"]
     resources:
-        mem_mb=64000,
-        qname="small",
+        mem_mb=config_resources["glnexus"]["memory"],
+        qname=rc.select_queue(
+            config_resources["glnexus"]["queue"], config_resources["queues"]
+        ),
+        tmpdir="{}/results/glnexus/{{subset}}/tmp_{{chrom}}".format(tempDir),
     shell:
         "mkdir -p $(dirname {params.tmp}) && "
         "cat {input.tsv} | "
