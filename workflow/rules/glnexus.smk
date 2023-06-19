@@ -73,8 +73,11 @@ rule glnexus_joint_calling:
         bcf=temp("results/glnexus/{subset}/merged_callset_{chrom}.bcf"),
     params:
         gvcf_manifest=gvcf_manifest,
-        memlimit=config_resources["glnexus"]["memory"]
-        / config_resources["glnexus"]["threads"],
+        memlimit=int(
+            config_resources["glnexus"]["memory"]
+            / config_resources["glnexus"]["threads"]
+            / 1000
+        ),
         glnexus_config=config["glnexus"]["config"],
         tmp="{}/results/glnexus/{{subset}}/tmp_{{chrom}}".format(tempDir),
     benchmark:
@@ -87,7 +90,9 @@ rule glnexus_joint_calling:
         qname=rc.select_queue(
             config_resources["glnexus"]["queue"], config_resources["queues"]
         ),
-        tmpdir="{}/results/glnexus/{{subset}}/tmp_{{chrom}}".format(tempDir),
+        tmpdir=lambda wildcards: "{}/results/glnexus/{}".format(
+            tempDir, wildcards.subset
+        ),
     shell:
         "mkdir -p $(dirname {params.tmp}) && "
         "cat {input.tsv} | "

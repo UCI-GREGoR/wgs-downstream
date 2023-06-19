@@ -9,6 +9,7 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from snakemake.utils import validate
 import subprocess
+import tempfile
 import yaml
 
 S3 = S3RemoteProvider()
@@ -40,7 +41,11 @@ validate(config, "../schema/global_config_schema.yaml")
 validate(config_resources, "../schema/resources_config_schema.yaml")
 
 
-tempDir = config["tmpdir"]
+tempDir = (
+    config_resources["tmpdir"]
+    if "tmpdir" in config_resources
+    else tempfile.gettempdir()
+)
 bam_manifest = config["bam_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
 bam_manifest = pd.read_csv(bam_manifest, sep="\t")
