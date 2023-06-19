@@ -42,8 +42,10 @@ rule glnexus_joint_calling:
     """
     input:
         gvcfs=lambda wildcards: [
-            "results/{}/{}.sorted.g.vcf.gz".format(
-            "gvcfs" if wildcards.subset == "all" else "deeptrio", x
+            "results/{}/{}.{}g.vcf.gz".format(
+            "gvcfs" if wildcards.subset == "all" else "deeptrio",
+            x,
+            "" if wildcards.subset == "all" else "sorted.",
         )
         for x in tc.get_valid_subjectids(
             wildcards,
