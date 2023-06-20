@@ -74,6 +74,8 @@ properties:
       - postprocess_variants_memory
       - queue
     additionalProperties: false
+  glnexus:
+    <<: *defaults
   r:
     <<: *defaults
   samtools:

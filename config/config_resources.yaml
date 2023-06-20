@@ -29,6 +29,10 @@ deeptrio:
   call_variants_memory: 480000
   postprocess_variants_memory: 32000
   queue: "large"
+glnexus:
+  threads: 4
+  memory: 128000
+  queue: "large"
 r:
   threads: 1
   memory: 4000
