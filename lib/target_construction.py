@@ -321,6 +321,70 @@ def get_subjects_by_family(
     return family_subjects
 
 
+def get_trio_data(wildcards, checkpoints, manifest, sampleid):
+    """
+    Use somalier linker and output to determine parents of proband and sex of proband
+    """
+    somalier_samples = str(checkpoints.somalier_relate.get().output["samples"])
+
+    subject_ids = get_valid_subjectids(
+        wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
+    )
+    family_id = sampleid.split("-")[2]
+    somalier_pairs = str(
+        checkpoints.somalier_split_by_family.get(family_id=family_id).output["pairs"]
+    )
+    mother_id = ""
+    father_id = ""
+    for subject_id in subject_ids:
+        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
+        if len(split_id) == 4:
+            if split_id[2] == str(family_id) and split_id[3] == "1":
+                father_id = subject_id.split("/")[1]
+            if split_id[2] == str(family_id) and split_id[3] == "2":
+                mother_id = subject_id.split("/")[1]
+
+    # check for parent relatedness in somalier output
+    somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
+    somalier_pairs_df[["sample_a", "suffix_a"]] = somalier_pairs_df[
+        "#sample_a"
+    ].str.split("_", n=1, expand=True)
+    somalier_pairs_df[["sample_b", "suffix_b"]] = somalier_pairs_df[
+        "sample_b"
+    ].str.split("_", n=1, expand=True)
+    somalier_pairs_df = somalier_pairs_df[
+        (somalier_pairs_df["sample_a"] == sampleid)
+        | (somalier_pairs_df["sample_b"] == sampleid)
+    ]
+    if mother_id != "":
+        mother_relatedness = somalier_pairs_df[
+            (somalier_pairs_df["sample_a"] == mother_id)
+            | (somalier_pairs_df["sample_b"] == mother_id)
+        ]
+        if (mother_relatedness["relatedness"] < 0.3535534).bool():
+            mother_id = ""
+    if father_id != "":
+        father_relatedness = somalier_pairs_df[
+            (somalier_pairs_df["sample_a"] == father_id)
+            | (somalier_pairs_df["sample_b"] == father_id)
+        ]
+        if (father_relatedness["relatedness"] < 0.3535534).bool():
+            father_id = ""
+
+    if mother_id == "" and father_id == "":
+        raise ValueError("cannot solve family structure for {}".format(sampleid))
+
+    # check for proband sex in somalier output
+    somalier_samples_df = pd.read_table(somalier_samples, sep="\t")
+    somalier_samples_df[["sample", "suffix"]] = somalier_samples_df[
+        "sample_id"
+    ].str.split("_", n=1, expand=True)
+    somalier_samples_df = somalier_samples_df.set_index("sample")
+    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] > 0
+
+    return mother_id, father_id, sample_is_male
+
+
 def compute_expected_single_samples(manifest, checkpoints):
     valid_samples = {}
     outfn = str(checkpoints.generate_linker.get().output[0])
@@ -379,6 +443,9 @@ def caller_relevant_intervals(
     a sample. When necessary, specify a file that is sliced out of
     an input vcf, e.g. when a male parent of male proband needs X-nonPAR.
     """
+    mother_id, father_id, sample_is_male = get_trio_data(
+        wildcards, checkpoints, gvcf_manifest, wildcards.sampleid
+    )
     fn = config["deeptrio"][config["genome-build"]]["calling-ranges"]
     lines = []
     with open(fn, "r") as f:
@@ -388,13 +455,15 @@ def caller_relevant_intervals(
     for line in lines:
         interval = line.rstrip()
         if "chrX" in interval and "non-PAR" in interval:
-            if wildcards.relation == "parent1":
+            if wildcards.relation == "parent1" or (
+                wildcards.relation == "child" and mother_id == ""
+            ):
                 res.extend(
                     get_subjects_by_family(
                         wildcards,
                         checkpoints,
                         wildcards.sampleid.split("-")[2],
-                        1,
+                        1 if wildcards.relation == "parent1" else 0,
                         gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
                         "results/sliced_{}/{}/".format(
@@ -414,13 +483,15 @@ def caller_relevant_intervals(
                     )
                 )
         elif "chrY" in interval and "non-PAR" in interval:
-            if wildcards.relation == "parent2":
+            if wildcards.relation == "parent2" or (
+                wildcards.relation == "child" and father_id == ""
+            ):
                 res.extend(
                     get_subjects_by_family(
                         wildcards,
                         checkpoints,
                         wildcards.sampleid.split("-")[2],
-                        2,
+                        2 if wildcards.relation == "parent2" else 0,
                         gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
                         "results/sliced_{}/{}/".format(
@@ -469,61 +540,9 @@ def determine_trio_structure(
 
     chrcode is the index of the line in the tsv file defining the calling regions
     """
-    somalier_samples = str(checkpoints.somalier_relate.get().output["samples"])
-
-    subject_ids = get_valid_subjectids(
-        wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
+    mother_id, father_id, sample_is_male = get_trio_data(
+        wildcards, checkpoints, manifest, sampleid
     )
-    family_id = sampleid.split("-")[2]
-    somalier_pairs = str(
-        checkpoints.somalier_split_by_family.get(family_id=family_id).output["pairs"]
-    )
-    mother_id = ""
-    father_id = ""
-    for subject_id in subject_ids:
-        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
-        if len(split_id) == 4:
-            if split_id[2] == str(family_id) and split_id[3] == "1":
-                father_id = subject_id.split("/")[1]
-            if split_id[2] == str(family_id) and split_id[3] == "2":
-                mother_id = subject_id.split("/")[1]
-
-    # check for parent relatedness in somalier output
-    somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
-    somalier_pairs_df[["sample_a", "suffix_a"]] = somalier_pairs_df[
-        "#sample_a"
-    ].str.split("_", n=1, expand=True)
-    somalier_pairs_df[["sample_b", "suffix_b"]] = somalier_pairs_df[
-        "sample_b"
-    ].str.split("_", n=1, expand=True)
-    somalier_pairs_df = somalier_pairs_df[
-        (somalier_pairs_df["sample_a"] == sampleid)
-        | (somalier_pairs_df["sample_b"] == sampleid)
-    ]
-    if mother_id != "":
-        mother_relatedness = somalier_pairs_df[
-            (somalier_pairs_df["sample_a"] == mother_id)
-            | (somalier_pairs_df["sample_b"] == mother_id)
-        ]
-        if (mother_relatedness["relatedness"] < 0.3535534).bool():
-            mother_id = ""
-    if father_id != "":
-        father_relatedness = somalier_pairs_df[
-            (somalier_pairs_df["sample_a"] == father_id)
-            | (somalier_pairs_df["sample_b"] == father_id)
-        ]
-        if (father_relatedness["relatedness"] < 0.3535534).bool():
-            father_id = ""
-    if mother_id == "" and father_id == "":
-        raise ValueError("cannot solve family structure for {}".format(sampleid))
-
-    # check for proband sex in somalier output
-    somalier_samples_df = pd.read_table(somalier_samples, sep="\t")
-    somalier_samples_df[["sample", "suffix"]] = somalier_samples_df[
-        "sample_id"
-    ].str.split("_", n=1, expand=True)
-    somalier_samples_df = somalier_samples_df.set_index("sample")
-    sample_is_male = somalier_samples_df.loc[sampleid, "Y_n"] > 0
 
     if mother_id == "":
         return "father_only"
