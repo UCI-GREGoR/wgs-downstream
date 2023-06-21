@@ -86,7 +86,8 @@ rule glnexus_joint_calling:
         "../envs/glnexus.yaml"
     threads: config_resources["glnexus"]["threads"]
     resources:
-        mem_mb=config_resources["glnexus"]["memory"],
+        mem_mb=lambda wildcards, attempt: attempt
+        * config_resources["glnexus"]["memory"],
         qname=rc.select_queue(
             config_resources["glnexus"]["queue"], config_resources["queues"]
         ),
