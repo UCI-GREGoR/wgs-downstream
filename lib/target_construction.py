@@ -277,13 +277,13 @@ def get_probands_with_structure(checkpoints):
     children = {}
     results = []
     for subject_id in subject_ids:
-        split_id = subject_id.split("-")
+        split_id = subject_id.rstrip().split("-")
         if len(split_id) == 4:
             if split_id[3] == "0":
-                children[split_id[2]] = subject_id
+                children[split_id[2]] = subject_id.rstrip()
             elif split_id[3] == "1" or split_id[3] == "2":
-                parents[split_id[2] + "-" + split_id[3]] = subject_id
-    for cluster, child in children:
+                parents[split_id[2] + "-" + split_id[3]] = subject_id.rstrip()
+    for cluster, child in children.items():
         if (
             "{}-1".format(cluster) in parents.keys()
             or "{}-2".format(cluster) in parents.keys()
