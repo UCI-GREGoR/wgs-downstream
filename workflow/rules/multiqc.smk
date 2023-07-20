@@ -33,6 +33,7 @@ rule run_multiqc_cross_flowcell:
         "multiqc {params.target_dirs} "
         "--config {input.multiqc_config} "
         "-m somalier "
+        "--interactive "
         "--profile-runtime --zip-data-dir "
         "-f -i 'MultiQC for Cross-flowcell Data' "
         "-n {output.html}"
