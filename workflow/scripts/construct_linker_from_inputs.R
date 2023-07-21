@@ -1,7 +1,7 @@
 library(openxlsx, quietly = TRUE)
 library(stringr, quietly = TRUE)
 
-#' Combine subject ID, ls (analyte) ID, and sq (sequencing index) ID
+#' Combine subject ID, analyte ID, and sequencing index ID
 #' into a '_'-delimited identifier for exported data preparation.
 #'
 #' @details
@@ -9,19 +9,19 @@ library(stringr, quietly = TRUE)
 #' the entire resultant ID is set to NA.
 #'
 #' @param df data.frame; input data minimally containing columns 'subject',
-#' 'ls', and 'sq'
+#' 'analyte', and 'index'
 #' @return character vector; constructed output IDs for each row in input
 #' data.frame, or NA if any of the required inputs for the row were NA
 construct.output.stems <- function(df) {
   stopifnot(is.data.frame(df))
   stopifnot(
     "input data frame contains column 'subject'" = "subject" %in% colnames(df),
-    "input data frame contains column 'ls'" = "ls" %in% colnames(df),
-    "input data frame contains column 'sq'" = "sq" %in% colnames(df)
+    "input data frame contains column 'analyte'" = "analyte" %in% colnames(df),
+    "input data frame contains column 'index'" = "index" %in% colnames(df)
   )
   ## try to construct IDs of the format SUBJECTID_LSID_SQID
-  output.stems <- paste(df$subject, df$ls, df$sq, sep = "_")
-  output.stems[is.na(df$subject) | is.na(df$ls) | is.na(df$sq)] <- NA
+  output.stems <- paste(df$subject, df$analyte, df$index, sep = "_")
+  output.stems[is.na(df$subject) | is.na(df$analyte) | is.na(df$index)] <- NA
   output.stems
 }
 
@@ -70,7 +70,7 @@ apply.id.mappings <- function(df, vec) {
 #' and convert into some sort of useful format.
 #'
 #' @description
-#' For legacy support with work performed at Invitae, this function supports
+#' For legacy support, this function supports
 #' input in the form of a manually annotated Excel document created by lab
 #' staff. The format largely defies description, and varies from tab to tab.
 #' For any future applications, this functionality should _never_ be used;
@@ -90,9 +90,9 @@ parse.logbook <- function(input.fn) {
   sheet.names <- openxlsx::getSheetNames(input.fn)
   subject.id <- c()
   jira.tickets <- c()
-  sq.id <- c()
-  ls.id <- c()
-  ru.id <- c()
+  index.id <- c()
+  analyte.id <- c()
+  project.id <- c()
   sex.id <- c()
   for (sheet.name in sheet.names) {
     df <- openxlsx::read.xlsx(input.fn, sheet = sheet.name, check.names = FALSE)
@@ -101,9 +101,9 @@ parse.logbook <- function(input.fn) {
       ## resolve chaos
       subject.col <- 1
       jira.col <- which(stringr::str_detect(colnames(df), "jira\\.ticket\\.for\\.batches\\.in\\.flight"))
-      sq.col <- which(stringr::str_detect(colnames(df), "sq\\.id"))
-      ls.col <- which(stringr::str_detect(colnames(df), "ls\\.id"))
-      ru.col <- which(stringr::str_detect(colnames(df), "ru\\.id"))
+      index.col <- which(stringr::str_detect(colnames(df), "sq\\.id"))
+      analyte.col <- which(stringr::str_detect(colnames(df), "ls\\.id"))
+      project.col <- which(stringr::str_detect(colnames(df), "ru\\.id"))
       sex.col <- which(stringr::str_detect(colnames(df), "biological\\.sex"))
       if (length(jira.col) == 0) {
         jira.col <- which(stringr::str_detect(colnames(df), "^jira\\.ticket\\(s\\)\\.\\("))
@@ -119,9 +119,9 @@ parse.logbook <- function(input.fn) {
       for (row.num in seq_len(nrow(df))) {
         subject.id <- c(subject.id, df[row.num, subject.col])
         jira.tickets <- c(jira.tickets, df[row.num, jira.col])
-        sq.id <- c(sq.id, df[row.num, sq.col])
-        ls.id <- c(ls.id, df[row.num, ls.col])
-        ru.id <- c(ru.id, df[row.num, ru.col])
+        index.id <- c(index.id, df[row.num, index.col])
+        analyte.id <- c(analyte.id, df[row.num, analyte.col])
+        project.id <- c(project.id, df[row.num, project.col])
         if (length(sex.col) == 1) {
           sex.id <- c(sex.id, df[row.num, sex.col])
         } else {
@@ -133,16 +133,16 @@ parse.logbook <- function(input.fn) {
   res <- data.frame(
     subject = subject.id,
     jira = jira.tickets,
-    ru = ru.id,
-    sq = sq.id,
-    ls = ls.id,
+    project = project.id,
+    index = index.id,
+    analyte = analyte.id,
     sex = sex.id
   )
   ## remove entries with useless content
   res <- res[!(is.na(res[, 1]) & is.na(res[, 2]) & is.na(res[, 3]) & is.na(res[, 4]) & is.na(res[, 5])), ]
   ## construct output stems for deliverables, if sufficient information is present to fit the accepted format
   output.stems <- construct.output.stems(res)
-  res$output <- output.stems
+  res$external <- output.stems
   res
 }
 
@@ -179,11 +179,11 @@ add.linker.data <- function(df, linker.fn, target.colname) {
     new.df <- data.frame(
       subject = new.subjects,
       jira = NA,
-      ru = NA,
-      sq = NA,
-      ls = NA,
+      project = NA,
+      index = new.subjects,
+      analyte = NA,
       sex = NA,
-      output = NA
+      external = NA
     )
     df <- rbind(df, new.df)
   }
@@ -225,10 +225,10 @@ run.construct.linker <- function(logbook.fn,
   df <- data.frame(
     subject = c("A"),
     jira = c("A"),
-    ru <- c("A"),
-    sq <- c("A"),
-    ls <- c("A"),
-    sex <- c("A")
+    project = c("A"),
+    index = c("A"),
+    analyte = c("A"),
+    sex = c("A")
   )
   df <- df[-1, ]
   if (!is.null(logbook.fn)) {
@@ -238,8 +238,16 @@ run.construct.linker <- function(logbook.fn,
     df <- add.linker.data(df, sex.linker.fn, "sex")
   }
   if (!is.null(external.id.linker.fn)) {
-    df <- add.linker.data(df, external.id.linker.fn, "output")
+    df <- add.linker.data(df, external.id.linker.fn, "external")
   }
+  ## deal with possibility that no external ID has been provided
+  df[is.na(df[, "external"]), "external"] <- df[is.na(df[, "external"]), "subject"]
+
+  ## deal with apparent internal newlines
+  for (index in seq_len(ncol(df))) {
+    df[, index] <- stringr::str_replace_all(df[, index], "\n", " ")
+  }
+
   write.table(df, out.fn, row.names = FALSE, col.names = TRUE, quote = FALSE, sep = "\t")
 }
 
