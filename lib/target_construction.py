@@ -105,12 +105,16 @@ def get_valid_subjectids(wildcards, checkpoints, projectids, sampleids, prefix, 
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(projectids, sampleids):
-        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), "subject"]
+        df_matches = df.loc[
+            (df["project"] == projectid) & (df["index"] == sampleid), "subject"
+        ]
         if len(df_matches) == 0:
             ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-            ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+            ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
             df_matches = df.loc[
-                (df["sq"].isna()) & (df["ru"].isna()) & (df["subject"] == sampleid),
+                (df["index"].isna())
+                & (df["project"].isna())
+                & (df["subject"] == sampleid),
                 "subject",
             ]
         if len(df_matches) == 1:
@@ -137,14 +141,14 @@ def link_bams_by_id(wildcards, checkpoints, bam_manifest):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     df_sampleid = df.loc[
-        (df["subject"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+        (df["subject"] == wildcards.sampleid) & (df["project"] == projectid), "index"
     ]
     if len(df_sampleid) == 0:
         ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-        ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+        ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
         df_sampleid = df.loc[
-            (df["sq"].isna())
-            & (df["ru"].isna())
+            (df["index"].isna())
+            & (df["project"].isna())
             & (df["subject"] == wildcards.sampleid),
             "subject",
         ]
@@ -170,14 +174,14 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     df_sampleid = df.loc[
-        (df["subject"] == wildcards.sampleid) & (df["ru"] == projectid), "sq"
+        (df["subject"] == wildcards.sampleid) & (df["project"] == projectid), "index"
     ]
     if len(df_sampleid) == 0:
         ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-        ## as a temporary workaround, allow unique matches when linker project and sq IDs are NA
+        ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
         df_sampleid = df.loc[
-            (df["sq"].isna())
-            & (df["ru"].isna())
+            (df["index"].isna())
+            & (df["project"].isna())
             & (df["subject"] == wildcards.sampleid),
             "subject",
         ]
@@ -210,7 +214,7 @@ def select_expansionhunter_denovo_subjects(
     res = []
     for projectid, sampleid in zip(projectids, sampleids):
         linker_sampleid = linker.loc[
-            (linker["ru"] == projectid) & (linker["sq"] == sampleid), "subject"
+            (linker["project"] == projectid) & (linker["index"] == sampleid), "subject"
         ]
         if len(linker_sampleid) == 1:
             subjectid = linker_sampleid.to_list()[0]
@@ -390,7 +394,7 @@ def compute_expected_single_samples(manifest, checkpoints):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(manifest["projectid"], manifest["sampleid"]):
-        df_matches = df.loc[(df["ru"] == projectid) & (df["sq"] == sampleid), :]
+        df_matches = df.loc[(df["project"] == projectid) & (df["index"] == sampleid), :]
         if len(df_matches["subject"]) == 1:
             ## ad hoc handler for rerun samples: pick the later project id
             if df_matches["subject"].to_list()[0] in valid_samples.keys():
@@ -399,8 +403,8 @@ def compute_expected_single_samples(manifest, checkpoints):
                         projectid,
                         "{}_{}_{}".format(
                             df_matches["subject"].to_list()[0],
-                            df_matches["ls"].to_list()[0],
-                            df_matches["sq"].to_list()[0],
+                            df_matches["analyte"].to_list()[0],
+                            df_matches["index"].to_list()[0],
                         ),
                     )
             else:
@@ -408,8 +412,8 @@ def compute_expected_single_samples(manifest, checkpoints):
                     projectid,
                     "{}_{}_{}".format(
                         df_matches["subject"].to_list()[0],
-                        df_matches["ls"].to_list()[0],
-                        df_matches["sq"].to_list()[0],
+                        df_matches["analyte"].to_list()[0],
+                        df_matches["index"].to_list()[0],
                     ),
                 )
     res = [
