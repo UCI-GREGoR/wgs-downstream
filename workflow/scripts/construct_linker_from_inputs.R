@@ -248,6 +248,9 @@ run.construct.linker <- function(logbook.fn,
     df[, index] <- stringr::str_replace_all(df[, index], "\n", " ")
   }
 
+  ## make encodings of missing sex be "Unknown" instead of possibly NA
+  df[is.na(df[, "sex"]), "sex"] <- "Unknown"
+
   write.table(df, out.fn, row.names = FALSE, col.names = TRUE, quote = FALSE, sep = "\t")
 }
 
