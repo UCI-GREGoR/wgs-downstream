@@ -29,6 +29,7 @@ somalier:
     kg-labels-tsv: "https://raw.githubusercontent.com/brentp/somalier/master/scripts/ancestry-labels-1kg.tsv"
     kg-reference-data-tar-gz: "https://zenodo.org/record/3479773/files/1kg.somalier.tar.gz"
 expansionhunter_denovo:
+  affected-status: "config/affected_status.tsv"
   repo: "ExpansionHunterDenovo"
 glnexus:
   version: "1.4.1"

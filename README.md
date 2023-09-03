@@ -48,6 +48,7 @@ The following settings are recognized in `config/config.yaml`.
 ||- `kg-labels-tsv`: for use with somalier ancestry estimation: ID/ancestry linker for 1KG samples|
 ||- `kg-reference-data-tar-gz`: for use with somalier ancestry estimation: extract output for 1KG samples|
 |`expansionhunter_denovo`|Reference data specific to ExpansionHunterDenovo|
+||`affected-status`: two column tab-delimited file mapping sample IDs to affected status|
 ||`repo`: relative or absolute path to local clone of [ExpansionHunterDenovo GitHub repository](https://github.com/Illumina/ExpansionHunterDenovo). This is required due to idiosyncrasies in the `expansionhunterdenovo` bioconda package. This behavior may be modified at a later date|
 |`glnexus`|Reference data and settings specific to glnexus|
 ||- `version`: version string of glnexus docker image to use for analysis. example: `1.4.1`|

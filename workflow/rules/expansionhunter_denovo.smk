@@ -5,7 +5,7 @@ checkpoint expansionhunter_denovo_create_manifest:
     denovo manifest containing just those subjects
     """
     input:
-        data_model=tc.annotate_remote_file(config["data-model"]),
+        affected_status=config["expansionhunter_denovo"]["affected-status"],
         linker="results/linker.tsv",
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",

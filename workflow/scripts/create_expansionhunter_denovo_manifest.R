@@ -1,7 +1,10 @@
 library(openxlsx)
 
-run.create.manifest <- function(data.model.xlsx, linker.fn, project.ids, sample.ids, out.fn) {
-  data.model <- openxlsx::read.xlsx(data.model.xlsx, sheet = "participant", check.names = FALSE)
+run.create.manifest <- function(data.model.tsv, linker.fn, project.ids, sample.ids, out.fn) {
+  data.model <- read.table(data.model.tsv,
+    header = TRUE, stringsAsFactors = FALSE, sep = "\t",
+    comment.char = "", quote = ""
+  )
   linker <- read.table(linker.fn,
     header = TRUE, stringsAsFactors = FALSE, sep = "\t",
     comment.char = "", quote = ""
@@ -11,24 +14,24 @@ run.create.manifest <- function(data.model.xlsx, linker.fn, project.ids, sample.
   samplestatus <- c()
   samplejson <- c()
   for (i in seq_len(length(project.ids))) {
-    pmgrc.index <- which(linker$ru == project.ids[i] & linker$sq == sample.ids[i])
+    sample.index <- which(((linker$project == project.ids[i]) | is.na(linker$project)) & linker$index == sample.ids[i])
     ## some input bams are low-depth NA24385
-    if (length(pmgrc.index) != 1) {
+    if (length(sample.index) != 1) {
       next
     }
-    pmgrc.id <- linker$pmgrc[pmgrc.index]
-    ru.id <- project.ids[i]
-    if (pmgrc.id %in% data.model[, "participant_id"]) {
-      affected.status <- data.model[data.model[, "participant_id"] == pmgrc.id, "affected_status"]
-      samplename <- c(samplename, pmgrc.id)
+    sample.id <- linker$subject[sample.index]
+    project.id <- project.ids[i]
+    if (sample.id %in% data.model[, "participant_id"]) {
+      affected.status <- data.model[data.model[, "participant_id"] == sample.id, "affected_status"]
+      samplename <- c(samplename, sample.id)
       samplestatus <- c(
         samplestatus,
         ifelse(grepl("unaffected", affected.status, ignore.case = TRUE),
           "control", "case"
         )
       )
-      samplejson <- c(samplejson, paste(getwd(), "/results/expansionhunter_denovo/profiles/", ru.id,
-        "/", pmgrc.id, ".str_profile.json",
+      samplejson <- c(samplejson, paste(getwd(), "/results/expansionhunter_denovo/profiles/", project.id,
+        "/", sample.id, ".str_profile.json",
         sep = ""
       ))
     }
@@ -43,7 +46,7 @@ run.create.manifest <- function(data.model.xlsx, linker.fn, project.ids, sample.
 
 if (exists("snakemake")) {
   run.create.manifest(
-    snakemake@input[["data_model"]],
+    snakemake@input[["affected_status"]],
     snakemake@input[["linker"]],
     snakemake@params[["projectids"]],
     snakemake@params[["sampleids"]],

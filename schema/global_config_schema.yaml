@@ -69,10 +69,13 @@ properties:
   expansionhunter_denovo:
     type: object
     properties:
+      affected-status:
+        type: string
       repo:
         type: string
     required:
       - repo
+      - affected-status
     additionalProperties: no
   glnexus:
     type: object
