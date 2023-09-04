@@ -33,11 +33,21 @@ rule cyrius_create_manifest:
             "results/bams",
             "bam",
         ),
+        exclusions=config["cyrius"]["excluded-samples"],
     output:
         tsv="results/cyrius/input_manifest.tsv",
     run:
+        with open(input.exclusions, "r") as f:
+            exclusions = [x.rstrip() + ".bam" for x in f.readlines()]
         with open(output.tsv, "w") as f:
-            f.writelines(["{}\n".format(x) for x in input.bams])
+            f.writelines(
+                [
+                    "{}\n".format(x)
+                    for x in filter(
+                        lambda y: os.path.basename(y) not in exclusions, input.bams
+                    )
+                ]
+            )
 
 
 rule cyrius_run:
