@@ -141,7 +141,9 @@ def link_bams_by_id(wildcards, checkpoints, bam_manifest):
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     df_sampleid = df.loc[
-        (df["subject"] == wildcards.sampleid) & (df["project"] == projectid), "index"
+        (df["subject"] == wildcards.sampleid)
+        & ((df["project"] == projectid) | df["project"].isna()),
+        "index",
     ]
     if len(df_sampleid) == 0:
         ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
@@ -214,7 +216,9 @@ def select_expansionhunter_denovo_subjects(
     res = []
     for projectid, sampleid in zip(projectids, sampleids):
         linker_sampleid = linker.loc[
-            (linker["project"] == projectid) & (linker["index"] == sampleid), "subject"
+            ((linker["project"] == projectid) | linker["project"].isna())
+            & (linker["index"] == sampleid),
+            "subject",
         ]
         if len(linker_sampleid) == 1:
             subjectid = linker_sampleid.to_list()[0]
