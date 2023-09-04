@@ -12,7 +12,7 @@ rule cyrius_clone_repo:
     output:
         directory("results/cyrius/repo"),
     params:
-        github="git@github.com:Illumina/Cyrius.git",
+        github="https://github.com/Illumina/Cyrius.git",
         version=config["cyrius"]["version"],
     shell:
         "git clone {params.github} {output} && "

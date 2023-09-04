@@ -10,7 +10,7 @@ rule expansionhunter_denovo_clone_repo:
     output:
         directory("results/expansionhunter_denovo/repo"),
     params:
-        github="git@github.com:Illumina/ExpansionHunterDenovo.git",
+        github="https://github.com/Illumina/ExpansionHunterDenovo.git",
         version=config["expansionhunter_denovo"]["version"],
     shell:
         "git clone {params.github} {output} && "
