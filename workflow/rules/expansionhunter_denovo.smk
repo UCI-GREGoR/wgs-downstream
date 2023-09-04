@@ -1,3 +1,23 @@
+localrules:
+    expansionhunter_denovo_clone_repo,
+
+
+rule expansionhunter_denovo_clone_repo:
+    """
+    Clone a local copy of expansionhunterdenovo because
+    the conda package does not contain required auxiliary scripts.
+    """
+    output:
+        directory("results/expansionhunter_denovo/repo"),
+    params:
+        github="git@github.com:Illumina/ExpansionHunterDenovo.git",
+        version=config["expansionhunter_denovo"]["version"],
+    shell:
+        "git clone {params.github} {output} && "
+        "cd {output} && "
+        "git checkout {params.version}"
+
+
 checkpoint expansionhunter_denovo_create_manifest:
     """
     Parse manifest and data model to get a set of subjects
@@ -103,10 +123,9 @@ rule expansionhunter_denovo_locus_outliers:
             "str_profile.json",
         ),
         combined_json="results/expansionhunter_denovo/profiles/combined_profiles.multisample_profile.json",
+        repo="results/expansionhunter_denovo/repo",
     output:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
-    params:
-        repo=config["expansionhunter_denovo"]["repo"],
     conda:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
@@ -114,7 +133,7 @@ rule expansionhunter_denovo_locus_outliers:
         mem_mb=8000,
         qname="small",
     shell:
-        "{params.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
+        "{input.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
 
 rule expansionhunter_denovo_motif_outliers:
@@ -134,10 +153,9 @@ rule expansionhunter_denovo_motif_outliers:
             "str_profile.json",
         ),
         combined_json="results/expansionhunter_denovo/profiles/combined_profiles.multisample_profile.json",
+        repo="results/expansionhunter_denovo/repo",
     output:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
-    params:
-        repo=config["expansionhunter_denovo"]["repo"],
     conda:
         "../envs/expansionhunter_denovo.yaml"
     threads: 1
@@ -145,4 +163,4 @@ rule expansionhunter_denovo_motif_outliers:
         mem_mb=8000,
         qname="small",
     shell:
-        "{params.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
+        "{input.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"

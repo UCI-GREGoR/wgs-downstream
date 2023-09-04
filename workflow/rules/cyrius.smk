@@ -1,3 +1,25 @@
+localrules:
+    cyrius_create_manifest,
+    cyrius_clone_repo,
+
+
+rule cyrius_clone_repo:
+    """
+    Clone a local copy of Cyrius because
+    there is no conda package for it, probably
+    due to licensing.
+    """
+    output:
+        directory("results/cyrius/repo"),
+    params:
+        github="git@github.com:Illumina/Cyrius.git",
+        version=config["cyrius"]["version"],
+    shell:
+        "git clone {params.github} {output} && "
+        "cd {output} && "
+        "git checkout {params.version}"
+
+
 rule cyrius_create_manifest:
     """
     Generate a simple plaintext file with *absolute*
@@ -30,7 +52,15 @@ rule cyrius_run:
             "results/bams",
             "bam",
         ),
+        bais=lambda wildcards: tc.select_cyrius_subjects(
+            checkpoints,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams",
+            "bai",
+        ),
         tsv="results/cyrius/input_manifest.tsv",
+        repo="results/cyrius/repo",
     output:
         tsv="results/cyrius/results.tsv",
         json="results/cyrius/results.json",
@@ -46,4 +76,4 @@ rule cyrius_run:
         mem_mb=16000,
         qname="large",
     shell:
-        "star_caller.py --manifest {input.tsv} --genome 38 --prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
+        "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --prefix {params.prefix} --outDir {params.outdir} --threads {threads}"

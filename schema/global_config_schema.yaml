@@ -69,13 +69,24 @@ properties:
   expansionhunter_denovo:
     type: object
     properties:
+      version:
+        type: string
       affected-status:
         type: string
-      repo:
+    required:
+      - version
+      - affected-status
+    additionalProperties: no
+  cyrius:
+    type: object
+    properties:
+      version:
+        type: string
+      excluded-samples:
         type: string
     required:
-      - repo
-      - affected-status
+      - version
+      - excluded-samples
     additionalProperties: no
   glnexus:
     type: object
@@ -149,6 +160,7 @@ required:
   - references
   - somalier
   - expansionhunter_denovo
+  - cyrius
   - glnexus
   - deeptrio
 additionalProperties: no

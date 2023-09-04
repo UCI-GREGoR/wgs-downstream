@@ -1,0 +1,9 @@
+channels:
+  - https://gitlab.com/data-analysis5/conda-54gene/-/raw/default/conda-54gene
+dependencies:
+  - python=3.9
+  - numpy
+  - scipy
+  - pysam
+  - statsmodels
+  - openssl<2
