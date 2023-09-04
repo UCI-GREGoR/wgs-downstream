@@ -199,6 +199,18 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
     return [annotate_remote_file(x) for x in res]
 
 
+def select_cyrius_subjects(projectids, sampleids) -> list:
+    """
+    Get set of bams for subjects to be analyzed by cyrius
+    """
+    ## For the moment, return everyone?
+    res = [
+        "results/bams/{}/{}.bam".format(projectid, sampleid)
+        for projectid, sampleid in zip(projectids, sampleids)
+    ]
+    return res
+
+
 def select_expansionhunter_denovo_subjects(
     wildcards, checkpoints, projectids, sampleids, prefix, suffix
 ) -> list:
