@@ -68,6 +68,8 @@ TARGETS = [
     "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
+    "results/cyrius/results.tsv",
+    "results/cyrius/results.json",
 ]
 
 
@@ -100,6 +102,11 @@ rule expansionhunter_denovo:
         [x for x in filter(lambda y: "expansionhunter" in y, TARGETS)],
 
 
+rule cyrius:
+    input:
+        [x for x in filter(lambda y: "cyrius" in y, TARGETS)],
+
+
 rule glnexus:
     input:
         "results/split_joint_calls/.joint_calls_split",
@@ -108,6 +115,7 @@ rule glnexus:
 
 include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
+include: "rules/cyrius.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
 include: "rules/glnexus.smk"
