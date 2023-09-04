@@ -105,18 +105,15 @@ def get_valid_subjectids(wildcards, checkpoints, projectids, sampleids, prefix, 
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
     for projectid, sampleid in zip(projectids, sampleids):
-        df_matches = df.loc[
-            (df["project"] == projectid) & (df["index"] == sampleid), "subject"
-        ]
-        if len(df_matches) == 0:
-            ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-            ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
+        if projectid.startswith("RU"):
             df_matches = df.loc[
-                (df["index"].isna())
-                & (df["project"].isna())
-                & (df["subject"] == sampleid),
-                "subject",
+                (df["project"] == projectid) & (df["index"] == sampleid), "subject"
             ]
+        else:
+            df_matches = df.loc[
+                df["project"].isna() & (df["index"] == sampleid), "subject"
+            ]
+
         if len(df_matches) == 1:
             ## ad hoc handler for rerun samples: pick the later project id
             if df_matches.to_list()[0] in valid_samples.keys():
@@ -140,19 +137,15 @@ def link_bams_by_id(wildcards, checkpoints, bam_manifest):
     projectid = wildcards.projectid
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
-    df_sampleid = df.loc[
-        (df["subject"] == wildcards.sampleid)
-        & ((df["project"] == projectid) | df["project"].isna()),
-        "index",
-    ]
-    if len(df_sampleid) == 0:
-        ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-        ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
+    if projectid.startswith("RU"):
         df_sampleid = df.loc[
-            (df["index"].isna())
-            & (df["project"].isna())
-            & (df["subject"] == wildcards.sampleid),
-            "subject",
+            (df["subject"] == wildcards.sampleid) & (df["project"] == projectid),
+            "index",
+        ]
+    else:
+        df_sampleid = df.loc[
+            (df["subject"] == wildcards.sampleid) & df["project"].isna(),
+            "index",
         ]
     if len(df_sampleid) == 1:
         sampleid = df_sampleid.to_list()[0]
@@ -175,17 +168,14 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
     projectid = wildcards.projectid
     outfn = str(checkpoints.generate_linker.get().output[0])
     df = pd.read_table(outfn, sep="\t")
-    df_sampleid = df.loc[
-        (df["subject"] == wildcards.sampleid) & (df["project"] == projectid), "index"
-    ]
-    if len(df_sampleid) == 0:
-        ## the "project ID" is not straightforwardly conveyed when specifying new form IDs;
-        ## as a temporary workaround, allow unique matches when linker project and index IDs are NA
+    if projectid.startswith("RU"):
         df_sampleid = df.loc[
-            (df["index"].isna())
-            & (df["project"].isna())
-            & (df["subject"] == wildcards.sampleid),
-            "subject",
+            (df["subject"] == wildcards.sampleid) & (df["project"] == projectid),
+            "index",
+        ]
+    else:
+        df_sampleid = df.loc[
+            (df["subject"] == wildcards.sampleid) & df["project"].isna(), "index"
         ]
     if len(df_sampleid) == 1:
         sampleid = df_sampleid.to_list()[0]
@@ -215,11 +205,16 @@ def select_expansionhunter_denovo_subjects(
     linker = pd.read_table(outfn, sep="\t")
     res = []
     for projectid, sampleid in zip(projectids, sampleids):
-        linker_sampleid = linker.loc[
-            ((linker["project"] == projectid) | linker["project"].isna())
-            & (linker["index"] == sampleid),
-            "subject",
-        ]
+        if projectid.startswith("RU"):
+            linker_sampleid = linker.loc[
+                (linker["project"] == projectid) & (linker["index"] == sampleid),
+                "subject",
+            ]
+        else:
+            linker_sampleid = linker.loc[
+                linker["project"].isna() & (linker["index"] == sampleid),
+                "subject",
+            ]
         if len(linker_sampleid) == 1:
             subjectid = linker_sampleid.to_list()[0]
             if subjectid in df["sample"].to_list():
