@@ -193,7 +193,7 @@ rule annovar_download_references:
     Get a copy of the annovar grch38 reference data.
     """
     input:
-        directory("results/annovar"),
+        "results/annovar",
     output:
         directory("results/annovar_humandb"),
     conda:
