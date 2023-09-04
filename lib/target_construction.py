@@ -191,15 +191,27 @@ def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
     return [annotate_remote_file(x) for x in res]
 
 
-def select_cyrius_subjects(projectids, sampleids) -> list:
+def select_cyrius_subjects(checkpoints, projectids, sampleids, prefix, suffix) -> list:
     """
     Get set of bams for subjects to be analyzed by cyrius
     """
-    ## For the moment, return everyone?
-    res = [
-        "results/bams/{}/{}.bam".format(projectid, sampleid)
-        for projectid, sampleid in zip(projectids, sampleids)
-    ]
+    outfn = str(checkpoints.generate_linker.get().output[0])
+    linker = pd.read_table(outfn, sep="\t")
+    res = []
+    for projectid, sampleid in zip(projectids, sampleids):
+        if projectid.startswith("RU"):
+            linker_sampleid = linker.loc[
+                (linker["project"] == projectid) & (linker["index"] == sampleid),
+                "subject",
+            ]
+        else:
+            linker_sampleid = linker.loc[
+                linker["project"].isna() & (linker["index"] == sampleid),
+                "subject",
+            ]
+        if len(linker_sampleid) == 1:
+            subjectid = linker_sampleid.to_list()[0]
+            res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
     return res
 
 

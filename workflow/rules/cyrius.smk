@@ -5,7 +5,11 @@ rule cyrius_create_manifest:
     """
     input:
         bams=lambda wildcards: tc.select_cyrius_subjects(
-            manifest_bam["projectid"], manifest_bam["sampleid"]
+            checkpoints,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams",
+            "bam",
         ),
     output:
         tsv="results/cyrius/input_manifest.tsv",
@@ -20,7 +24,11 @@ rule cyrius_run:
     """
     input:
         bams=lambda wildcards: tc.select_cyrius_subjects(
-            manifest_bam["projectid"], manifest_bam["sampleid"]
+            checkpoints,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            "results/bams",
+            "bam",
         ),
         tsv="results/cyrius/input_manifest.tsv",
     output:
