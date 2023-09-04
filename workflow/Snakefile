@@ -72,6 +72,11 @@ TARGETS = [
     "results/cyrius/results.json",
 ]
 
+if "annovar-tarball" in config["expansionhunter_denovo"]:
+    TARGETS.append(
+        "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv"
+    )
+
 
 ## To deal with the fact that s3 remote provider service is very slow
 ## and sometimes buggy, while not interfering with a streamlined

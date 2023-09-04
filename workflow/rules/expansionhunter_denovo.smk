@@ -164,3 +164,71 @@ rule expansionhunter_denovo_motif_outliers:
         qname="small",
     shell:
         "{input.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
+
+
+rule annovar_extract_tarball:
+    """
+    Take a user-specified copy of the annovar release tarball
+    and extract it into the repo.
+
+    Note that due to licensing restrictions on the use of annovar,
+    this step requires the user to get the tarball.
+    """
+    output:
+        directory("results/annovar"),
+    params:
+        tarball=lambda wildcards: config["expansionhunter_denovo"]["annovar-tarball"]
+        if "annovar-tarball" in config["expansionhunter_denovo"]
+        else "",
+    threads: 1
+    resources:
+        mem_mb=2000,
+        qname="small",
+    shell:
+        "tar -C results xvzf {params.tarball}"
+
+
+rule annovar_download_references:
+    """
+    Get a copy of the annovar grch38 reference data.
+    """
+    input:
+        directory("results/annovar"),
+    output:
+        directory("results/annovar_humandb"),
+    conda:
+        "../envs/annovar.yaml"
+    threads: 1
+    resources:
+        mem_mb=2000,
+        qname="small",
+    shell:
+        "perl {input}/annotate_variation.pl -buildver hg38 -downdb -webfrom annovar refGene {output}"
+
+
+rule expansionhunter_denovo_annotate:
+    """
+    Using an installation of annovar, annotate the locus
+    results of expansionhunter_denovo using their shell script
+    for this purpose.
+    """
+    input:
+        annovar="results/annovar",
+        annovar_humandb="results/annovar_humandb",
+        expansionhunter_denovo="results/expansionhunter_denovo/repo",
+        locus_results="results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
+    output:
+        tsv="results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv",
+    conda:
+        "../envs/annovar.yaml"
+    threads: 1
+    resources:
+        mem_mb=8000,
+        qname="small",
+    shell:
+        "bash {input.expansionhunter_denovo} "
+        "--ehdn-results {input.locus_results} "
+        "--ehdn-annotated-results {output.tsv} "
+        "--annovar-annotate-variation {input.annovar}/annotate_variation.pl "
+        "--annovar-humandb {input.annovar_humandb} "
+        "--annovar-buildver hg38"
