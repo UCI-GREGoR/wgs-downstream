@@ -1,8 +1,13 @@
 rule copy_bams:
     """
     Get a local copy of bams before analysis
+
+    In theory, the linker file should not be explicitly required as input,
+    as it's implied by the use of the checkpoints object; but apparently
+    snakemake needs the hint.
     """
     input:
+        linker="results/linker.tsv",
         bam=lambda wildcards: tc.link_bams_by_id(wildcards, checkpoints, bam_manifest),
     output:
         bam="results/bams/{projectid}/{sampleid}.bam",
@@ -73,9 +78,14 @@ checkpoint generate_linker:
 
 rule copy_gvcfs:
     """
-    Get a local copy of gvcfs before analysis
+    Get a local copy of gvcfs before analysis.
+
+    In theory, the linker file should not be explicitly required as input,
+    as it's implied by the use of the checkpoints object; but apparently
+    snakemake needs the hint.
     """
     input:
+        linker="results/linker.tsv",
         gvcf=lambda wildcards: tc.link_gvcfs_by_id(
             wildcards, checkpoints, gvcf_manifest, True
         ),
@@ -90,7 +100,7 @@ rule copy_gvcfs:
         mem_mb=1000,
         qname="small",
     shell:
-        "gunzip -c {input} | awk -v id={wildcards.sampleid} "
+        "gunzip -c {input.gvcf} | awk -v id={wildcards.sampleid} "
         "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"
 
 
