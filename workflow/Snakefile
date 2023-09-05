@@ -119,6 +119,7 @@ rule glnexus:
 
 include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
+include: "rules/bcftools_stats.smk"
 include: "rules/cyrius.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
