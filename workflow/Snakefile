@@ -69,6 +69,7 @@ TARGETS = [
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
     "results/cyrius/cyrius_all_subjects.tsv",
+    "results/cyrius/cyrius_report.html",
 ]
 
 if "annovar-tarball" in config["expansionhunter_denovo"]:

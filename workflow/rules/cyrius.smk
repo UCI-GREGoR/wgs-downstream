@@ -84,3 +84,22 @@ rule cyrius_combine_results:
         "results/cyrius/cyrius_all_subjects.tsv",
     shell:
         "cat {input.tsvs} | awk 'NR == 1 || NR % 2 == 0' > {output}"
+
+
+rule create_cyrius_report:
+    """
+    create report describing genotype distribution found in cyrius runs
+    """
+    input:
+        results="results/cyrius/cyrius_all_subjects.tsv",
+        pubtable="resources/10.1038.s41397-020-00205-5.tsv",
+    output:
+        "results/cyrius/cyrius_report.html",
+    conda:
+        "../envs/r.yaml"
+    threads: 1
+    resources:
+        time="1:00:00",
+        mem="2G",
+    script:
+        "../scripts/cyrius.Rmd"

@@ -10,3 +10,7 @@ dependencies:
   - r-kableextra
   - r-upsetr
   - r-openxlsx
+  - r-knitr
+  - r-kableextra
+  - r-desctools
+  - r-stringr
