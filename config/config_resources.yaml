@@ -29,7 +29,7 @@ deeptrio:
   queue: "large"
 glnexus:
   threads: 4
-  memory: 32000
+  memory: 128000
   queue: "large"
 r:
   threads: 1
