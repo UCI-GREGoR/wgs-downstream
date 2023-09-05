@@ -24,30 +24,16 @@ rule cyrius_create_manifest:
     """
     Generate a simple plaintext file with *absolute*
     paths to input bams or crams.
+
+    Apparently, absolute in their docs actually means
+    absolute or relative.
     """
     input:
-        bams=lambda wildcards: tc.select_cyrius_subjects(
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams",
-            "bam",
-        ),
-        exclusions=config["cyrius"]["excluded-samples"],
+        bam="results/bams/{projectid}/{sampleid}.bam",
     output:
-        tsv="results/cyrius/input_manifest.tsv",
-    run:
-        with open(input.exclusions, "r") as f:
-            exclusions = [x.rstrip() + ".bam" for x in f.readlines()]
-        with open(output.tsv, "w") as f:
-            f.writelines(
-                [
-                    "{}\n".format(x)
-                    for x in filter(
-                        lambda y: os.path.basename(y) not in exclusions, input.bams
-                    )
-                ]
-            )
+        tsv=temp("results/cyrius/{projectid}/{sampleid}.input_manifest.tsv"),
+    shell:
+        "echo '{input}' > {output}"
 
 
 rule cyrius_run:
@@ -55,35 +41,46 @@ rule cyrius_run:
     Execute cyrius star caller for CYP2D6 alleles.
     """
     input:
-        bams=lambda wildcards: tc.select_cyrius_subjects(
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams",
-            "bam",
-        ),
-        bais=lambda wildcards: tc.select_cyrius_subjects(
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams",
-            "bai",
-        ),
-        tsv="results/cyrius/input_manifest.tsv",
+        bam="results/bams/{projectid}/{sampleid}.bam",
+        bai="results/bams/{projectid}/{sampleid}.bai",
+        tsv="results/cyrius/{projectid}/{sampleid}.input_manifest.tsv",
         repo="results/cyrius/repo",
     output:
-        tsv="results/cyrius/results.tsv",
-        json="results/cyrius/results.json",
+        tsv=temp("results/cyrius/{projectid}/{sampleid}.tsv"),
+        json=temp("results/cyrius/{projectid}/{sampleid}.json"),
     params:
-        outdir="results/cyrius",
-        prefix="results",
+        outdir="results/cyrius/{projectid}",
+        prefix="{sampleid}",
     benchmark:
-        "results/performance_benchmarks/cyrius_run/out.tsv"
+        "results/performance_benchmarks/cyrius_run/{projectid}/{sampleid}.tsv"
     conda:
         "../envs/cyrius.yaml"
-    threads: 4
+    threads: 2
     resources:
-        mem_mb=16000,
+        mem_mb=8000,
         qname="large",
     shell:
         "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
+
+
+localrules:
+    cyrius_combine_results,
+
+
+rule cyrius_combine_results:
+    """
+    Concatenate cyrius outputs across all subjects.
+    """
+    input:
+        tsvs=lambda wildcards: tc.select_cyrius_subjects(
+            checkpoints,
+            bam_manifest["projectid"],
+            bam_manifest["sampleid"],
+            config["cyrius"]["excluded-samples"],
+            "results/cyrius",
+            "tsv",
+        ),
+    output:
+        "results/cyrius/cyrius_all_subjects.tsv",
+    shell:
+        "cat {input.tsvs} | awk 'NR == 1 || NR % 2 == 0' > {output}"

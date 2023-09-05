@@ -68,8 +68,7 @@ TARGETS = [
     "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
-    "results/cyrius/results.tsv",
-    "results/cyrius/results.json",
+    "results/cyrius/cyrius_all_subjects.tsv",
 ]
 
 if "annovar-tarball" in config["expansionhunter_denovo"]:
