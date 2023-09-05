@@ -69,6 +69,7 @@ TARGETS = [
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
     "results/cyrius/cyrius_all_subjects.tsv",
+    "results/telomerecat/tracker.tsv",
 ]
 
 if "annovar-tarball" in config["expansionhunter_denovo"]:
@@ -111,6 +112,11 @@ rule cyrius:
         [x for x in filter(lambda y: "cyrius" in y, TARGETS)],
 
 
+rule telomerecat:
+    input:
+        [x for x in filter(lambda y: "telomerecat" in y, TARGETS)],
+
+
 rule glnexus:
     input:
         "results/split_joint_calls/.joint_calls_split",
@@ -130,3 +136,4 @@ include: "rules/somalier.smk"
 include: "rules/split_joint_calls.smk"
 include: "rules/deeptrio.smk"
 include: "rules/slivar.smk"
+include: "rules/telomerecat.smk"

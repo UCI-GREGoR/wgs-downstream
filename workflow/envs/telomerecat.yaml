@@ -1,0 +1,11 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - pip
+  - numpy
+  - pysam
+  - pandas
+  - pip:
+      - parabam
+      - telomerecat
