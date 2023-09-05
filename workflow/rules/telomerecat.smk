@@ -13,7 +13,7 @@ rule telomerecat_bam_to_telbam:
         "../envs/telomerecat.yaml"
     threads: 4
     resources:
-        mem_mb=16000,
+        mem_mb=64000,
         qname="large",
     shell:
         "telomerecat bam2telbam -p {threads} --outbam_dir {params.outdir} {input.bam}"
