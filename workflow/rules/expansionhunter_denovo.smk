@@ -185,7 +185,7 @@ rule annovar_extract_tarball:
         mem_mb=2000,
         qname="small",
     shell:
-        "tar -C results xvzf {params.tarball}"
+        "tar -C results -xvzf {params.tarball}"
 
 
 rule annovar_download_references:
@@ -226,7 +226,7 @@ rule expansionhunter_denovo_annotate:
         mem_mb=8000,
         qname="small",
     shell:
-        "bash {input.expansionhunter_denovo} "
+        "bash {input.expansionhunter_denovo}/scripts/annotate_ehdn.sh "
         "--ehdn-results {input.locus_results} "
         "--ehdn-annotated-results {output.tsv} "
         "--annovar-annotate-variation {input.annovar}/annotate_variation.pl "
