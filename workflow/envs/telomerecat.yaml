@@ -1,0 +1,12 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - gxx_linux-64
+  - pip
+  - numpy
+  - pysam
+  - pandas
+  - pip:
+      - parabam
+      - telomerecat
