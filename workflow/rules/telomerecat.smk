@@ -25,7 +25,6 @@ rule telomerecat_telbam_to_csv:
     """
     input:
         bam="results/telomerecat/{projectid}/{sampleid}_telbam.bam",
-        bai="results/telomerecat/{projectid}/{sampleid}_telbam.bai",
     output:
         csv="results/telomerecat/{projectid}/{sampleid}_length.csv",
     params:
