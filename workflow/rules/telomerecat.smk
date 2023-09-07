@@ -33,7 +33,7 @@ rule telomerecat_telbam_to_csv:
         "../envs/telomerecat.yaml"
     threads: 4
     resources:
-        mem_mb=8000,
+        mem_mb=32000,
         qname="large",
     shell:
         "telomerecat telbam2length -p {threads} --output {output.csv} {input.bam}"
