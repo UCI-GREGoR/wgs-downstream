@@ -73,11 +73,17 @@ properties:
         type: string
       affected-status:
         type: string
+      excluded-samples:
+        type: string
       annovar-tarball:
         type: string
+      plot-locus-count:
+        type: integer
+        min: 1
     required:
       - version
       - affected-status
+      - excluded-samples
     additionalProperties: no
   cyrius:
     type: object

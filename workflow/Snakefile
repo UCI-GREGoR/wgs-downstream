@@ -75,8 +75,11 @@ TARGETS = [
 ]
 
 if "annovar-tarball" in config["expansionhunter_denovo"]:
-    TARGETS.append(
-        "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv"
+    TARGETS.extend(
+        [
+            "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv",
+            "results/expansionhunter_denovo/expansionhunter_denovo.html",
+        ]
     )
 
 

@@ -31,7 +31,9 @@ somalier:
 expansionhunter_denovo:
   version: "v0.9.0"
   affected-status: "config/affected_status.tsv"
+  excluded-samples: "config/expansionhunter_denovo_excluded_samples.tsv"
   annovar-tarball: "resources/annovar.latest.tar.gz"
+  plot-locus-count: 10
 cyrius:
   version: "v1.1.1"
   excluded-samples: "config/cyrius_excluded_samples.tsv"
