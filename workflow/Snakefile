@@ -65,6 +65,7 @@ use_containers = False
 
 TARGETS = [
     "results/multiqc/multiqc.cross-flowcell.html",
+    "results/somalier/ancestry/results.somalier-ancestry.pcplot.png",
     "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
@@ -100,7 +101,7 @@ rule all:
 
 rule somalier:
     input:
-        [x for x in filter(lambda y: "multiqc" in y, TARGETS)],
+        [x for x in filter(lambda y: "multiqc" in y or "somalier" in y, TARGETS)],
 
 
 rule expansionhunter_denovo:

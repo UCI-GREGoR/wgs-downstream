@@ -169,3 +169,22 @@ rule somalier_ancestry:
     shell:
         "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "
         "{input.somalier_reference}/*somalier ++ {input.somalier_experimental}"
+
+
+rule somalier_plot_pca:
+    """
+    The somalier default plot is nice for being interactive but doesn't
+    make particularly attractive static plots.
+    """
+    input:
+        somalier_ancestry="results/somalier/ancestry/results.somalier-ancestry.tsv",
+    output:
+        plotname="results/somalier/ancestry/results.somalier-ancestry.pcplot.png",
+    conda:
+        "../envs/r.yaml"
+    threads: 1
+    resources:
+        mem_mb=2000,
+        qname="small",
+    script:
+        "../scripts/plot_pca.R"
