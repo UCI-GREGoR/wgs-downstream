@@ -1,0 +1,218 @@
+---
+title: "ExpansionHunter Denovo Post-Run Report"
+author:
+  - "Lightning Auriga"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+  rmd: "expansionhunter_denovo.Rmd"
+output:
+  html_document:
+    code_folding: "hide"
+    highlight: tango
+    number_sections: no
+    theme: default
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r load.packages, eval=TRUE, echo=FALSE}
+## Load required R packages
+
+require(knitr, quietly = TRUE)
+require(kableExtra, quietly = TRUE)
+require(ggplot2, quietly = TRUE)
+require(RColorBrewer, quietly = TRUE)
+require(stringr, quietly = TRUE)
+```
+
+```{r set.ggplot2.theme, eval=TRUE, echo=TRUE}
+## Configure standard theme information for ggplot2
+
+my.theme <- theme_light() + theme(
+  plot.title = element_text(size = 30, hjust = 0.5),
+  plot.caption = element_text(size = 24),
+  axis.title = element_text(size = 28),
+  axis.text.y = element_text(size = 20),
+  axis.text.x = element_text(size = 18, angle = -45, hjust = 0),
+  legend.title = element_text(size = 24),
+  legend.text = element_text(size = 18),
+  strip.background = element_blank(),
+  strip.text = element_text(size = 28, colour = "black")
+)
+knitr::opts_chunk$set(fig.width = 16 / 9 * 10, fig.height = 15, fig.align = "center")
+```
+
+```{r set.variables, eval=TRUE, echo=TRUE}
+## Set input variables from snakemake
+input.table.filename <- snakemake@input[["annotated_tsv"]]
+locus.count <- snakemake@params[["locus_count"]]
+min.nonzero.subjects <- snakemake@params[["min_nonzero_subjects"]]
+```
+
+```{r format.gene.annotation, eval=TRUE, echo=FALSE}
+## create a function that takes expansionhunter denovo/annovar gene annotations
+## and turns them into something tractable for a plot.
+make.gene.annotation <- function(gene.names, gene.region, locus.contig, locus.start, locus.end) {
+  res <- paste(locus.contig, ":", locus.start, ": ", gene.region, sep = "")
+  if (gene.region != "intergenic") {
+    truncated.gene.names <- stringr::str_replace_all(gene.names, " ?\\([^(]+\\)", "")
+    res <- paste(res, " (", truncated.gene.names, ")", sep = "")
+  }
+  res
+}
+```
+
+```{r filter.ehdn, eval=TRUE, echo=FALSE}
+## Raw ExpansionHunter Denovo locus data contain all contigs, presumably
+## due to realignment at some point. The non-autosomal/sex chromosomes
+## are quite problematic for this kind of analysis and should be dropped.
+## There are other potential exclusion criteria, for example intergenic repeats,
+## repeats with too few subjects with non-zero counts, etc.
+filter.ehdn.table <- function(df, min.nonzero.subjects) {
+  acceptable.contigs <- paste("chr", c(as.character(1:22), "X", "Y"), sep = "")
+  df <- df[df$contig %in% acceptable.contigs, ]
+  df <- df[sapply(df$counts, function(i) {
+    length(stringr::str_split_1(i, ",")) >= min.nonzero.subjects
+  }), ]
+  df
+}
+```
+
+```{r load.expansionhunter.denovo.locus.data, eval=TRUE, echo=FALSE}
+## load tsv information
+tsv.data <- read.table(input.table.filename,
+  header = TRUE,
+  stringsAsFactors = FALSE, sep = "\t",
+  comment.char = "", quote = "",
+  check.names = FALSE
+)
+## filter raw ehdn output for certain sanity measures
+tsv.data <- filter.ehdn.table(tsv.data, min.nonzero.subjects)
+## get only the top X results by Z score, as specified by user configuration parameter
+tsv.data <- tsv.data[order(tsv.data[, "top_case_zscore"], decreasing = TRUE), ]
+tsv.data <- tsv.data[seq_len(min(locus.count, nrow(tsv.data))), ]
+## parse tsv data into a tidy data frame for eventual plotting
+## as of this writing, there are conflicting reports on whether
+## these data are z-scores or counts of repeat.
+rep.count <- c()
+gene.annotation <- c()
+is.extreme <- c()
+annotation.order <- c()
+extreme.subject <- c()
+extreme.subject.count <- c()
+extreme.subject.annotation <- c()
+for (index in seq_len(nrow(tsv.data))) {
+  x <- as.numeric(stringr::str_split_1(tsv.data[index, "counts"], ","))
+  rep.count <- c(rep.count, x)
+  parsed.counts <- stringr::str_split_1(stringr::str_replace_all(tsv.data[index, "high_case_counts"], ":", ","), ",")
+  parsed.counts <- as.numeric(parsed.counts[seq(2, length(parsed.counts), 2)])
+  current.annotation <- make.gene.annotation(
+    tsv.data[index, "gene"], tsv.data[index, "region"],
+    tsv.data[index, "contig"], tsv.data[index, "start"],
+    tsv.data[index, "end"]
+  )
+  gene.annotation <- c(gene.annotation, rep(current.annotation, length(x)))
+  annotation.order <- c(annotation.order, current.annotation)
+  for (x.count in x) {
+    is.extreme <- c(is.extreme, ifelse(min(abs(x.count - parsed.counts)) < 0.01, "Significant", "Background"))
+  }
+
+  parsed.subjects <- stringr::str_split_1(stringr::str_replace_all(tsv.data[index, "high_case_counts"], ":", ","), ",")
+  parsed.subjects <- parsed.subjects[seq(1, length(parsed.subjects), 2)]
+  extreme.subject <- c(extreme.subject, parsed.subjects)
+  extreme.subject.count <- c(extreme.subject.count, parsed.counts)
+  extreme.subject.annotation <- c(extreme.subject.annotation, rep(current.annotation, length(parsed.counts)))
+}
+plot.data <- data.frame(
+  rep.count = rep.count,
+  gene.annotation = factor(gene.annotation, levels = annotation.order),
+  is.extreme = factor(is.extreme, levels = c("Significant", "Background"))
+)
+
+subject.report.df <- data.frame(
+  Subject = extreme.subject,
+  Repeat = extreme.subject.annotation,
+  "Normalized Count" = extreme.subject.count,
+  familyid = as.numeric(stringr::str_split_i(extreme.subject, "-", 3)),
+  phenoid = as.numeric(stringr::str_split_i(extreme.subject, "-", 4)),
+  check.names = FALSE
+)
+```
+
+```{r plot.gene.repeat.distributions, eval=TRUE, echo=FALSE, warning=FALSE}
+my.plot <- ggplot(aes(x = gene.annotation, y = rep.count, colour = is.extreme), data = plot.data) + my.theme
+my.plot <- my.plot + geom_point(position = position_jitter(width = 0.1, height = 0.0))
+my.plot <- my.plot + xlab("Annotated Region") + ylab("Normalized Repeat Count per Subject")
+my.plot <- my.plot + ggtitle("Distribution of Normalized Repeat Count by Region")
+my.plot <- my.plot + scale_colour_manual(name = "Subject", values = c("red", "black"))
+my.plot
+```
+
+***
+<br>
+
+```{r report.subject.table, eval=TRUE, echo=FALSE, results="asis"}
+sort.report.df <- function(df) {
+  ## sorting should be to help usability, but not sure what is best at the moment
+  res <- df[, -1 * seq_len(nrow(df))]
+  for (locus in unique(df$Repeat)) {
+    data <- df[df$Repeat == locus, ]
+    data <- data[order(data$familyid, data$phenoid), ]
+    res <- rbind(res, data)
+  }
+  res
+}
+
+add.report.notes <- function(df) {
+  ## add notes about potential issues with results?
+  ## first thing: it seems like usually a subject appearing
+  ## as a top hit for multiple repeats is an indicator of low depth.
+  is.seen.repeatedly <- c()
+  for (i in seq_len(nrow(df))) {
+    is.seen.repeatedly <- c(is.seen.repeatedly, length(which(df$Subject == df[i, "Subject"])))
+  }
+  df$Notes <- rep("", nrow(df))
+  for (i in seq_len(nrow(df))) {
+    if (is.seen.repeatedly[i] > 1) {
+      df$Notes[i] <- paste("extreme result in ", is.seen.repeatedly[i], " repeats", sep = "")
+    }
+  }
+  df
+}
+
+## sort table to make it more intuitively usable for the end user
+subject.report.df <- sort.report.df(subject.report.df)
+## add notes to subject results
+subject.report.df <- add.report.notes(subject.report.df)
+## remove rownames for pretty printing reasons
+rownames(subject.report.df) <- NULL
+## select only interesting columns
+subject.report.df <- subject.report.df[, c("Subject", "Repeat", "Normalized Count", "Notes")]
+knitr::kable(subject.report.df, caption = "High Case Counts, as Reported by ExpansionHunter Denovo") %>%
+  kableExtra::kable_styling("condensed", position = "left", full_width = FALSE)
+```
+
+***
+<br>
+
+## Assorted Software Links
+
+<br>
+
+- [ExpansionHunter Denovo](https://github.com/Illumina/ExpansionHunterDenovo)
+
+***
+<br>
+
+## Session Information
+
+<br>
+
+The following summarizes the loaded R configuration for the run that created this report.
+
+```{r session.info, eval=TRUE, echo=TRUE}
+sessionInfo()
+```

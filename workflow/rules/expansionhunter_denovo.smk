@@ -27,6 +27,7 @@ checkpoint expansionhunter_denovo_create_manifest:
     input:
         affected_status=config["expansionhunter_denovo"]["affected-status"],
         linker="results/linker.tsv",
+        exclusions=config["expansionhunter_denovo"]["excluded-samples"],
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",
     params:
@@ -232,3 +233,24 @@ rule expansionhunter_denovo_annotate:
         "--annovar-annotate-variation {input.annovar}/annotate_variation.pl "
         "--annovar-humandb {input.annovar_humandb} "
         "--annovar-buildver hg38"
+
+
+rule create_expansionhunter_denovo_report:
+    """
+    create report describing repeat distribution found in expansionhunter denovo runs
+    """
+    input:
+        annotated_tsv="results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv",
+    output:
+        "results/expansionhunter_denovo/expansionhunter_denovo.html",
+    params:
+        locus_count=config["expansionhunter_denovo"]["plot-locus-count"],
+        min_nonzero_subjects=lambda wildcards: len(bam_manifest) * 0.75,
+    conda:
+        "../envs/r.yaml"
+    threads: 1
+    resources:
+        mem_mb=4000,
+        qname="small",
+    script:
+        "../scripts/expansionhunter_denovo.Rmd"

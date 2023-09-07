@@ -1,6 +1,6 @@
 library(openxlsx)
 
-run.create.manifest <- function(data.model.tsv, linker.fn, project.ids, sample.ids, out.fn) {
+run.create.manifest <- function(data.model.tsv, linker.fn, excluded.samples.fn, project.ids, sample.ids, out.fn) {
   data.model <- read.table(data.model.tsv,
     header = TRUE, stringsAsFactors = FALSE, sep = "\t",
     comment.char = "", quote = ""
@@ -9,6 +9,14 @@ run.create.manifest <- function(data.model.tsv, linker.fn, project.ids, sample.i
     header = TRUE, stringsAsFactors = FALSE, sep = "\t",
     comment.char = "", quote = ""
   )
+  excluded.samples <- c()
+  if (file.info(excluded.samples.fn)$size > 0) {
+    excluded.samples <- read.table(excluded.samples.fn,
+      header = FALSE,
+      stringsAsFactors = FALSE, sep = "\t",
+      comment.char = "", quote = ""
+    )[, 1]
+  }
   stopifnot(length(project.ids) == length(sample.ids))
   samplename <- c()
   samplestatus <- c()
@@ -21,7 +29,7 @@ run.create.manifest <- function(data.model.tsv, linker.fn, project.ids, sample.i
     }
     sample.id <- linker$subject[sample.index]
     project.id <- project.ids[i]
-    if (sample.id %in% data.model[, "participant_id"]) {
+    if (sample.id %in% data.model[, "participant_id"] && !(sample.id %in% excluded.samples)) {
       affected.status <- data.model[data.model[, "participant_id"] == sample.id, "affected_status"]
       samplename <- c(samplename, sample.id)
       samplestatus <- c(
@@ -48,6 +56,7 @@ if (exists("snakemake")) {
   run.create.manifest(
     snakemake@input[["affected_status"]],
     snakemake@input[["linker"]],
+    snakemake@input[["exclusions"]],
     snakemake@params[["projectids"]],
     snakemake@params[["sampleids"]],
     snakemake@output[["tsv"]]
