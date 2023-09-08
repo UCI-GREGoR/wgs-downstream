@@ -101,6 +101,6 @@ rule create_cyrius_report:
     threads: 1
     resources:
         time="1:00:00",
-        mem="2G",
+        mem=2000,
     script:
         "../scripts/cyrius.Rmd"
