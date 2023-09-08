@@ -350,7 +350,7 @@ knitr::kable(cyrius.table.data, caption = "Current Results from Cyrius, with Som
 ***
 <br>
 
-## Assorted Software Links
+## Assorted Links
 
 <br>
 
