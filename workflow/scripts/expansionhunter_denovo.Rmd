@@ -52,6 +52,17 @@ locus.count <- snakemake@params[["locus_count"]]
 min.nonzero.subjects <- snakemake@params[["min_nonzero_subjects"]]
 ```
 
+## Overview
+
+This report summarizes a run of the current dataset with [ExpansionHunter Denovo](https://github.com/Illumina/ExpansionHunterDenovo),
+a tool for characterizing repeat expansions in regions without _a priori_ defined regions.
+The tool emits metrics for enrichment of both _loci_ and _motifs_. The below reporting data
+only includes information for the top `r locus.count` loci by extreme case Z-score; this cutoff
+can be modified in user configuration. The full loci results, annotated with gene distance information
+by [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/), are available at
+`r input.table.filename`; motif enrichment data are available in the same directory.
+
+
 ```{r format.gene.annotation, eval=TRUE, echo=FALSE}
 ## create a function that takes expansionhunter denovo/annovar gene annotations
 ## and turns them into something tractable for a plot.
@@ -117,7 +128,9 @@ for (index in seq_len(nrow(tsv.data))) {
   gene.annotation <- c(gene.annotation, rep(current.annotation, length(x)))
   annotation.order <- c(annotation.order, current.annotation)
   for (x.count in x) {
-    is.extreme <- c(is.extreme, ifelse(min(abs(x.count - parsed.counts)) < 0.01, "Significant", "Background"))
+    is.extreme <- c(is.extreme, ifelse(min(abs(x.count - parsed.counts)) < 0.01,
+      "Significant Affected", "Null Affected or Unaffected"
+    ))
   }
 
   parsed.subjects <- stringr::str_split_1(stringr::str_replace_all(tsv.data[index, "high_case_counts"], ":", ","), ",")
@@ -129,7 +142,7 @@ for (index in seq_len(nrow(tsv.data))) {
 plot.data <- data.frame(
   rep.count = rep.count,
   gene.annotation = factor(gene.annotation, levels = annotation.order),
-  is.extreme = factor(is.extreme, levels = c("Significant", "Background"))
+  is.extreme = factor(is.extreme, levels = c("Significant Affected", "Null Affected or Unaffected"))
 )
 
 subject.report.df <- data.frame(
@@ -142,6 +155,29 @@ subject.report.df <- data.frame(
 )
 ```
 
+## Count Distributions
+
+The below plot represents the repeat count distributions per subject
+for the top `r locus.count` loci from ExpansionHunter Denovo locus output.
+Points colored red indicate affected subjects (proband or otherwise) with
+extreme underlying Z scores. Note that extreme points not colored red are
+unaffected subjects with extreme Z scores; this is consistent with the locus
+still being prioritized, but does potentially introduce questions about the
+quality of the locus.
+
+### Note on Interpretation of Locus Results
+
+ExpansionHunter Denovo, by observation, is very susceptible to deviations
+in input sequence quality. This most obviously manifests as extreme values
+in multiple loci corresponding to the same subject. The probability of this
+occurring by chance is extremely low. At some point, this report will be
+modified to explicitly indicate the threshold of tolerable repeated observations
+of a subject given the number of examined loci and total number of study samples.
+For the time being, consider any subject observed more than twice in the
+set of loci to be an extremely likely quality failure. Any such subject should
+be removed upstream, and ExpansionHunter Denovo rerun to reestimate
+its outlier distributions.
+
 ```{r plot.gene.repeat.distributions, eval=TRUE, echo=FALSE, warning=FALSE}
 my.plot <- ggplot(aes(x = gene.annotation, y = rep.count, colour = is.extreme), data = plot.data) + my.theme
 my.plot <- my.plot + geom_point(position = position_jitter(width = 0.1, height = 0.0))
@@ -153,6 +189,13 @@ my.plot
 
 ***
 <br>
+
+
+## Top Locus Results by Affected Subject
+
+The following enumerated results correspond to the red highlighted points in the above plot.
+As mentioned above, subjects flagged as occurring in multiple loci are very likely QC violations
+that should be excluded from consideration by ExpansionHunter Denovo.
 
 ```{r report.subject.table, eval=TRUE, echo=FALSE, results="asis"}
 sort.report.df <- function(df) {
@@ -203,6 +246,7 @@ knitr::kable(subject.report.df, caption = "High Case Counts, as Reported by Expa
 <br>
 
 - [ExpansionHunter Denovo](https://github.com/Illumina/ExpansionHunterDenovo)
+- [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/)
 
 ***
 <br>
