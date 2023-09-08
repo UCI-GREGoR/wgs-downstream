@@ -28,7 +28,7 @@ require(RColorBrewer, quietly = TRUE)
 require(stringr, quietly = TRUE)
 ```
 
-```{r set.ggplot2.theme, eval=TRUE, echo=TRUE}
+```{r set.ggplot2.theme, eval=TRUE, echo=FALSE}
 ## Configure standard theme information for ggplot2
 
 my.theme <- theme_light() + theme(
@@ -45,7 +45,7 @@ my.theme <- theme_light() + theme(
 knitr::opts_chunk$set(fig.width = 16 / 9 * 10, fig.height = 15, fig.align = "center")
 ```
 
-```{r set.variables, eval=TRUE, echo=TRUE}
+```{r set.variables, eval=TRUE, echo=FALSE}
 ## Set input variables from snakemake
 input.table.filename <- snakemake@input[["annotated_tsv"]]
 locus.count <- snakemake@params[["locus_count"]]
