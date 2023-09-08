@@ -24,24 +24,31 @@ output:
 require(knitr, quietly = TRUE)
 require(kableExtra, quietly = TRUE)
 require(ggplot2, quietly = TRUE)
+require(ggtext, quietly = TRUE)
 require(RColorBrewer, quietly = TRUE)
 require(stringr, quietly = TRUE)
 require(DescTools, quietly = TRUE)
 ```
 
-```{r set.ggplot2.theme, eval=TRUE, echo=TRUE}
+```{r set.ggplot2.theme, eval=TRUE, echo=FALSE}
 ## Configure standard theme information for ggplot2
-
+x.text.size <- 22
+y.text.size <- 24
 my.theme <- theme_light() + theme(
-  plot.title = element_text(size = 15, hjust = 0.5),
-  axis.title = element_text(size = 14),
-  axis.text = element_text(size = 12),
+  plot.title = element_text(size = 30, hjust = 0.5),
+  plot.caption = element_text(size = 24),
+  axis.title = element_text(size = 28),
+  axis.text.y = element_text(size = y.text.size),
+  axis.text.x = element_text(size = x.text.size, angle = 45, hjust = 1),
+  legend.title = element_text(size = 24),
+  legend.text = element_text(size = 18),
   strip.background = element_blank(),
-  strip.text = element_text(size = 14, colour = "black")
+  strip.text = element_text(size = 28, colour = "black")
 )
+knitr::opts_chunk$set(fig.width = 16 / 9 * 10, fig.height = 15, fig.align = "center")
 ```
 
-```{r set.variables, eval=TRUE, echo=TRUE}
+```{r set.variables, eval=TRUE, echo=FALSE}
 ## Set input variables from snakemake
 cyrius.tsv <- snakemake@input[["results"]]
 cyrius.published.table <- snakemake@input[["pubtable"]]
@@ -68,7 +75,7 @@ somalier.ancestry <- somalier.ancestry[!duplicated(somalier.ancestry$id), ]
 rownames(somalier.ancestry) <- somalier.ancestry$id
 ```
 
-```{r load.cyrius.table, eval=TRUE, echo=TRUE}
+```{r load.cyrius.table, eval=TRUE, echo=FALSE}
 cyrius.data <- read.table(cyrius.tsv, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 ## only permit subjects who have ancestry estimates from somalier; this normally shouldn't
 ## be an issue, but good to be sure.
@@ -88,7 +95,29 @@ cyrius.published.data <- read.table(cyrius.published.table,
 cyrius.published.data <- cyrius.published.data[, 1:7]
 ```
 
+***
+<br>
+
+## Overview
+
+This report summarizes a run of the current dataset with [Cyrius](https://github.com/Illumina/Cyrius),
+a tool to genotype CYP2D6 from WGS data. As CYP2D6 frequencies are heavily stratified by genetic ancestry,
+these data are cross-referenced below with genetic ancestry estimates from the WGS QC tool
+[somalier](https://github.com/brentp/somalier), and with reference allele frequency data from the 1000 Genomes
+data, as published in [the Cyrius paper](https://doi.org/10.1038/s41397-020-00205-5). All told, haplotype
+estimates are available for `r nrow(cyrius.data)` subjects.
+
+`r if (na12878.present) {cat("GIAB control data are detected in the input data, and are summarized separately",
+                             "with comparisons to their reference values.")}`
+
+***
+<br>
+
 ## Haplotype Call Summary Metrics
+
+Cyrius emits a status indicator for its haplotype calls, similar to the typical vcf `FILTER` field per record.
+In addition to the standard `PASS`, a series of possible uncertainty or failure indicators are emitted.
+The counts of the status indicators for the study data are listed below.
 
 ```{r report.basic.summary.metrics, eval=TRUE, echo=FALSE, results="asis"}
 compute.metric.data <- function(cyrius.data) {
@@ -139,8 +168,21 @@ cat("\n\n***\n\n<br>\n\n")
 
 ## Haplotype Frequencies versus 1KG
 
-The following table recapitulates the contents of [Table 2 of the Cyrius paper](https://doi.org/10.1038/s41397-020-00205-5),
+The following tables recapitulate the contents of [Table 2 of the Cyrius paper](https://doi.org/10.1038/s41397-020-00205-5),
 adding an additional column representing the corresponding haplotype frequency data from the current subject set.
+Frequencies for the study dataset are calculated by partitioning the data into the five supercontinents
+(AFR: African; AMR: Admixed American; EAS: East Asian; EUR: European; SAS: South Asian) as estimated by somalier.
+For each supercontinent, reference frequency values for each haplotype are emitted for:
+
+* the combined 1000 Genomes dataset, as derived from the Cyrius paper;
+* the 1000 Genomes subjects from the particular supercontinent, as derived from the Cyrius paper; and
+* the study samples with predominant genetic ancestry from the supercontinent, as estimated by somalier.
+
+Please note that somalier emits an estimate of predominant supercontinent that abstracts away meaningful
+admixture between supercontinents. In particular, for studies sampled from American populations, this will
+tend to partition African American individuals between `AFR` and `EUR` according to the canonical 80%/20%
+average admixture proportions observed in African Americans. This information is similarly poorly handled by the
+reference Cyrius paper (and by 1000 Genomes itself).
 
 ```{r annotate.counts.from.dataset, eval=TRUE, echo=FALSE}
 compute.pub.data.table <- function(cyrius.data, cyrius.published.data, somalier.ancestry, target.ancestry) {
@@ -185,12 +227,14 @@ compute.pub.data.table <- function(cyrius.data, cyrius.published.data, somalier.
 }
 
 anc.linker <- c(
+  "African" = "AFR",
   "Admixed American" = "AMR",
   "East Asian" = "EAS",
-  "African" = "AFR",
-  "South Asian" = "SAS",
-  "European" = "EUR"
+  "European" = "EUR",
+  "South Asian" = "SAS"
 )
+reverse.anc.linker <- names(anc.linker)
+names(reverse.anc.linker) <- unname(anc.linker)
 
 prune.ancestry.columns <- function(df, anc) {
   if (anc %in% anc.linker) {
@@ -205,11 +249,54 @@ prune.ancestry.columns <- function(df, anc) {
 }
 ```
 
+```{r define.target.haplotypes, eval=TRUE, echo=FALSE}
+target.haplotypes <- c("*2x2", "*4", "*68+*4", "*5", "*9", "*10", "*36+*10", "*17", "*29", "*41")
+target.haplotypes <- sanitize.asterisks(target.haplotypes)
+haplotype.effect <- c("Increased", rep("None", 3), rep("Decreased", 6))
+names(haplotype.effect) <- target.haplotypes
+```
+
+```{r haplotype.barplot, eval=TRUE, echo=FALSE}
+## Make a plot emulating Cyrius paper figure 1A
+make.haplotype.barplot <- function(cyrius.data, somalier.ancestry, target.haplotypes, haplotype.effect) {
+  plot.data <- cyrius.data[cyrius.data$Haplotype %in% target.haplotypes, ]
+  plot.data$Haplotype <- factor(as.character(plot.data$Haplotype), levels = target.haplotypes)
+  plot.data$Ancestry <- factor(plot.data$Ancestry, levels = names(anc.linker))
+  colnames(plot.data)[colnames(plot.data) == "This dataset"] <- "Experimental"
+  plot.data$Haplotype.Effect <- rep("None", nrow(plot.data))
+  plot.data$Haplotype.Effect <- factor(haplotype.effect[plot.data$Haplotype],
+    levels = c("Increased", "None", "Decreased")
+  )
+
+  plot.data$lowerci <- as.numeric(stringr::str_replace(plot.data[, "95% CI"], "^\\[([^,]+), .*", "\\1"))
+  plot.data$upperci <- as.numeric(stringr::str_replace(plot.data[, "95% CI"], "^\\[[^,]+, ([^\\]]+).*", "\\1"))
+
+  my.plot <- ggplot(aes(x = Haplotype, y = Experimental, fill = Ancestry, ymin = lowerci, ymax = upperci),
+    data = plot.data
+  )
+  axis.text.colour <- rep("black", length(haplotype.effect))
+  axis.text.colour[haplotype.effect == "Increased"] <- "red"
+  axis.text.colour[haplotype.effect == "Decreased"] <- "blue"
+  my.plot <- my.plot + my.theme + theme(axis.text.x = element_markdown(
+    size = x.text.size,
+    colour = axis.text.colour,
+    angle = 45,
+    hjust = 1
+  ))
+  my.plot <- my.plot + geom_bar(stat = "identity", position = "dodge")
+  my.plot <- my.plot + geom_errorbar(colour = "black", position = "dodge")
+  my.colours <- brewer.pal(6, "Dark2")[c(1:4, 6)]
+  my.plot <- my.plot + scale_fill_manual(name = "Population", values = my.colours)
+  my.plot <- my.plot + xlab("Haplotype") + ylab("Percentage")
+  my.plot
+}
+```
+
 ```{r report.counts.from.dataset, eval=TRUE, echo=FALSE, results="asis"}
 target.ancestries <- sort(unique(somalier.ancestry[cyrius.data[, 1], "ancestry"]))
-
+all.ancestry.data <- data.frame()
 for (target.ancestry in target.ancestries) {
-  cat("### ", names(anc.linker)[which(anc.linker == target.ancestry)], "\n\n", sep = "")
+  cat("### ", target.ancestry, " (", names(anc.linker)[which(anc.linker == target.ancestry)], ")\n\n", sep = "")
   table.df <- compute.pub.data.table(cyrius.data, cyrius.published.data, somalier.ancestry, target.ancestry)
   table.df <- prune.ancestry.columns(table.df, target.ancestry)
   print(knitr::kable(table.df,
@@ -220,13 +307,37 @@ for (target.ancestry in target.ancestries) {
   ) %>%
     kableExtra::kable_styling("condensed", position = "left", full_width = FALSE))
   cat("\n\n***\n\n<br>\n\n")
+  table.df$Ancestry <- reverse.anc.linker[target.ancestry]
+  if (nrow(all.ancestry.data) == 0) {
+    all.ancestry.data <- table.df[, c("Haplotype", "This dataset", "95% CI", "Ancestry")]
+  } else {
+    all.ancestry.data <- rbind(all.ancestry.data, table.df[, c("Haplotype", "This dataset", "95% CI", "Ancestry")])
+  }
 }
 ```
 
+## Ten Most Common Haplotypes with Altered CYP2D6 Function
+
+The below plot emulates Figure 5A from [the Cyrius paper](https://www.nature.com/articles/s41397-020-00205-5#Fig5),
+which represents allele frequencies from the five supercontinents for the 10 most common haplotypes with altered
+CYP2D6 function. The x axis represents haplotype; the y axis represents haplotype frequency as percentage; paired bars
+represent frequency of the haplotype in a particular supercontinent. Colored labels on the x axis mirror the convention
+from the Cyrius paper: red indicates haplotype with increased function; black indicates haplotypes with no function;
+blue indicates haplotypes with decreased function. Error bars represent 95% confidence intervals as computed
+within each supercontinent according to the relevant multinomial proportions across all `r nrow(cyrius.published.data)`
+assayed haplotypes.
+
 ```{r paired.barplot, eval=TRUE, echo=FALSE}
+make.haplotype.barplot(all.ancestry.data, somalier.ancestry, target.haplotypes, haplotype.effect)
 ```
 
+***
+<br>
+
 ## Full Haplotyping Results for All Subjects
+
+The table below reports haplotype calls, including failed calls, along with predominant
+supercontinental ancestry as computed by somalier.
 
 ```{r report.summary.table, eval=TRUE, echo=FALSE, results="asis"}
 cyrius.table.data$Ancestry <- somalier.ancestry[cyrius.table.data[, 1], "ancestry"]
@@ -244,6 +355,8 @@ knitr::kable(cyrius.table.data, caption = "Current Results from Cyrius, with Som
 <br>
 
 - [Cyrius](https://github.com/Illumina/Cyrius)
+- [the Cyrius paper](https://doi.org/10.1038/s41397-020-00205-5)
+- [somalier](https://github.com/brentp/somalier)
 
 ***
 <br>
