@@ -93,6 +93,7 @@ rule create_cyrius_report:
     input:
         results="results/cyrius/cyrius_all_subjects.tsv",
         pubtable="resources/10.1038.s41397-020-00205-5.tsv",
+        somalier="results/somalier/ancestry/results.somalier-ancestry.tsv",
     output:
         "results/cyrius/cyrius_report.html",
     conda:

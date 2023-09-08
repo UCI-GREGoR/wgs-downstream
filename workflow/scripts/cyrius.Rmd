@@ -45,6 +45,7 @@ my.theme <- theme_light() + theme(
 ## Set input variables from snakemake
 cyrius.tsv <- snakemake@input[["results"]]
 cyrius.published.table <- snakemake@input[["pubtable"]]
+somalier.ancestry.tsv <- snakemake@input[["somalier"]]
 ```
 
 ```{r sanitize.asterisks.function, eval=TRUE, echo=FALSE}
@@ -53,8 +54,25 @@ sanitize.asterisks <- function(vec) {
 }
 ```
 
+```{r load.somalier.ancestry, eval=TRUE, echo=FALSE}
+somalier.ancestry <- read.table(somalier.ancestry.tsv,
+  header = FALSE,
+  stringsAsFactors = FALSE, sep = "\t",
+  comment.char = "#", quote = "",
+  check.names = FALSE
+)[, 1:2]
+colnames(somalier.ancestry) <- c("id", "ancestry")
+somalier.ancestry$id <- stringr::str_split_i(somalier.ancestry$id, "_", 1)
+## eventually, handle or warn about conflicting duplicates
+somalier.ancestry <- somalier.ancestry[!duplicated(somalier.ancestry$id), ]
+rownames(somalier.ancestry) <- somalier.ancestry$id
+```
+
 ```{r load.cyrius.table, eval=TRUE, echo=TRUE}
 cyrius.data <- read.table(cyrius.tsv, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+## only permit subjects who have ancestry estimates from somalier; this normally shouldn't
+## be an issue, but good to be sure.
+cyrius.data <- cyrius.data[cyrius.data[, 1] %in% somalier.ancestry[, 1], ]
 cyrius.table.data <- cyrius.data
 cyrius.table.data[, 2] <- sanitize.asterisks(cyrius.table.data[, 2])
 na12878.present <- length(which(cyrius.table.data[, 1] == "NA12878")) > 0
@@ -70,34 +88,42 @@ cyrius.published.data <- read.table(cyrius.published.table,
 cyrius.published.data <- cyrius.published.data[, 1:7]
 ```
 
-### Haplotype Call Summary Metrics
+## Haplotype Call Summary Metrics
 
 ```{r report.basic.summary.metrics, eval=TRUE, echo=FALSE, results="asis"}
-calls <- c(
-  "PASS",
-  "More_than_one_possible_genotype",
-  "Not_assigned_to_haplotypes",
-  "LowQ_high_CN",
-  "None",
-  "[combined]"
-)
-counts <- c(
-  length(which(cyrius.data[, 3] == calls[1])),
-  length(which(cyrius.data[, 3] == calls[2])),
-  length(which(cyrius.data[, 3] == calls[3])),
-  length(which(cyrius.data[, 3] == calls[4])),
-  length(which(cyrius.data[, 3] == calls[5])),
-  nrow(cyrius.data)
-)
-metric.data <- data.frame(
-  Call = calls,
-  Count = counts
-)
+compute.metric.data <- function(cyrius.data) {
+  calls <- c(
+    "PASS",
+    "More_than_one_possible_genotype",
+    "Not_assigned_to_haplotypes",
+    "LowQ_high_CN",
+    "None",
+    "[combined]"
+  )
+  counts <- c(
+    length(which(cyrius.data[, 3] == calls[1])),
+    length(which(cyrius.data[, 3] == calls[2])),
+    length(which(cyrius.data[, 3] == calls[3])),
+    length(which(cyrius.data[, 3] == calls[4])),
+    length(which(cyrius.data[, 3] == calls[5])),
+    nrow(cyrius.data)
+  )
+  metric.data <- data.frame(
+    Call = calls,
+    Count = counts
+  )
+  metric.data
+}
+
+metric.data <- compute.metric.data(cyrius.data)
 knitr::kable(metric.data, caption = "Haplotype Call Summary Metrics") %>%
   kableExtra::kable_styling("condensed", position = "left", full_width = FALSE)
 ```
 
-`r if (na12878.present) {"### Positive Control Report"}`
+***
+<br>
+
+`r if (na12878.present) {"## Positive Control Report"}`
 
 `r if (na12878.present) {cat("Per [this paper](https://www.nature.com/articles/s41397-020-00205-5),",
                              "the expected haplotype call for NA12878 is \\*3/\\*68+\\*4.")}`
@@ -107,63 +133,105 @@ knitr::kable(cyrius.table.data[cyrius.table.data[, 1] == "NA12878", ],
   caption = "Positive Control Results for Cyrius"
 ) %>%
   kableExtra::kable_styling("condensed", position = "left", full_width = FALSE)
+cat("\n\n***\n\n<br>\n\n")
 ```
 
 
-### Haplotype Frequencies versus 1KG
+## Haplotype Frequencies versus 1KG
 
 The following table recapitulates the contents of [Table 2 of the Cyrius paper](https://doi.org/10.1038/s41397-020-00205-5),
 adding an additional column representing the corresponding haplotype frequency data from the current subject set.
 
 ```{r annotate.counts.from.dataset, eval=TRUE, echo=FALSE}
-cyrius.published.data$"This dataset" <- rep(0, nrow(cyrius.published.data))
-for (i in seq_len(nrow(cyrius.data))) {
-  if (cyrius.data[i, 3] == "PASS") {
-    gtype1 <- stringr::str_replace(cyrius.data[i, 2], "^([^/]+)/.*$", "\\1")
-    gtype2 <- stringr::str_replace(cyrius.data[i, 2], "^[^/]+/(.*)$", "\\1")
-    update.count <- function(gtype) {
-      res <- cyrius.published.data$"This dataset"
-      if (length(which(cyrius.published.data[, 1] == gtype)) == 1) {
-        res[cyrius.published.data[, 1] == gtype] <-
-          cyrius.published.data$"This dataset"[cyrius.published.data[, 1] == gtype] + 1
-      } else {
-        res[cyrius.published.data[, 1] == "Unknown"] <-
-          cyrius.published.data$"This dataset"[cyrius.published.data[, 1] == "Unknown"] + 1
-      }
-      res
+compute.pub.data.table <- function(cyrius.data, cyrius.published.data, somalier.ancestry, target.ancestry) {
+  out.df <- cyrius.published.data
+  out.df$"This dataset" <- rep(0, nrow(out.df))
+  for (i in seq_len(nrow(cyrius.data))) {
+    if (somalier.ancestry[cyrius.data[i, 1], "ancestry"] != target.ancestry) {
+      next
     }
-    cyrius.published.data$"This dataset" <- update.count(gtype1)
-    cyrius.published.data$"This dataset" <- update.count(gtype2)
-  } # else if (cyrius.data[i, 3] == "More_than_one_possible_genotype") {
-  ##
-  ## } else if (cyrius.data[i, 3] == "Not_assigned_to_haplotypes") {
-  ##
-  ## } # else cyrius.data[i, 3] == "LowQ_high_CN"
+    if (cyrius.data[i, 3] == "PASS") {
+      gtype1 <- stringr::str_replace(cyrius.data[i, 2], "^([^/]+)/.*$", "\\1")
+      gtype2 <- stringr::str_replace(cyrius.data[i, 2], "^[^/]+/(.*)$", "\\1")
+      update.count <- function(gtype) {
+        res <- out.df$"This dataset"
+        if (length(which(out.df[, 1] == gtype)) == 1) {
+          res[out.df[, 1] == gtype] <-
+            out.df$"This dataset"[out.df[, 1] == gtype] + 1
+        } else {
+          res[out.df[, 1] == "Unknown"] <-
+            out.df$"This dataset"[out.df[, 1] == "Unknown"] + 1
+        }
+        res
+      }
+      out.df$"This dataset" <- update.count(gtype1)
+      out.df$"This dataset" <- update.count(gtype2)
+    } # else if (cyrius.data[i, 3] == "More_than_one_possible_genotype") {
+    ##
+    ## } else if (cyrius.data[i, 3] == "Not_assigned_to_haplotypes") {
+    ##
+    ## } # else cyrius.data[i, 3] == "LowQ_high_CN"
+  }
+
+  out.df[, 1] <- sanitize.asterisks(out.df[, 1])
+  multi.cis <- DescTools::MultinomCI(out.df$"This dataset")
+  out.df$"This dataset" <- round(multi.cis[, 1] * 100, 2)
+  out.df$"95% CI" <- paste("[", round(multi.cis[, 2] * 100, 2), ", ",
+    round(multi.cis[, 3] * 100, 2), "]",
+    sep = ""
+  )
+  out.df$"This dataset"[nrow(out.df)] <- NA
+  out.df
 }
-cyrius.published.data[, 1] <- sanitize.asterisks(cyrius.published.data[, 1])
-multi.cis <- DescTools::MultinomCI(cyrius.published.data$"This dataset")
-cyrius.published.data$"This dataset" <- round(multi.cis[, 1] * 100, 2)
-cyrius.published.data$"95% CI" <- paste("[", round(multi.cis[, 2] * 100, 2), ", ",
-  round(multi.cis[, 3] * 100, 2), "]",
-  sep = ""
+
+anc.linker <- c(
+  "Admixed American" = "AMR",
+  "East Asian" = "EAS",
+  "African" = "AFR",
+  "South Asian" = "SAS",
+  "European" = "EUR"
 )
-cyrius.published.data$"This dataset"[nrow(cyrius.published.data)] <- NA
+
+prune.ancestry.columns <- function(df, anc) {
+  if (anc %in% anc.linker) {
+    possible.colnames <- colnames(df)[3:7]
+    for (possible.colname in possible.colnames) {
+      if (anc.linker[possible.colname] != anc) {
+        df[, possible.colname] <- NULL
+      }
+    }
+  }
+  df
+}
 ```
 
 ```{r report.counts.from.dataset, eval=TRUE, echo=FALSE, results="asis"}
-knitr::kable(cyrius.published.data,
-  caption = "https://doi.org/10.1038/s41397-020-00205-5 Table 2 with Current Cyrius Results"
-) %>%
-  kableExtra::kable_styling("condensed", position = "left", full_width = FALSE)
+target.ancestries <- sort(unique(somalier.ancestry[cyrius.data[, 1], "ancestry"]))
+
+for (target.ancestry in target.ancestries) {
+  cat("### ", names(anc.linker)[which(anc.linker == target.ancestry)], "\n\n", sep = "")
+  table.df <- compute.pub.data.table(cyrius.data, cyrius.published.data, somalier.ancestry, target.ancestry)
+  table.df <- prune.ancestry.columns(table.df, target.ancestry)
+  print(knitr::kable(table.df,
+    caption = paste("Cyrius Paper Table 2, with Current ", target.ancestry,
+      " Results, as Percentage of Observed Genotypes",
+      sep = ""
+    )
+  ) %>%
+    kableExtra::kable_styling("condensed", position = "left", full_width = FALSE))
+  cat("\n\n***\n\n<br>\n\n")
+}
 ```
 
 ```{r paired.barplot, eval=TRUE, echo=FALSE}
 ```
 
-### Full Haplotyping Results for All Subjects
+## Full Haplotyping Results for All Subjects
 
 ```{r report.summary.table, eval=TRUE, echo=FALSE, results="asis"}
-knitr::kable(cyrius.table.data, caption = "Current Results from Cyrius") %>%
+cyrius.table.data$Ancestry <- somalier.ancestry[cyrius.table.data[, 1], "ancestry"]
+rownames(cyrius.table.data) <- NULL
+knitr::kable(cyrius.table.data, caption = "Current Results from Cyrius, with Somalier Ancestry") %>%
   kableExtra::kable_styling("condensed", position = "left", full_width = FALSE)
 ```
 
