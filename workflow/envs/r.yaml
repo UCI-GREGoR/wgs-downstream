@@ -4,6 +4,7 @@ channels:
 dependencies:
   - r-base>=4
   - r-ggplot2
+  - r-ggtext
   - pandoc
   - r-rcolorbrewer
   - r-rmarkdown
