@@ -5,6 +5,8 @@ queues:
     - "large"
     - "large"
 
+tmpdir: "temp"
+
 default:
   threads: 1
   memory: 2000
@@ -22,9 +24,9 @@ bedtools:
   memory: 2000
   queue: "small"
 deeptrio:
-  threads: 16
-  make_examples_memory: 384000
-  call_variants_memory: 480000
+  threads: 8
+  make_examples_memory: 240000
+  call_variants_memory: 240000
   postprocess_variants_memory: 32000
   queue: "large"
 glnexus:
