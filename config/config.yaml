@@ -28,6 +28,10 @@ somalier:
     sites-vcf-gz: "https://github.com/brentp/somalier/files/3412456/sites.hg38.vcf.gz"
     kg-labels-tsv: "https://raw.githubusercontent.com/brentp/somalier/master/scripts/ancestry-labels-1kg.tsv"
     kg-reference-data-tar-gz: "https://zenodo.org/record/3479773/files/1kg.somalier.tar.gz"
+expansionhunter:
+  aligner: "dag-aligner"
+  region-extension-length: 1000
+  excluded-samples: "config/expansionhunter_excluded_samples.tsv"
 expansionhunter_denovo:
   version: "v0.9.0"
   affected-status: "config/affected_status.tsv"

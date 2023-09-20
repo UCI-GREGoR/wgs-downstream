@@ -1,0 +1,275 @@
+---
+title: "ExpansionHunter Post-Run Report"
+author:
+  - "Lightning Auriga"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+  rmd: "expansionhunter.Rmd"
+output:
+  html_document:
+    code_folding: "hide"
+    highlight: tango
+    number_sections: no
+    theme: default
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r load.packages, eval=TRUE, echo=FALSE}
+## Load required R packages
+
+require(knitr, quietly = TRUE)
+require(kableExtra, quietly = TRUE)
+require(ggplot2, quietly = TRUE)
+require(RColorBrewer, quietly = TRUE)
+require(stringr, quietly = TRUE)
+```
+
+```{r set.ggplot2.theme, eval=TRUE, echo=FALSE}
+## Configure standard theme information for ggplot2
+
+my.theme <- theme_light() + theme(
+  plot.title = element_text(size = 15, hjust = 0.5),
+  plot.caption = element_text(size = 12),
+  axis.title = element_text(size = 14),
+  axis.text = element_text(size = 12),
+  strip.background = element_blank(),
+  strip.text = element_text(size = 14, colour = "black")
+)
+knitr::opts_chunk$set(fig.width = 16 / 9 * 10, fig.height = 10, fig.align = "center")
+```
+
+```{r set.variables, eval=TRUE, echo=FALSE}
+## Set input variables from snakemake
+vcf.filename <- snakemake@input[["results"]]
+repeats.published.table <- snakemake@input[["pubtable"]]
+output.table.filename <- snakemake@params[["output_tsv"]]
+```
+
+```{r pubtable.cleaning.functions, eval=TRUE, echo=FALSE}
+get.lower.bound <- function(vec) {
+  res <- stringr::str_replace(vec, "^([0-9]+)[^0-9][0-9NA]+", "\\1")
+  as.numeric(res)
+}
+
+get.upper.bound <- function(vec) {
+  res <- stringr::str_replace(vec, "^[0-9]+[^0-9]([0-9NA]+)", "\\1")
+  suppressWarnings(as.numeric(res))
+}
+
+clean.ranges <- function(vec, is.lowest = FALSE) {
+  res <- vec
+  res <- stringr::str_replace(res, "<", "1-")
+  res <- stringr::str_replace_all(res, ",", "")
+  res <- stringr::str_replace(res, ">([0-9]+).*$", "\\1-NA")
+  if (is.lowest) {
+    res <- stringr::str_replace(res, "^([0-9])+$", "0-\\1")
+  } else {
+    res <- stringr::str_replace(res, "^([0-9]+)$", "\\1-\\1")
+  }
+  res
+}
+```
+
+```{r load.expansionhunter.vcf, eval=TRUE, echo=FALSE}
+## load vcf information
+vcf.data <- read.table(vcf.filename, header = FALSE, comment.char = "#", sep = "\t")
+## strip everything but genotype
+for (i in seq(10, ncol(vcf.data))) {
+  vcf.data[, i] <- stringr::str_replace(vcf.data[, i], "^[^:]+:[^:]+:([^:]+):.*$", "\\1")
+}
+## get subjects from vcf #CHROM header
+fil <- gzfile(vcf.filename, "r")
+chrom.header <- ""
+while (!stringr::str_detect(chrom.header, "^#CHROM")) {
+  chrom.header <- readLines(fil, 1)
+}
+close(fil)
+chrom.header <- stringr::str_split(chrom.header, "\t")[[1]]
+```
+
+```{r compute.tidy.vcf.counts, eval=TRUE, echo=FALSE}
+## determine gene for each row
+vcf.genes <- stringr::str_replace(vcf.data[, 8], "^.*REPID=(.*)$", "\\1")
+## for each subject at each gene, attempt to record the longest repeat
+vcf.plot.gene <- c()
+vcf.plot.subj <- c()
+vcf.plot.count <- c()
+for (i in seq_len(nrow(vcf.data))) {
+  for (j in seq(10, ncol(vcf.data))) {
+    if (vcf.data[i, j] != "./." && vcf.data[i, j] != ".") {
+      res <- 0
+      if (stringr::str_detect(vcf.data[i, j], "^[0-9]+$")) {
+        res <- as.numeric(vcf.data[i, j])
+      } else {
+        stopifnot(stringr::str_detect(vcf.data[i, j], "^[0-9]+/[0-9]+$"))
+        gtype1 <- as.numeric(stringr::str_replace(vcf.data[i, j], "^([0-9]+)/[0-9]+$", "\\1"))
+        gtype2 <- as.numeric(stringr::str_replace(vcf.data[i, j], "^[0-9]+/([0-9]+)$", "\\1"))
+        res <- max(gtype1, gtype2)
+      }
+      stopifnot(length(res) == 1, !is.na(res))
+      loc <- which(vcf.plot.gene == vcf.genes[i] & vcf.plot.subj == j)
+      if (length(loc) != 0) {
+        if (vcf.plot.count[loc] < res) {
+          vcf.plot.count[loc] <- res
+        }
+      } else {
+        vcf.plot.gene <- c(vcf.plot.gene, vcf.genes[i])
+        vcf.plot.subj <- c(vcf.plot.subj, j)
+        vcf.plot.count <- c(vcf.plot.count, res)
+      }
+    }
+  }
+}
+vcf.plot.data <- data.frame(
+  Gene = vcf.plot.gene,
+  Subj = vcf.plot.subj,
+  RepeatLength = vcf.plot.count * 3
+)
+vcf.report.table <- vcf.plot.data
+vcf.report.table$Subj <- chrom.header[vcf.plot.data$Subj]
+write.table(vcf.report.table, output.table.filename, row.names = FALSE, col.names = TRUE, quote = FALSE, sep = "\t")
+```
+
+
+```{r plot.gene.repeat.distributions, eval=TRUE, echo=FALSE, warning=FALSE}
+my.plot <- ggplot(aes(x = Gene, y = RepeatLength), data = vcf.plot.data) +
+  my.theme +
+  theme(axis.text.x = element_text(size = 12, angle = 90))
+my.plot <- my.plot + geom_point(position = position_jitter(width = 0.1, height = 0.0))
+my.plot <- my.plot + xlab("Annotated Region") + ylab("Count of Max Repeat by Subject")
+my.plot <- my.plot + ggtitle("Distribution of Max Repeat Length by Region")
+my.plot
+```
+
+
+```{r initialize.known.counts, eval=TRUE, echo=FALSE}
+## load data from paper
+h <- read.table(repeats.published.table, header = FALSE, stringsAsFactors = FALSE, sep = "\t")
+for (i in 5:7) {
+  h[, i] <- clean.ranges(h[, i])
+}
+gene.names <- stringr::str_replace(h[, 3], "^([^ ]+) .*$", "\\1")
+lower.bounds.nor <- get.lower.bound(h[, 5])
+lower.bounds.pre <- get.lower.bound(h[, 6])
+lower.bounds.dis <- get.lower.bound(h[, 7])
+upper.bounds.nor <- get.upper.bound(h[, 5])
+upper.bounds.pre <- get.upper.bound(h[, 6])
+upper.bounds.dis <- get.upper.bound(h[, 7])
+
+## deal with the fact that the disease bounds can overlap with the pre-mutation group
+upper.colliding.bounds <- lower.bounds.dis < upper.bounds.pre
+lower.colliding.bounds <- lower.bounds.dis < lower.bounds.pre
+lower.bounds.pre[lower.colliding.bounds] <- lower.bounds.dis[lower.colliding.bounds]
+upper.bounds.pre[upper.colliding.bounds] <- lower.bounds.dis[upper.colliding.bounds]
+## for graphical reasons, set the lower bounds for normals to 1
+lower.bounds.nor <- rep(1, length(lower.bounds.nor))
+## deal with consecutive range boundaries containing the same number of repeats for some reason
+lower.bounds.pre[lower.bounds.pre == upper.bounds.nor] <- lower.bounds.pre[lower.bounds.pre == upper.bounds.nor] + 1
+lower.bounds.dis[lower.bounds.dis == upper.bounds.pre] <- lower.bounds.dis[lower.bounds.dis == upper.bounds.pre] + 1
+lower.bounds <- c(
+  lower.bounds.nor,
+  lower.bounds.pre,
+  lower.bounds.dis
+)
+upper.bounds <- c(
+  upper.bounds.nor,
+  upper.bounds.pre,
+  upper.bounds.dis
+)
+upper.bounds[is.na(upper.bounds)] <- max(upper.bounds, na.rm = TRUE)
+## for graphical reasons, decrement the lower ranges by 1
+lower.bounds <- lower.bounds - 1
+plot.data <- data.frame(
+  rep(gene.names, 3),
+  3 * (upper.bounds - lower.bounds),
+  factor(rep(c("normal", "pre-mutation", "disease"), each = length(gene.names)),
+    levels = c("normal", "pre-mutation", "disease")[3:1]
+  )
+)
+colnames(plot.data) <- c("Gene", "Range", "RangeType")
+```
+
+***
+<br>
+
+
+## STR Distribution for Regions with Known Characteristics
+
+Points on the below plot are only rendered if they intersect with the `pre-mutation` or `disease` regions for a given gene. `r if (max(vcf.plot.data$RepeatLength > 650)) {"The range of the x-axis is governed by the maximum observed value in the current dataset, not the maximum of the published possible ranges."} else {"The range of the x-axis is truncated to [0, 650] to mimic the plotting convention of [the ExpansionHunter paper](http://www.genome.org/cgi/doi/10.1101/gr.225672.117)."}` Due to idiosyncrasies of the source data in [this paper](https://www.nature.com/articles/nrg2828), pre-mutation and disease ranges are not guaranteed to be disjoint; for plotting convenience and to match [the ExpansionHunter paper](http://www.genome.org/cgi/doi/10.1101/gr.225672.117), disease range is given priority. Ranges are not actually contiguous and are not expected to run to 0, and again the plotting here matches the conventions of [the ExpansionHunter paper](http://www.genome.org/cgi/doi/10.1101/gr.225672.117).
+
+```{r plot.known.gene.counts.by.region, eval=TRUE, echo=FALSE, warning=FALSE}
+## set rendering order to match, on the top, the genes from the ExpansionHunter paper: 10.1101/gr.225672.117
+plot.data$Gene <- factor(plot.data$Gene, levels = c(
+  "TBP",
+  "PPP2R2B",
+  "PABPN1",
+  "JPH3",
+  "CNBP",
+  "CACNA1A",
+  "ATXN8OS",
+  "ATXN7",
+  "ATXN2",
+  "ATXN10",
+  "AFF2",
+  "ATXN1",
+  "FMR1",
+  "HTT",
+  "ATXN3",
+  "DMPK",
+  "AR",
+  "ATN1",
+  "FXN"
+))
+my.plot <- ggplot(aes(x = Gene, y = Range, fill = RangeType), data = plot.data)
+my.plot <- my.plot + my.theme + geom_bar(stat = "identity", alpha = 0.5)
+if (max(vcf.plot.data$RepeatLength > 650)) {
+  my.plot <- my.plot + coord_flip()
+} else {
+  my.plot <- my.plot + coord_flip(ylim = c(0, 650))
+}
+my.plot <- my.plot + scale_fill_manual(name = "Range", values = brewer.pal(8, "Set2")[c(3, 6, 4)])
+vcf.plot.data <- vcf.plot.data[vcf.plot.data$Gene %in% plot.data$Gene, ]
+keep.vcf.entries <- rep(TRUE, nrow(vcf.plot.data))
+for (gene in unique(vcf.plot.data$Gene)) {
+  gene.entries <- vcf.plot.data$RepeatLength[vcf.plot.data$Gene == gene]
+  keep.vcf.entries[vcf.plot.data$Gene == gene] <- gene.entries > plot.data$Range[plot.data$Gene == gene &
+    plot.data$RangeType == "normal"]
+}
+my.plot <- my.plot + geom_point(aes(x = Gene, y = RepeatLength),
+  fill = "black", colour = "black",
+  data = vcf.plot.data[keep.vcf.entries, ]
+)
+my.plot <- my.plot + geom_violin(aes(x = Gene, y = RepeatLength),
+  inherit.aes = FALSE, data = vcf.plot.data, trim = TRUE, colour = "black",
+  fill = "white", scale = "width"
+)
+my.plot <- my.plot + xlab("Annotated Region") + ylab("Count of Max Repeat by Subject")
+my.plot <- my.plot + labs(title = "Max Repeat by Subject, versus Expectation from https://dx.doi.org/10.1038%2Fnrg2828")
+my.plot
+```
+
+***
+<br>
+
+## Assorted Software Links
+
+<br>
+
+- [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
+
+***
+<br>
+
+## Session Information
+
+<br>
+
+The following summarizes the loaded R configuration for the run that created this report.
+
+```{r session.info, eval=TRUE, echo=TRUE}
+sessionInfo()
+```

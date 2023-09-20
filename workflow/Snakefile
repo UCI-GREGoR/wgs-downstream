@@ -69,6 +69,7 @@ TARGETS = [
     "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
+    "results/expansionhunter/expansionhunter_report.html",
     "results/cyrius/cyrius_all_subjects.tsv",
     "results/cyrius/cyrius_report.html",
     "results/telomerecat/tracker.tsv",
@@ -109,7 +110,12 @@ rule somalier:
 
 rule expansionhunter_denovo:
     input:
-        [x for x in filter(lambda y: "expansionhunter" in y, TARGETS)],
+        [x for x in filter(lambda y: "expansionhunter_denovo" in y, TARGETS)],
+
+
+rule expansionhunter:
+    input:
+        [x for x in filter(lambda y: "expansionhunter/" in y, TARGETS)],
 
 
 rule cyrius:
@@ -132,6 +138,7 @@ include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
 include: "rules/bcftools_stats.smk"
 include: "rules/cyrius.smk"
+include: "rules/expansionhunter.smk"
 include: "rules/expansionhunter_denovo.smk"
 include: "rules/gatk.smk"
 include: "rules/glnexus.smk"

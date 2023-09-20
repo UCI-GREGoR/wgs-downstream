@@ -253,6 +253,63 @@ def select_expansionhunter_denovo_subjects(
     return res
 
 
+def select_expansionhunter_subjects(
+    wildcards, checkpoints, projectids, sampleids, prefix, suffix, excluded_samples_fn
+) -> list:
+    """
+    Determine which samples have sufficient information to be run
+    through ExpansionHunter. The current requirements are:
+
+    - linker maps to valid sex annotation
+    - ID not in config exclusion override list
+    """
+    linker_fn = str(checkpoints.generate_linker.get().output[0])
+    linker = pd.read_table(linker_fn, sep="\t")
+    with open(excluded_samples_fn, "r") as f:
+        excluded_samples = [x.rstrip() for x in f.readlines()]
+    res = []
+    for projectid, sampleid in zip(projectids, sampleids):
+        if projectid.startswith("RU"):
+            linker_sampleid = linker.loc[
+                (linker["project"] == projectid)
+                & (linker["sex"] != "Unknown")
+                & (linker["index"] == sampleid),
+                "subject",
+            ]
+        else:
+            linker_sampleid = linker.loc[
+                linker["project"].isna()
+                & (linker["sex"] != "Unknown")
+                & (linker["index"] == sampleid),
+                "subject",
+            ]
+        if len(linker_sampleid) == 1:
+            subjectid = linker_sampleid.to_list()[0]
+            if subjectid not in excluded_samples:
+                res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
+    return res
+
+
+def get_sample_sex(wildcards, checkpoints) -> str:
+    """
+    For ExpansionHunter, get self-reported sex from sample linker.
+    """
+    linker_fn = str(checkpoints.generate_linker.get().output[0])
+    linker = pd.read_table(linker_fn, sep="\t")
+    projectid = wildcards.projectid
+    sampleid = wildcards.sampleid
+    if projectid.startswith("RU"):
+        linker_sex = linker.loc[
+            (linker["project"] == projectid) & (linker["subject"] == sampleid), "sex"
+        ]
+    else:
+        linker_sex = linker.loc[
+            linker["project"].isna() & (linker["subject"] == sampleid), "sex"
+        ]
+    sample_sex = linker_sex.to_list()[0]
+    return sample_sex.lower()
+
+
 def get_calling_range_by_chrom(wildcards: Wildcards, ranges: str):
     """
     Report a particular calling range as specified by chromosome
