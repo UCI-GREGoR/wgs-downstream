@@ -66,6 +66,22 @@ properties:
           - kg-labels-tsv
           - kg-reference-data-tar-gz
         additionalProperties: no
+  expansionhunter:
+    type: object
+    properties:
+      aligner:
+        type: string
+        pattern: "^dag-aligner$|^path-aligner$"
+      region-extension-length:
+        type: integer
+        min: 0
+      excluded-samples:
+        type: string
+    required:
+      - aligner
+      - region-extension-length
+      - excluded-samples
+    additionalProperties: no
   expansionhunter_denovo:
     type: object
     properties:
@@ -167,6 +183,7 @@ required:
   - behaviors
   - references
   - somalier
+  - expansionhunter
   - expansionhunter_denovo
   - cyrius
   - glnexus
