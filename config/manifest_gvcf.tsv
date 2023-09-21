@@ -1,530 +1,549 @@
-projectid	sampleid	vcf	gvcf
-RU35559	SQ6037	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6037.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6037.sorted.g.vcf.gz
-RU35559	SQ6038	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6038.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6038.sorted.g.vcf.gz
-RU35559	SQ6039	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6039.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6039.sorted.g.vcf.gz
-RU35559	SQ6040	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6040.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6040.sorted.g.vcf.gz
-RU35559	SQ6041	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6041.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6041.sorted.g.vcf.gz
-RU35559	SQ6042	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6042.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6042.sorted.g.vcf.gz
-RU35559	SQ6043	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6043.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6043.sorted.g.vcf.gz
-RU35559	SQ6044	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6044.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6044.sorted.g.vcf.gz
-RU35559	SQ6045	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6045.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6045.sorted.g.vcf.gz
-RU35559	SQ6046	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6046.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6046.sorted.g.vcf.gz
-RU35559	SQ6047	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6047.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6047.sorted.g.vcf.gz
-RU35559	SQ6048	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6048.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6048.sorted.g.vcf.gz
-RU35559	SQ6049	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6049.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6049.sorted.g.vcf.gz
-RU35559	SQ6050	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6050.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6050.sorted.g.vcf.gz
-RU35559	SQ6051	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6051.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6051.sorted.g.vcf.gz
-RU35559	SQ6052	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6052.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6052.sorted.g.vcf.gz
-RU35559	SQ6053	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6053.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6053.sorted.g.vcf.gz
-RU35559	SQ6054	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6054.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6054.sorted.g.vcf.gz
-RU35559	SQ6055	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6055.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6055.sorted.g.vcf.gz
-RU35559	SQ6056	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6056.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6056.sorted.g.vcf.gz
-RU35559	SQ6057	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6057.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6057.sorted.g.vcf.gz
-RU35559	SQ6058	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6058.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6058.sorted.g.vcf.gz
-RU35559	SQ6059	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6059.sorted.vcf.gz	analyses/RT-2338/RU35559/wgs-pipeline/results/deepvariant/RU35559/SQ6059.sorted.g.vcf.gz
-RU35771	SQ6061	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6061.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6061.sorted.g.vcf.gz
-RU35771	SQ6062	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6062.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6062.sorted.g.vcf.gz
-RU35771	SQ6063	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6063.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6063.sorted.g.vcf.gz
-RU35771	SQ6064	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6064.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6064.sorted.g.vcf.gz
-RU35771	SQ6065	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6065.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6065.sorted.g.vcf.gz
-RU35771	SQ6066	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6066.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6066.sorted.g.vcf.gz
-RU35771	SQ6067	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6067.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6067.sorted.g.vcf.gz
-RU35771	SQ6068	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6068.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6068.sorted.g.vcf.gz
-RU35771	SQ6069	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6069.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6069.sorted.g.vcf.gz
-RU35771	SQ6070	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6070.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6070.sorted.g.vcf.gz
-RU35771	SQ6071	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6071.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6071.sorted.g.vcf.gz
-RU35771	SQ6072	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6072.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6072.sorted.g.vcf.gz
-RU35771	SQ6073	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6073.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6073.sorted.g.vcf.gz
-RU35771	SQ6074	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6074.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6074.sorted.g.vcf.gz
-RU35771	SQ6075	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6075.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6075.sorted.g.vcf.gz
-RU35771	SQ6076	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6076.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6076.sorted.g.vcf.gz
-RU35771	SQ6077	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6077.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6077.sorted.g.vcf.gz
-RU35771	SQ6078	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6078.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6078.sorted.g.vcf.gz
-RU35771	SQ6080	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6080.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6080.sorted.g.vcf.gz
-RU35771	SQ6081	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6081.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6081.sorted.g.vcf.gz
-RU35771	SQ6082	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6082.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6082.sorted.g.vcf.gz
-RU35771	SQ6083	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6083.sorted.vcf.gz	analyses/RT-2538/RU35771/wgs-pipeline/results/deepvariant/RU35771/SQ6083.sorted.g.vcf.gz
-RU35772	SQ6085	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6085.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6085.sorted.g.vcf.gz
-RU35772	SQ6086	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6086.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6086.sorted.g.vcf.gz
-RU35772	SQ6087	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6087.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6087.sorted.g.vcf.gz
-RU35772	SQ6088	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6088.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6088.sorted.g.vcf.gz
-RU35772	SQ6089	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6089.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6089.sorted.g.vcf.gz
-RU35772	SQ6090	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6090.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6090.sorted.g.vcf.gz
-RU35772	SQ6091	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6091.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6091.sorted.g.vcf.gz
-RU35772	SQ6092	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6092.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6092.sorted.g.vcf.gz
-RU35772	SQ6093	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6093.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6093.sorted.g.vcf.gz
-RU35772	SQ6095	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6095.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6095.sorted.g.vcf.gz
-RU35772	SQ6096	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6096.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6096.sorted.g.vcf.gz
-RU35772	SQ6097	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6097.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6097.sorted.g.vcf.gz
-RU35772	SQ6098	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6098.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6098.sorted.g.vcf.gz
-RU35772	SQ6099	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6099.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6099.sorted.g.vcf.gz
-RU35772	SQ6100	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6100.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6100.sorted.g.vcf.gz
-RU35772	SQ6101	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6101.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6101.sorted.g.vcf.gz
-RU35772	SQ6102	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6102.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6102.sorted.g.vcf.gz
-RU35772	SQ6103	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6103.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6103.sorted.g.vcf.gz
-RU35772	SQ6104	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6104.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6104.sorted.g.vcf.gz
-RU35772	SQ6105	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6105.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6105.sorted.g.vcf.gz
-RU35772	SQ6106	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6106.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6106.sorted.g.vcf.gz
-RU35772	SQ6107	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6107.sorted.vcf.gz	analyses/RT-2539/RU35772/wgs-pipeline/results/deepvariant/RU35772/SQ6107.sorted.g.vcf.gz
-RU35849	SQ6109	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6109.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6109.sorted.g.vcf.gz
-RU35849	SQ6110	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6110.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6110.sorted.g.vcf.gz
-RU35849	SQ6111	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6111.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6111.sorted.g.vcf.gz
-RU35849	SQ6112	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6112.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6112.sorted.g.vcf.gz
-RU35849	SQ6113	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6113.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6113.sorted.g.vcf.gz
-RU35849	SQ6114	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6114.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6114.sorted.g.vcf.gz
-RU35849	SQ6115	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6115.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6115.sorted.g.vcf.gz
-RU35849	SQ6116	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6116.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6116.sorted.g.vcf.gz
-RU35849	SQ6117	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6117.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6117.sorted.g.vcf.gz
-RU35849	SQ6118	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6118.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6118.sorted.g.vcf.gz
-RU35849	SQ6119	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6119.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6119.sorted.g.vcf.gz
-RU35849	SQ6120	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6120.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6120.sorted.g.vcf.gz
-RU35849	SQ6121	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6121.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6121.sorted.g.vcf.gz
-RU35849	SQ6122	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6122.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6122.sorted.g.vcf.gz
-RU35849	SQ6123	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6123.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6123.sorted.g.vcf.gz
-RU35849	SQ6124	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6124.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6124.sorted.g.vcf.gz
-RU35849	SQ6125	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6125.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6125.sorted.g.vcf.gz
-RU35849	SQ6126	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6126.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6126.sorted.g.vcf.gz
-RU35849	SQ6127	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6127.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6127.sorted.g.vcf.gz
-RU35849	SQ6128	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6128.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6128.sorted.g.vcf.gz
-RU35849	SQ6129	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6129.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6129.sorted.g.vcf.gz
-RU35849	SQ6130	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6130.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6130.sorted.g.vcf.gz
-RU35849	SQ6131	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6131.sorted.vcf.gz	analyses/RT-2575/RU35849/wgs-pipeline/results/deepvariant/RU35849/SQ6131.sorted.g.vcf.gz
-RU37758	SQ6085	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6085.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6085.sorted.g.vcf.gz
-RU37758	SQ6086	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6086.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6086.sorted.g.vcf.gz
-RU37758	SQ6087	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6087.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6087.sorted.g.vcf.gz
-RU37758	SQ6088	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6088.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6088.sorted.g.vcf.gz
-RU37758	SQ6089	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6089.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6089.sorted.g.vcf.gz
-RU37758	SQ6090	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6090.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6090.sorted.g.vcf.gz
-RU37758	SQ6091	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6091.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6091.sorted.g.vcf.gz
-RU37758	SQ6092	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6092.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6092.sorted.g.vcf.gz
-RU37758	SQ6093	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6093.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6093.sorted.g.vcf.gz
-RU37758	SQ6094	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6094.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6094.sorted.g.vcf.gz
-RU37758	SQ6095	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6095.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6095.sorted.g.vcf.gz
-RU37758	SQ6096	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6096.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6096.sorted.g.vcf.gz
-RU37758	SQ6097	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6097.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6097.sorted.g.vcf.gz
-RU37758	SQ6098	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6098.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6098.sorted.g.vcf.gz
-RU37758	SQ6099	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6099.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6099.sorted.g.vcf.gz
-RU37758	SQ6100	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6100.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6100.sorted.g.vcf.gz
-RU37758	SQ6101	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6101.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6101.sorted.g.vcf.gz
-RU37758	SQ6102	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6102.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6102.sorted.g.vcf.gz
-RU37758	SQ6103	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6103.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6103.sorted.g.vcf.gz
-RU37758	SQ6104	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6104.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6104.sorted.g.vcf.gz
-RU37758	SQ6105	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6105.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6105.sorted.g.vcf.gz
-RU37758	SQ6106	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6106.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6106.sorted.g.vcf.gz
-RU37758	SQ6107	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6107.sorted.vcf.gz	analyses/RT-2869/RU37758/wgs-pipeline/results/deepvariant/RU37758/SQ6107.sorted.g.vcf.gz
-RU38503	SQ6085	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6085.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6085.sorted.g.vcf.gz
-RU38503	SQ6086	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6086.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6086.sorted.g.vcf.gz
-RU38503	SQ6087	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6087.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6087.sorted.g.vcf.gz
-RU38503	SQ6088	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6088.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6088.sorted.g.vcf.gz
-RU38503	SQ6089	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6089.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6089.sorted.g.vcf.gz
-RU38503	SQ6090	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6090.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6090.sorted.g.vcf.gz
-RU38503	SQ6091	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6091.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6091.sorted.g.vcf.gz
-RU38503	SQ6092	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6092.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6092.sorted.g.vcf.gz
-RU38503	SQ6093	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6093.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6093.sorted.g.vcf.gz
-RU38503	SQ6094	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6094.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6094.sorted.g.vcf.gz
-RU38503	SQ6095	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6095.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6095.sorted.g.vcf.gz
-RU38503	SQ6096	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6096.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6096.sorted.g.vcf.gz
-RU38503	SQ6097	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6097.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6097.sorted.g.vcf.gz
-RU38503	SQ6098	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6098.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6098.sorted.g.vcf.gz
-RU38503	SQ6099	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6099.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6099.sorted.g.vcf.gz
-RU38503	SQ6100	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6100.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6100.sorted.g.vcf.gz
-RU38503	SQ6101	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6101.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6101.sorted.g.vcf.gz
-RU38503	SQ6102	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6102.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6102.sorted.g.vcf.gz
-RU38503	SQ6103	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6103.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6103.sorted.g.vcf.gz
-RU38503	SQ6104	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6104.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6104.sorted.g.vcf.gz
-RU38503	SQ6105	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6105.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6105.sorted.g.vcf.gz
-RU38503	SQ6106	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6106.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6106.sorted.g.vcf.gz
-RU38503	SQ6107	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6107.sorted.vcf.gz	analyses/RT-2977/RU38503/wgs-pipeline/results/deepvariant/RU38503/SQ6107.sorted.g.vcf.gz
-RU39811	SQ6109	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6109.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6109.sorted.g.vcf.gz
-RU39811	SQ6110	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6110.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6110.sorted.g.vcf.gz
-RU39811	SQ6111	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6111.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6111.sorted.g.vcf.gz
-RU39811	SQ6112	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6112.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6112.sorted.g.vcf.gz
-RU39811	SQ6113	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6113.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6113.sorted.g.vcf.gz
-RU39811	SQ6114	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6114.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6114.sorted.g.vcf.gz
-RU39811	SQ6115	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6115.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6115.sorted.g.vcf.gz
-RU39811	SQ6116	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6116.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6116.sorted.g.vcf.gz
-RU39811	SQ6117	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6117.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6117.sorted.g.vcf.gz
-RU39811	SQ6118	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6118.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6118.sorted.g.vcf.gz
-RU39811	SQ6119	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6119.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6119.sorted.g.vcf.gz
-RU39811	SQ6120	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6120.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6120.sorted.g.vcf.gz
-RU39811	SQ6121	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6121.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6121.sorted.g.vcf.gz
-RU39811	SQ6122	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6122.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6122.sorted.g.vcf.gz
-RU39811	SQ6123	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6123.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6123.sorted.g.vcf.gz
-RU39811	SQ6124	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6124.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6124.sorted.g.vcf.gz
-RU39811	SQ6125	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6125.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6125.sorted.g.vcf.gz
-RU39811	SQ6126	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6126.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6126.sorted.g.vcf.gz
-RU39811	SQ6127	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6127.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6127.sorted.g.vcf.gz
-RU39811	SQ6128	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6128.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6128.sorted.g.vcf.gz
-RU39811	SQ6129	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6129.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6129.sorted.g.vcf.gz
-RU39811	SQ6130	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6130.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6130.sorted.g.vcf.gz
-RU39811	SQ6131	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6131.sorted.vcf.gz	analyses/RT-3115/RU39811/wgs-pipeline/results/deepvariant/RU39811/SQ6131.sorted.g.vcf.gz
-RU40014	SQ6061	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6061.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6061.sorted.g.vcf.gz
-RU40014	SQ6062	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6062.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6062.sorted.g.vcf.gz
-RU40014	SQ6063	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6063.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6063.sorted.g.vcf.gz
-RU40014	SQ6064	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6064.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6064.sorted.g.vcf.gz
-RU40014	SQ6065	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6065.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6065.sorted.g.vcf.gz
-RU40014	SQ6066	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6066.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6066.sorted.g.vcf.gz
-RU40014	SQ6067	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6067.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6067.sorted.g.vcf.gz
-RU40014	SQ6068	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6068.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6068.sorted.g.vcf.gz
-RU40014	SQ6069	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6069.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6069.sorted.g.vcf.gz
-RU40014	SQ6070	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6070.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6070.sorted.g.vcf.gz
-RU40014	SQ6071	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6071.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6071.sorted.g.vcf.gz
-RU40014	SQ6072	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6072.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6072.sorted.g.vcf.gz
-RU40014	SQ6073	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6073.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6073.sorted.g.vcf.gz
-RU40014	SQ6074	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6074.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6074.sorted.g.vcf.gz
-RU40014	SQ6075	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6075.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6075.sorted.g.vcf.gz
-RU40014	SQ6076	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6076.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6076.sorted.g.vcf.gz
-RU40014	SQ6077	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6077.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6077.sorted.g.vcf.gz
-RU40014	SQ6078	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6078.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6078.sorted.g.vcf.gz
-RU40014	SQ6079	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6079.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6079.sorted.g.vcf.gz
-RU40014	SQ6080	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6080.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6080.sorted.g.vcf.gz
-RU40014	SQ6081	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6081.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6081.sorted.g.vcf.gz
-RU40014	SQ6082	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6082.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6082.sorted.g.vcf.gz
-RU40014	SQ6083	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6083.sorted.vcf.gz	analyses/RT-3130/RU40014/wgs-pipeline/results/deepvariant/RU40014/SQ6083.sorted.g.vcf.gz
-RU40908	SQ6109	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6109.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6109.sorted.g.vcf.gz
-RU40908	SQ6110	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6110.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6110.sorted.g.vcf.gz
-RU40908	SQ6111	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6111.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6111.sorted.g.vcf.gz
-RU40908	SQ6112	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6112.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6112.sorted.g.vcf.gz
-RU40908	SQ6113	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6113.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6113.sorted.g.vcf.gz
-RU40908	SQ6114	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6114.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6114.sorted.g.vcf.gz
-RU40908	SQ6115	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6115.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6115.sorted.g.vcf.gz
-RU40908	SQ6116	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6116.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6116.sorted.g.vcf.gz
-RU40908	SQ6117	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6117.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6117.sorted.g.vcf.gz
-RU40908	SQ6118	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6118.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6118.sorted.g.vcf.gz
-RU40908	SQ6119	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6119.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6119.sorted.g.vcf.gz
-RU40908	SQ6120	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6120.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6120.sorted.g.vcf.gz
-RU40908	SQ6121	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6121.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6121.sorted.g.vcf.gz
-RU40908	SQ6122	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6122.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6122.sorted.g.vcf.gz
-RU40908	SQ6123	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6123.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6123.sorted.g.vcf.gz
-RU40908	SQ6124	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6124.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6124.sorted.g.vcf.gz
-RU40908	SQ6125	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6125.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6125.sorted.g.vcf.gz
-RU40908	SQ6126	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6126.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6126.sorted.g.vcf.gz
-RU40908	SQ6127	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6127.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6127.sorted.g.vcf.gz
-RU40908	SQ6128	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6128.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6128.sorted.g.vcf.gz
-RU40908	SQ6129	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6129.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6129.sorted.g.vcf.gz
-RU40908	SQ6130	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6130.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6130.sorted.g.vcf.gz
-RU40908	SQ6131	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6131.sorted.vcf.gz	analyses/RT-3219/RU40908/wgs-pipeline/results/deepvariant/RU40908/SQ6131.sorted.g.vcf.gz
-RU40979	SQ6061	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6061.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6061.sorted.g.vcf.gz
-RU40979	SQ6062	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6062.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6062.sorted.g.vcf.gz
-RU40979	SQ6063	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6063.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6063.sorted.g.vcf.gz
-RU40979	SQ6064	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6064.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6064.sorted.g.vcf.gz
-RU40979	SQ6065	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6065.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6065.sorted.g.vcf.gz
-RU40979	SQ6066	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6066.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6066.sorted.g.vcf.gz
-RU40979	SQ6067	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6067.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6067.sorted.g.vcf.gz
-RU40979	SQ6068	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6068.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6068.sorted.g.vcf.gz
-RU40979	SQ6069	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6069.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6069.sorted.g.vcf.gz
-RU40979	SQ6070	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6070.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6070.sorted.g.vcf.gz
-RU40979	SQ6071	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6071.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6071.sorted.g.vcf.gz
-RU40979	SQ6072	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6072.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6072.sorted.g.vcf.gz
-RU40979	SQ6073	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6073.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6073.sorted.g.vcf.gz
-RU40979	SQ6074	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6074.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6074.sorted.g.vcf.gz
-RU40979	SQ6075	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6075.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6075.sorted.g.vcf.gz
-RU40979	SQ6076	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6076.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6076.sorted.g.vcf.gz
-RU40979	SQ6077	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6077.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6077.sorted.g.vcf.gz
-RU40979	SQ6078	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6078.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6078.sorted.g.vcf.gz
-RU40979	SQ6079	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6079.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6079.sorted.g.vcf.gz
-RU40979	SQ6080	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6080.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6080.sorted.g.vcf.gz
-RU40979	SQ6081	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6081.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6081.sorted.g.vcf.gz
-RU40979	SQ6082	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6082.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6082.sorted.g.vcf.gz
-RU40979	SQ6083	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6083.sorted.vcf.gz	analyses/RT-3230/RU40979/wgs-pipeline/results/deepvariant/RU40979/SQ6083.sorted.g.vcf.gz
-RU41267	SQ6085	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6085.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6085.sorted.g.vcf.gz
-RU41267	SQ6086	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6086.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6086.sorted.g.vcf.gz
-RU41267	SQ6087	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6087.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6087.sorted.g.vcf.gz
-RU41267	SQ6088	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6088.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6088.sorted.g.vcf.gz
-RU41267	SQ6089	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6089.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6089.sorted.g.vcf.gz
-RU41267	SQ6090	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6090.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6090.sorted.g.vcf.gz
-RU41267	SQ6091	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6091.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6091.sorted.g.vcf.gz
-RU41267	SQ6092	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6092.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6092.sorted.g.vcf.gz
-RU41267	SQ6093	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6093.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6093.sorted.g.vcf.gz
-RU41267	SQ6094	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6094.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6094.sorted.g.vcf.gz
-RU41267	SQ6095	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6095.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6095.sorted.g.vcf.gz
-RU41267	SQ6096	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6096.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6096.sorted.g.vcf.gz
-RU41267	SQ6097	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6097.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6097.sorted.g.vcf.gz
-RU41267	SQ6098	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6098.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6098.sorted.g.vcf.gz
-RU41267	SQ6099	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6099.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6099.sorted.g.vcf.gz
-RU41267	SQ6100	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6100.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6100.sorted.g.vcf.gz
-RU41267	SQ6101	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6101.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6101.sorted.g.vcf.gz
-RU41267	SQ6102	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6102.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6102.sorted.g.vcf.gz
-RU41267	SQ6107	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6107.sorted.vcf.gz	analyses/RT-3240/RU41267/wgs-pipeline/results/deepvariant/RU41267/SQ6107.sorted.g.vcf.gz
-RU41804	SQ6061	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6061.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6061.sorted.g.vcf.gz
-RU41804	SQ6062	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6062.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6062.sorted.g.vcf.gz
-RU41804	SQ6063	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6063.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6063.sorted.g.vcf.gz
-RU41804	SQ6064	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6064.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6064.sorted.g.vcf.gz
-RU41804	SQ6065	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6065.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6065.sorted.g.vcf.gz
-RU41804	SQ6066	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6066.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6066.sorted.g.vcf.gz
-RU41804	SQ6067	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6067.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6067.sorted.g.vcf.gz
-RU41804	SQ6068	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6068.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6068.sorted.g.vcf.gz
-RU41804	SQ6069	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6069.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6069.sorted.g.vcf.gz
-RU41804	SQ6070	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6070.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6070.sorted.g.vcf.gz
-RU41804	SQ6071	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6071.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6071.sorted.g.vcf.gz
-RU41804	SQ6072	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6072.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6072.sorted.g.vcf.gz
-RU41804	SQ6073	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6073.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6073.sorted.g.vcf.gz
-RU41804	SQ6074	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6074.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6074.sorted.g.vcf.gz
-RU41804	SQ6075	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6075.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6075.sorted.g.vcf.gz
-RU41804	SQ6076	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6076.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6076.sorted.g.vcf.gz
-RU41804	SQ6077	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6077.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6077.sorted.g.vcf.gz
-RU41804	SQ6078	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6078.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6078.sorted.g.vcf.gz
-RU41804	SQ6079	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6079.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6079.sorted.g.vcf.gz
-RU41804	SQ6083	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6083.sorted.vcf.gz	analyses/RT-3349/RU41804/wgs-pipeline/results/deepvariant/RU41804/SQ6083.sorted.g.vcf.gz
-RU42062	SQ6085	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6085.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6085.sorted.g.vcf.gz
-RU42062	SQ6086	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6086.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6086.sorted.g.vcf.gz
-RU42062	SQ6087	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6087.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6087.sorted.g.vcf.gz
-RU42062	SQ6089	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6089.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6089.sorted.g.vcf.gz
-RU42062	SQ6090	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6090.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6090.sorted.g.vcf.gz
-RU42062	SQ6091	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6091.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6091.sorted.g.vcf.gz
-RU42062	SQ6092	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6092.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6092.sorted.g.vcf.gz
-RU42062	SQ6093	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6093.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6093.sorted.g.vcf.gz
-RU42062	SQ6094	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6094.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6094.sorted.g.vcf.gz
-RU42062	SQ6095	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6095.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6095.sorted.g.vcf.gz
-RU42062	SQ6096	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6096.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6096.sorted.g.vcf.gz
-RU42062	SQ6097	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6097.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6097.sorted.g.vcf.gz
-RU42062	SQ6098	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6098.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6098.sorted.g.vcf.gz
-RU42062	SQ6099	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6099.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6099.sorted.g.vcf.gz
-RU42062	SQ6100	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6100.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6100.sorted.g.vcf.gz
-RU42062	SQ6101	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6101.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6101.sorted.g.vcf.gz
-RU42062	SQ6102	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6102.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6102.sorted.g.vcf.gz
-RU42062	SQ6107	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6107.sorted.vcf.gz	analyses/RT-3359/RU42062/wgs-pipeline/results/deepvariant/RU42062/SQ6107.sorted.g.vcf.gz
-RU42218	SQ6109	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6109.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6109.sorted.g.vcf.gz
-RU42218	SQ6110	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6110.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6110.sorted.g.vcf.gz
-RU42218	SQ6111	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6111.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6111.sorted.g.vcf.gz
-RU42218	SQ6112	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6112.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6112.sorted.g.vcf.gz
-RU42218	SQ6113	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6113.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6113.sorted.g.vcf.gz
-RU42218	SQ6114	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6114.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6114.sorted.g.vcf.gz
-RU42218	SQ6115	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6115.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6115.sorted.g.vcf.gz
-RU42218	SQ6116	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6116.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6116.sorted.g.vcf.gz
-RU42218	SQ6117	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6117.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6117.sorted.g.vcf.gz
-RU42218	SQ6118	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6118.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6118.sorted.g.vcf.gz
-RU42218	SQ6119	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6119.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6119.sorted.g.vcf.gz
-RU42218	SQ6120	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6120.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6120.sorted.g.vcf.gz
-RU42218	SQ6121	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6121.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6121.sorted.g.vcf.gz
-RU42218	SQ6122	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6122.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6122.sorted.g.vcf.gz
-RU42218	SQ6123	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6123.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6123.sorted.g.vcf.gz
-RU42218	SQ6124	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6124.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6124.sorted.g.vcf.gz
-RU42218	SQ6125	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6125.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6125.sorted.g.vcf.gz
-RU42218	SQ6126	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6126.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6126.sorted.g.vcf.gz
-RU42218	SQ6131	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6131.sorted.vcf.gz	analyses/RT-3402/RU42218/wgs-pipeline/results/deepvariant/RU42218/SQ6131.sorted.g.vcf.gz
-RU42363	SQ6037	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6037.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6037.sorted.g.vcf.gz
-RU42363	SQ6038	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6038.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6038.sorted.g.vcf.gz
-RU42363	SQ6039	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6039.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6039.sorted.g.vcf.gz
-RU42363	SQ6040	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6040.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6040.sorted.g.vcf.gz
-RU42363	SQ6041	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6041.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6041.sorted.g.vcf.gz
-RU42363	SQ6042	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6042.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6042.sorted.g.vcf.gz
-RU42363	SQ6043	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6043.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6043.sorted.g.vcf.gz
-RU42363	SQ6044	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6044.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6044.sorted.g.vcf.gz
-RU42363	SQ6045	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6045.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6045.sorted.g.vcf.gz
-RU42363	SQ6046	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6046.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6046.sorted.g.vcf.gz
-RU42363	SQ6047	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6047.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6047.sorted.g.vcf.gz
-RU42363	SQ6048	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6048.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6048.sorted.g.vcf.gz
-RU42363	SQ6049	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6049.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6049.sorted.g.vcf.gz
-RU42363	SQ6050	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6050.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6050.sorted.g.vcf.gz
-RU42363	SQ6051	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6051.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6051.sorted.g.vcf.gz
-RU42363	SQ6052	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6052.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6052.sorted.g.vcf.gz
-RU42363	SQ6053	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6053.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6053.sorted.g.vcf.gz
-RU42363	SQ6054	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6054.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6054.sorted.g.vcf.gz
-RU42363	SQ6055	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6055.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6055.sorted.g.vcf.gz
-RU42363	SQ6056	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6056.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6056.sorted.g.vcf.gz
-RU42363	SQ6057	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6057.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6057.sorted.g.vcf.gz
-RU42363	SQ6058	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6058.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6058.sorted.g.vcf.gz
-RU42363	SQ6059	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6059.sorted.vcf.gz	analyses/RT-3418/RU42363/wgs-pipeline/results/deepvariant/RU42363/SQ6059.sorted.g.vcf.gz
-RU42807	SQ6061	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6061.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6061.sorted.g.vcf.gz
-RU42807	SQ6062	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6062.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6062.sorted.g.vcf.gz
-RU42807	SQ6063	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6063.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6063.sorted.g.vcf.gz
-RU42807	SQ6064	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6064.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6064.sorted.g.vcf.gz
-RU42807	SQ6065	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6065.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6065.sorted.g.vcf.gz
-RU42807	SQ6066	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6066.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6066.sorted.g.vcf.gz
-RU42807	SQ6067	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6067.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6067.sorted.g.vcf.gz
-RU42807	SQ6068	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6068.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6068.sorted.g.vcf.gz
-RU42807	SQ6069	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6069.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6069.sorted.g.vcf.gz
-RU42807	SQ6070	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6070.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6070.sorted.g.vcf.gz
-RU42807	SQ6071	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6071.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6071.sorted.g.vcf.gz
-RU42807	SQ6072	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6072.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6072.sorted.g.vcf.gz
-RU42807	SQ6073	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6073.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6073.sorted.g.vcf.gz
-RU42807	SQ6074	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6074.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6074.sorted.g.vcf.gz
-RU42807	SQ6075	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6075.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6075.sorted.g.vcf.gz
-RU42807	SQ6076	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6076.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6076.sorted.g.vcf.gz
-RU42807	SQ6077	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6077.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6077.sorted.g.vcf.gz
-RU42807	SQ6083	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6083.sorted.vcf.gz	analyses/RT-3437/RU42807/wgs-pipeline/results/deepvariant/RU42807/SQ6083.sorted.g.vcf.gz
-RU44489	SQ6085	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6085.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6085.sorted.g.vcf.gz
-RU44489	SQ6086	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6086.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6086.sorted.g.vcf.gz
-RU44489	SQ6087	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6087.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6087.sorted.g.vcf.gz
-RU44489	SQ6088	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6088.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6088.sorted.g.vcf.gz
-RU44489	SQ6089	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6089.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6089.sorted.g.vcf.gz
-RU44489	SQ6090	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6090.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6090.sorted.g.vcf.gz
-RU44489	SQ6091	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6091.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6091.sorted.g.vcf.gz
-RU44489	SQ6092	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6092.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6092.sorted.g.vcf.gz
-RU44489	SQ6093	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6093.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6093.sorted.g.vcf.gz
-RU44489	SQ6094	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6094.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6094.sorted.g.vcf.gz
-RU44489	SQ6095	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6095.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6095.sorted.g.vcf.gz
-RU44489	SQ6096	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6096.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6096.sorted.g.vcf.gz
-RU44489	SQ6098	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6098.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6098.sorted.g.vcf.gz
-RU44489	SQ6099	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6099.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6099.sorted.g.vcf.gz
-RU44489	SQ6100	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6100.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6100.sorted.g.vcf.gz
-RU44489	SQ6101	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6101.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6101.sorted.g.vcf.gz
-RU44489	SQ6102	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6102.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6102.sorted.g.vcf.gz
-RU44489	SQ6103	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6103.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6103.sorted.g.vcf.gz
-RU44489	SQ6104	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6104.sorted.vcf.gz	analyses/RT-3545/RU44489/wgs-pipeline/results/deepvariant/RU44489/SQ6104.sorted.g.vcf.gz
-RU44634	SQ6109	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6109.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6109.sorted.g.vcf.gz
-RU44634	SQ6110	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6110.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6110.sorted.g.vcf.gz
-RU44634	SQ6111	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6111.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6111.sorted.g.vcf.gz
-RU44634	SQ6112	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6112.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6112.sorted.g.vcf.gz
-RU44634	SQ6113	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6113.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6113.sorted.g.vcf.gz
-RU44634	SQ6114	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6114.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6114.sorted.g.vcf.gz
-RU44634	SQ6115	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6115.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6115.sorted.g.vcf.gz
-RU44634	SQ6116	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6116.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6116.sorted.g.vcf.gz
-RU44634	SQ6117	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6117.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6117.sorted.g.vcf.gz
-RU44634	SQ6118	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6118.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6118.sorted.g.vcf.gz
-RU44634	SQ6119	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6119.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6119.sorted.g.vcf.gz
-RU44634	SQ6120	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6120.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6120.sorted.g.vcf.gz
-RU44634	SQ6121	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6121.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6121.sorted.g.vcf.gz
-RU44634	SQ6122	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6122.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6122.sorted.g.vcf.gz
-RU44634	SQ6123	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6123.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6123.sorted.g.vcf.gz
-RU44634	SQ6124	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6124.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6124.sorted.g.vcf.gz
-RU44634	SQ6125	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6125.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6125.sorted.g.vcf.gz
-RU44634	SQ6126	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6126.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6126.sorted.g.vcf.gz
-RU44634	SQ6127	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6127.sorted.vcf.gz	analyses/RT-3546/RU44634/wgs-pipeline/results/deepvariant/RU44634/SQ6127.sorted.g.vcf.gz
-RU44754	SQ6037	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6037.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6037.sorted.g.vcf.gz
-RU44754	SQ6038	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6038.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6038.sorted.g.vcf.gz
-RU44754	SQ6039	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6039.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6039.sorted.g.vcf.gz
-RU44754	SQ6040	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6040.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6040.sorted.g.vcf.gz
-RU44754	SQ6041	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6041.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6041.sorted.g.vcf.gz
-RU44754	SQ6042	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6042.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6042.sorted.g.vcf.gz
-RU44754	SQ6043	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6043.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6043.sorted.g.vcf.gz
-RU44754	SQ6044	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6044.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6044.sorted.g.vcf.gz
-RU44754	SQ6045	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6045.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6045.sorted.g.vcf.gz
-RU44754	SQ6046	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6046.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6046.sorted.g.vcf.gz
-RU44754	SQ6047	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6047.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6047.sorted.g.vcf.gz
-RU44754	SQ6048	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6048.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6048.sorted.g.vcf.gz
-RU44754	SQ6049	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6049.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6049.sorted.g.vcf.gz
-RU44754	SQ6050	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6050.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6050.sorted.g.vcf.gz
-RU44754	SQ6051	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6051.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6051.sorted.g.vcf.gz
-RU44754	SQ6052	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6052.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6052.sorted.g.vcf.gz
-RU44754	SQ6053	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6053.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6053.sorted.g.vcf.gz
-RU44754	SQ6054	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6054.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6054.sorted.g.vcf.gz
-RU44754	SQ6055	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6055.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6055.sorted.g.vcf.gz
-RU44754	SQ6056	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6056.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6056.sorted.g.vcf.gz
-RU44754	SQ6057	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6057.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6057.sorted.g.vcf.gz
-RU44754	SQ6058	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6058.sorted.vcf.gz	analyses/RT-3547/RU44754/wgs-pipeline/results/deepvariant/RU44754/SQ6058.sorted.g.vcf.gz
-RU44873	SQ6061	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6061.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6061.sorted.g.vcf.gz
-RU44873	SQ6062	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6062.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6062.sorted.g.vcf.gz
-RU44873	SQ6063	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6063.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6063.sorted.g.vcf.gz
-RU44873	SQ6064	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6064.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6064.sorted.g.vcf.gz
-RU44873	SQ6065	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6065.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6065.sorted.g.vcf.gz
-RU44873	SQ6069	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6069.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6069.sorted.g.vcf.gz
-RU44873	SQ6070	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6070.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6070.sorted.g.vcf.gz
-RU44873	SQ6071	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6071.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6071.sorted.g.vcf.gz
-RU44873	SQ6072	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6072.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6072.sorted.g.vcf.gz
-RU44873	SQ6073	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6073.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6073.sorted.g.vcf.gz
-RU44873	SQ6074	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6074.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6074.sorted.g.vcf.gz
-RU44873	SQ6075	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6075.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6075.sorted.g.vcf.gz
-RU44873	SQ6076	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6076.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6076.sorted.g.vcf.gz
-RU44873	SQ6077	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6077.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6077.sorted.g.vcf.gz
-RU44873	SQ6078	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6078.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6078.sorted.g.vcf.gz
-RU44873	SQ6079	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6079.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6079.sorted.g.vcf.gz
-RU44873	SQ6080	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6080.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6080.sorted.g.vcf.gz
-RU44873	SQ6081	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6081.sorted.vcf.gz	analyses/RT-3549/RU44873/wgs-pipeline/results/deepvariant/RU44873/SQ6081.sorted.g.vcf.gz
-RU44942	SQ6085	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6085.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6085.sorted.g.vcf.gz
-RU44942	SQ6086	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6086.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6086.sorted.g.vcf.gz
-RU44942	SQ6087	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6087.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6087.sorted.g.vcf.gz
-RU44942	SQ6088	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6088.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6088.sorted.g.vcf.gz
-RU44942	SQ6090	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6090.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6090.sorted.g.vcf.gz
-RU44942	SQ6091	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6091.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6091.sorted.g.vcf.gz
-RU44942	SQ6092	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6092.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6092.sorted.g.vcf.gz
-RU44942	SQ6093	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6093.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6093.sorted.g.vcf.gz
-RU44942	SQ6094	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6094.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6094.sorted.g.vcf.gz
-RU44942	SQ6095	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6095.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6095.sorted.g.vcf.gz
-RU44942	SQ6096	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6096.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6096.sorted.g.vcf.gz
-RU44942	SQ6097	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6097.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6097.sorted.g.vcf.gz
-RU44942	SQ6098	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6098.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6098.sorted.g.vcf.gz
-RU44942	SQ6099	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6099.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6099.sorted.g.vcf.gz
-RU44942	SQ6100	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6100.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6100.sorted.g.vcf.gz
-RU44942	SQ6101	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6101.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6101.sorted.g.vcf.gz
-RU44942	SQ6102	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6102.sorted.vcf.gz	analyses/RT-3552/RU44942/wgs-pipeline/results/deepvariant/RU44942/SQ6102.sorted.g.vcf.gz
-RU45000	SQ6109	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6109.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6109.sorted.g.vcf.gz
-RU45000	SQ6110	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6110.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6110.sorted.g.vcf.gz
-RU45000	SQ6111	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6111.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6111.sorted.g.vcf.gz
-RU45000	SQ6112	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6112.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6112.sorted.g.vcf.gz
-RU45000	SQ6113	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6113.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6113.sorted.g.vcf.gz
-RU45000	SQ6116	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6116.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6116.sorted.g.vcf.gz
-RU45000	SQ6117	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6117.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6117.sorted.g.vcf.gz
-RU45000	SQ6118	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6118.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6118.sorted.g.vcf.gz
-RU45000	SQ6119	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6119.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6119.sorted.g.vcf.gz
-RU45000	SQ6120	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6120.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6120.sorted.g.vcf.gz
-RU45000	SQ6121	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6121.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6121.sorted.g.vcf.gz
-RU45000	SQ6122	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6122.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6122.sorted.g.vcf.gz
-RU45000	SQ6123	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6123.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6123.sorted.g.vcf.gz
-RU45000	SQ6124	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6124.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6124.sorted.g.vcf.gz
-RU45000	SQ6125	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6125.sorted.vcf.gz	analyses/RT-3557/RU45000/wgs-pipeline/results/deepvariant/RU45000/SQ6125.sorted.g.vcf.gz
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-invitae	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-from_cnh	sampleid	path-to-vcf	path-to-gvcf
-invitae_subjects	sampleid	path-to-vcf	path-to-gvcf
-invitae_subjects	sampleid	path-to-vcf	path-to-gvcf
-invitae_subjects	sampleid	path-to-vcf	path-to-gvcf
-invitae_subjects	sampleid	path-to-vcf	path-to-gvcf
-invitae_subjects	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0402_BHC7CWDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
-230822_A00263_0403_AHCFWLDSX7	sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf
+sampleid	path-to-vcf	path-to-gvcf

@@ -46,17 +46,16 @@ tempDir = (
     if "tmpdir" in config_resources
     else tempfile.gettempdir()
 )
-bam_manifest = config["bam_manifest"]
+cram_manifest = config["cram_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
-bam_manifest = pd.read_csv(bam_manifest, sep="\t")
+cram_manifest = pd.read_csv(cram_manifest, sep="\t")
 gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t")
 
-validate(bam_manifest, "../schema/bam_manifest_schema.yaml")
+validate(cram_manifest, "../schema/cram_manifest_schema.yaml")
 validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
 
-bam_manifest["internal-bam-paths"] = [
-    "results/{}/{}.bam".format(x, y)
-    for x, y in zip(bam_manifest["projectid"], bam_manifest["sampleid"])
+cram_manifest["internal-cram-paths"] = [
+    "results/{}/{}.cram".format(x, y) for x, y in zip(cram_manifest["sampleid"])
 ]
 
 reference_build = config["genome-build"]

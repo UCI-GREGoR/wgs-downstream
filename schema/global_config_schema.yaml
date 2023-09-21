@@ -1,7 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: global configuration
 properties:
-  bam_manifest:
+  cram_manifest:
     type: string
   gvcf_manifest:
     type: string
@@ -25,10 +25,10 @@ properties:
   behaviors:
     type: object
     properties:
-      symlink-bams:
+      symlink-crams:
         type: boolean
     required:
-      - symlink-bams
+      - symlink-crams
     additionalProperties: no
   references:
     type: object
@@ -174,7 +174,7 @@ properties:
       - grch38
     additionalProperties: no
 required:
-  - bam_manifest
+  - cram_manifest
   - gvcf_manifest
   - sample-logbook
   - sample-linking

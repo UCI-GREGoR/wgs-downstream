@@ -1,0 +1,13 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: an entry in the aligned cram manifest
+properties:
+  sampleid:
+    type: string
+    description: "external ID for sample"
+  cram:
+    type: string
+    description: "absolute or relative path to post-BQSR cram file for sample"
+required:
+  - sampleid
+  - cram
+additionalProperties: no

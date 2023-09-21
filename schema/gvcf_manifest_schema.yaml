@@ -1,12 +1,9 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: an entry in the g.vcf manifest
 properties:
-  projectid:
-    type: string
-    description: "run ID or other desired grouping of sequencing samples"
   sampleid:
     type: string
-    description: "sequencing ID for sample"
+    description: "external ID for sample"
   vcf:
     type: string
     description: "absolute or relative path to .vcf.gz file for sample"
@@ -14,7 +11,6 @@ properties:
     type: string
     description: "absolute or relative path to g.vcf.gz file for sample"
 required:
-  - projectid
   - sampleid
   - gvcf
 additionalProperties: no

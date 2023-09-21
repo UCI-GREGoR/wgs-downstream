@@ -1,7 +1,7 @@
 # This file should contain everything to configure the workflow on a global scale.
 # In case of sample based data, it should be complemented by a manifest file that contains
 # one row per sample. It can be parsed easily via pandas.
-bam_manifest: "config/manifest_bam.tsv"
+cram_manifest: "config/manifest_cram.tsv"
 gvcf_manifest: "config/manifest_gvcf.tsv"
 sample-logbook: "resources/example_logbook.xlsx.xlsx"
 sample-linking:
@@ -11,7 +11,7 @@ data-model: "resources/PMGRC Data Model Conversion - GREGoR Submission.xlsx"
 multiqc-config: "config/multiqc_config.yaml"
 genome-build: "grch38"
 behaviors:
-  symlink-bams: yes
+  symlink-crams: yes
 
 references:
   grch38:
