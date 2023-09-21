@@ -3,8 +3,11 @@
 This workflow is intended to be the R&D space for PMGRC WGS downstream (post-alignment or calling) analyses. Target analyses are as follows:
 
 - Cross-flowcell QC with [somalier](https://github.com/brentp/somalier)
+- [Cyrius](https://github.com/Illumina/Cyrius)
+- [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
 - [ExpansionHunter Denovo](https://github.com/Illumina/ExpansionHunterDenovo)
 - Joint calling with [GLnexus](https://github.com/dnanexus-rnd/GLnexus)
+- Recalling of trios with [DeepTrio](https://github.com/google/deepvariant)
 - others TBD
 
 New global targets should be added in `workflow/Snakefile`. Content in `workflow/Snakefile` and the snakefiles in `workflow/rules` should be specifically _rules_; python infrastructure should be composed as subroutines under `lib/` and constructed in such a manner as to be testable with [pytest](https://docs.pytest.org/en/7.2.x/). Rules can call embedded scripts (in python or R/Rmd) from `workflow/scripts`; again, these should be constructed to be testable with pytest or [testthat](https://testthat.r-lib.org/).
@@ -173,6 +176,14 @@ one present and one absent parent in dataset. This is flagged for update.
 #### somalier
 
 Somalier's results are processed by MultiQC and emitted as a report `results/multiqc/multiqc.cross-flowcell.html`.
+
+#### Cyrius
+
+WIP
+
+#### ExpansionHunter
+
+WIP
 
 #### ExpansionHunterDenovo
 
