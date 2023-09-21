@@ -31,8 +31,8 @@ rule expansionhunter_run:
         crai="results/crams/{sampleid}.cram.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
     output:
-        "results/expansionhunter/{projectid}/{sampleid}.output.vcf",
-        "results/expansionhunter/{projectid}/{sampleid}.output.json",
+        "results/expansionhunter/{sampleid}.output.vcf",
+        "results/expansionhunter/{sampleid}.output.json",
     params:
         variant_catalog="$CONDA_PREFIX/share/ExpansionHunter/variant_catalog/grch38/variant_catalog.json",
         output_prefix="results/expansionhunter/{sampleid}.output",

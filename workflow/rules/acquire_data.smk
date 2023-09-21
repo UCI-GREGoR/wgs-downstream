@@ -5,7 +5,7 @@ rule copy_crams:
     input:
         cram=lambda wildcards: tc.link_crams_by_id(wildcards, cram_manifest),
     output:
-        cram="results/crams/{projectid}/{sampleid}.cram",
+        cram="results/crams/{sampleid}.cram",
     params:
         symlink_target=config["behaviors"]["symlink-crams"],
     benchmark:
