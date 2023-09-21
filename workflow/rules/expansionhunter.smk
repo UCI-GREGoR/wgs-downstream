@@ -37,7 +37,7 @@ rule expansionhunter_run:
         variant_catalog="$CONDA_PREFIX/share/ExpansionHunter/variant_catalog/grch38/variant_catalog.json",
         output_prefix="results/expansionhunter/{sampleid}.output",
         region_extension_length=config["expansionhunter"]["region-extension-length"],
-        sex=lambda wildcards: tc.get_sample_sex(wildcards, config["sample-sex"]),
+        sex=lambda wildcards: tc.get_sample_sex(wildcards, sex_manifest),
         aligner=config["expansionhunter"]["aligner"],
         analysis_mode="seeking",
     conda:
