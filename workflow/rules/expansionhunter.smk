@@ -1,8 +1,8 @@
 localrules:
-    expansionhunter_rename_bai,
+    expansionhunter_rename_crai,
 
 
-rule expansionhunter_rename_bai:
+rule expansionhunter_rename_crai:
     """
     The path to the cram index is not exposed as a controllable
     parameter by expansionhunter. As such, copy the standard
@@ -81,14 +81,14 @@ rule expansionhunter_combine_vcfs:
     """
     input:
         vcf=lambda wildcards: tc.select_expansionhunter_subjects(
-            config["sample-sex"],
+            sex_manifest,
             cram_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz",
             config["expansionhunter"]["excluded-samples"],
         ),
         tbi=lambda wildcards: tc.select_expansionhunter_subjects(
-            config["sample-sex"],
+            sex_manifest,
             cram_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz.tbi",
