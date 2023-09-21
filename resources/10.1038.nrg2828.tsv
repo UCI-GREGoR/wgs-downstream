@@ -1,0 +1,19 @@
+DRPLA	CAG	ATN1 (exon 5)	P	6–35	35–48	49–88	Yes
+HD	CAG	HTT (exon 1)	P	6–29	29–37	38–180	Yes
+OPMD	GCN	PABPN1 (exon 1)	P and M	10	12–17	>11	None found in tissue tested (hypothalamus)
+SCA1	CAG	ATXN1 (exon 8)	P	6–39	40	41–83	Yes
+SCA2	CAG	ATXN2 (exon 1)	P	<31	31–32	32–200	Unknown
+SCA3 (Machado–Joseph disease)	CAG	ATXN3 (exon 8)	P	12–40	41–85	52–86	Unknown
+SCA6	CAG	CACNA1A (exon 47)	P	<18	19	20–33	None found
+SCA7	CAG	ATXN7 (exon 3)	P	4–17	28–33	>36 to >460	Yes
+SCA17	CAG	TBP (exon 3)	P > M	25–42	43–48	45–66	Yes
+SMBA	CAG	AR (exon 1)	P	13–31	32–39	40	None found
+DM1	CTG	DMPK (3′ UTR)	M	5–37	37–50	>50	Yes
+DM2	CCTG	CNBP (intron 1)	Uncertain	<30	31–74	75–11,000	Yes
+FRAX-E	GCC	AFF2 (5′ UTR)	M	4–39	40–200	>200	Unknown
+FRDA	GAA	FXN (intron 1)	Recessive	5–30	31–100	70–1,000	Yes
+FXS	CGG	FMR1 (5′ UTR )	M	6–50	55–200	200–4,000	Yes
+HDL2	CTG	JPH3 (exon 2A)	M	6–27	29–35	36–57	Unknown
+SCA8	CTG	ATXN8OS (3′ UTR)	M	15–34	34–89	89–250	Unknown
+SCA10	ATTCT	ATXN10 (intron 9)	M and P (smaller changes with M)	10–29	29–400	400–4,500	Yes
+SCA12	CAG	PPP2R2B (5′ UTR)	M and P (more unstable with P)	7–28	28–66	66–78	None found
