@@ -31,7 +31,7 @@ rule cyrius_create_manifest:
     input:
         cram="results/crams/{sampleid}.cram",
     output:
-        tsv=temp("results/cyrius/{sampleid}.input_manifest.tsv"),
+        tsv=temp("results/cyrius/input_manifests/{sampleid}.tsv"),
     shell:
         "echo '{input}' > {output}"
 
@@ -43,14 +43,14 @@ rule cyrius_run:
     input:
         cram="results/crams/{sampleid}.cram",
         crai="results/crams/{sampleid}.crai",
-        tsv="results/cyrius/{sampleid}.input_manifest.tsv",
+        tsv="results/cyrius/input_manifests/{sampleid}.tsv",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         repo="results/cyrius/repo",
     output:
-        tsv=temp("results/cyrius/{sampleid}.tsv"),
-        json=temp("results/cyrius/{sampleid}.json"),
+        tsv=temp("results/cyrius/per_sample_data/{sampleid}.tsv"),
+        json=temp("results/cyrius/per_sample_data/{sampleid}.json"),
     params:
-        outdir="results/cyrius",
+        outdir="results/cyrius/per_sample_data",
         prefix="{sampleid}",
     benchmark:
         "results/performance_benchmarks/cyrius_run/{sampleid}.tsv"
@@ -77,7 +77,7 @@ rule cyrius_combine_results:
         tsvs=lambda wildcards: tc.select_cyrius_subjects(
             cram_manifest["sampleid"],
             config["cyrius"]["excluded-samples"],
-            "results/cyrius",
+            "results/cyrius/per_sample_data",
             "tsv",
         ),
     output:

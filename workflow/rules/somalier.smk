@@ -37,7 +37,7 @@ checkpoint somalier_relate:
         somalier=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             cram_manifest["sampleid"].to_list(),
-            "results/somalier/extract/",
+            "results/somalier/extract",
             ".somalier",
         ),
         ped="results/somalier/somalier.ped",
@@ -143,7 +143,7 @@ rule somalier_ancestry:
         somalier_experimental=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
             cram_manifest["sampleid"].to_list(),
-            "results/somalier/extract/",
+            "results/somalier/extract",
             ".somalier",
         ),
     output:
