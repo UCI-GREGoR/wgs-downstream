@@ -58,7 +58,7 @@ validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
 validate(sex_manifest, "../schema/sex_manifest_schema.yaml")
 
 cram_manifest["internal-cram-paths"] = [
-    "results/{}/{}.cram".format(x, y) for x, y in zip(cram_manifest["sampleid"])
+    "results/crams/{}.cram".format(x) for x in cram_manifest["sampleid"]
 ]
 
 reference_build = config["genome-build"]
