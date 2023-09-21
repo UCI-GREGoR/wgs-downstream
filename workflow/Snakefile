@@ -48,11 +48,14 @@ tempDir = (
 )
 cram_manifest = config["cram_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
-cram_manifest = pd.read_csv(cram_manifest, sep="\t")
-gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t")
+cram_manifest = pd.read_csv(cram_manifest, sep="\t").set_index("sampleid", drop=False)
+gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t").set_index("sampleid", drop=False)
+sex_manifest = config["sample-sex"]
+sex_manifest = pd.read_csv(sex_manifest, sep="\t").set_index("sampleid", drop=False)
 
 validate(cram_manifest, "../schema/cram_manifest_schema.yaml")
 validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
+validate(sex_manifest, "../schema/sex_manifest_schema.yaml")
 
 cram_manifest["internal-cram-paths"] = [
     "results/{}/{}.cram".format(x, y) for x, y in zip(cram_manifest["sampleid"])

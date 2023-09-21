@@ -34,7 +34,7 @@ The following settings are recognized in `config/config.yaml`.
 |---|---|
 |`cram_manifest`|Relative path to aligned read file manifest|
 |`gvcf_manifest`|Relative path to g.vcf file manifest|
-|`sample-logbook`|Local Excel spreadsheet clone of sample manifest information from Google docs. This is upstream input. A local cloned file is preferred due to the possibility of uncontrolled upstream changes|
+|`sample-sex`|Relative path to plaintext linker between sample ID and self-reported sex (Female, Male, Unknown)|
 |`data-model`|Local Excel spreadsheet clone of data model information from Google docs. This file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo. This is a local cloned file for the same reasons as listed above|
 |`multiqc-config`|Relative path to configuration settings for cross-flowcell multiQC report|
 |`genome-build`|Requested genome reference build to use for this analysis run. This should match the tags used in the reference data blocks below|

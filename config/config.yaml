@@ -3,10 +3,7 @@
 # one row per sample. It can be parsed easily via pandas.
 cram_manifest: "config/manifest_cram.tsv"
 gvcf_manifest: "config/manifest_gvcf.tsv"
-sample-logbook: "resources/example_logbook.xlsx.xlsx"
-sample-linking:
-    sex: "config/sample_linking_sex.tsv"
-    external-ids: "config/sample_linking_external_ids.tsv"
+sample-sex: "config/sample_linking_sex.tsv"
 data-model: "resources/PMGRC Data Model Conversion - GREGoR Submission.xlsx"
 multiqc-config: "config/multiqc_config.yaml"
 genome-build: "grch38"

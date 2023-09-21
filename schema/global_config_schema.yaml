@@ -5,16 +5,8 @@ properties:
     type: string
   gvcf_manifest:
     type: string
-  sample-logbook:
+  sample-sex:
     type: string
-  sample-linking:
-    type: object
-    properties:
-      sex:
-        type: string
-      external-ids:
-        type: string
-    additionalProperties: false
   data-model:
     type: string
   multiqc-config:
@@ -176,8 +168,7 @@ properties:
 required:
   - cram_manifest
   - gvcf_manifest
-  - sample-logbook
-  - sample-linking
+  - sample-sex
   - multiqc-config
   - genome-build
   - behaviors
