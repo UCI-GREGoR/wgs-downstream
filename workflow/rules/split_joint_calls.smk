@@ -134,7 +134,7 @@ rule aggregate_split_joint_calls:
     from a single sample split of a joint call run
     """
     input:
-        lambda wildcards: tc.compute_expected_single_samples(gvcf_manifest, checkpoints),
+        lambda wildcards: tc.compute_expected_single_samples(gvcf_manifest),
     output:
         temp("results/split_joint_calls/.joint_calls_split"),
     shell:

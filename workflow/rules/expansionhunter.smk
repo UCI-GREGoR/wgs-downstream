@@ -4,22 +4,22 @@ localrules:
 
 rule expansionhunter_rename_bai:
     """
-    The path to the bam index is not exposed as a controllable
+    The path to the cram index is not exposed as a controllable
     parameter by expansionhunter. As such, copy the standard
-    bai index to the modified extension .bam.bai.
+    crai index to the modified extension .cram.crai.
 
-    Due to ambiguity with other bai generation rules,
-    this specifies both the bam and the bai with the
-    original naming, though technically the bam is not required
+    Due to ambiguity with other crai generation rules,
+    this specifies both the cram and the crai with the
+    original naming, though technically the cram is not required
     for this operation.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
     output:
-        bai=temp("results/bams/{projectid}/{sampleid}.bam.bai"),
+        crai=temp("results/crams/{sampleid}.cram.crai"),
     shell:
-        "cp {input.bai} {output.bai}"
+        "cp {input.crai} {output.crai}"
 
 
 rule expansionhunter_run:
@@ -27,18 +27,17 @@ rule expansionhunter_run:
     Run ExpansionHunter using user-configured run settings.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bam.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.cram.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
-        linker="results/linker.tsv",
     output:
         "results/expansionhunter/{projectid}/{sampleid}.output.vcf",
         "results/expansionhunter/{projectid}/{sampleid}.output.json",
     params:
         variant_catalog="$CONDA_PREFIX/share/ExpansionHunter/variant_catalog/grch38/variant_catalog.json",
-        output_prefix="results/expansionhunter/{projectid}/{sampleid}.output",
+        output_prefix="results/expansionhunter/{sampleid}.output",
         region_extension_length=config["expansionhunter"]["region-extension-length"],
-        sex=lambda wildcards: tc.get_sample_sex(wildcards, checkpoints),
+        sex=lambda wildcards: tc.get_sample_sex(wildcards, config["sample-sex"]),
         aligner=config["expansionhunter"]["aligner"],
         analysis_mode="seeking",
     conda:
@@ -48,7 +47,7 @@ rule expansionhunter_run:
         mem=2000,
         qname="small",
     shell:
-        "ExpansionHunter --reads {input.bam} --reference {input.fasta} "
+        "ExpansionHunter --reads {input.cram} --reference {input.fasta} "
         "--variant-catalog {params.variant_catalog} "
         "--output-prefix {params.output_prefix} "
         "--region-extension-length {params.region_extension_length} "
@@ -63,9 +62,9 @@ rule expansionhunter_filter_vcfs:
     Filter expansionhunter raw output on PASS.
     """
     input:
-        vcf="results/expansionhunter/{projectid}/{sampleid}.output.vcf",
+        vcf="results/expansionhunter/{sampleid}.output.vcf",
     output:
-        output="results/expansionhunter/{projectid}/{sampleid}.filtered.vcf.gz",
+        output="results/expansionhunter/{sampleid}.filtered.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
     threads: 1
@@ -82,19 +81,15 @@ rule expansionhunter_combine_vcfs:
     """
     input:
         vcf=lambda wildcards: tc.select_expansionhunter_subjects(
-            wildcards,
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            config["sample-sex"],
+            cram_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz",
             config["expansionhunter"]["excluded-samples"],
         ),
         tbi=lambda wildcards: tc.select_expansionhunter_subjects(
-            wildcards,
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            config["sample-sex"],
+            cram_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz.tbi",
             config["expansionhunter"]["excluded-samples"],

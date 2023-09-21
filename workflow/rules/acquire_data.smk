@@ -1,28 +1,43 @@
-rule copy_bams:
+rule copy_crams:
     """
-    Get a local copy of bams before analysis
-
-    In theory, the linker file should not be explicitly required as input,
-    as it's implied by the use of the checkpoints object; but apparently
-    snakemake needs the hint.
+    Get a local copy of crams before analysis
     """
     input:
-        linker="results/linker.tsv",
-        bam=lambda wildcards: tc.link_bams_by_id(wildcards, checkpoints, bam_manifest),
+        cram=lambda wildcards: tc.link_crams_by_id(wildcards, cram_manifest),
     output:
-        bam="results/bams/{projectid}/{sampleid}.bam",
+        cram="results/crams/{projectid}/{sampleid}.cram",
     params:
-        symlink_target=config["behaviors"]["symlink-bams"],
+        symlink_target=config["behaviors"]["symlink-crams"],
     benchmark:
-        "results/performance_benchmarks/copy_bams/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/copy_crams/{sampleid}.tsv"
     threads: 1
     resources:
         mem_mb=500,
         qname="small",
     shell:
         'if [[ "{params.symlink_target}" == "True" ]] ; then '
-        "ln -s $(readlink -m {input.bam}) {output.bam} ; "
-        "else cp {input.bam} {output.bam} ; fi"
+        "ln -s $(readlink -m {input.cram}) {output.cram} ; "
+        "else cp {input.cram} {output.cram} ; fi"
+
+
+rule samtools_create_crai:
+    """
+    From a sorted cram file, create a crai-format index
+    """
+    input:
+        cram="results/{prefix}.cram",
+    output:
+        crai="results/{prefix}.crai",
+    benchmark:
+        "results/performance_benchmarks/samtools_create_crai/{prefix}.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 4
+    resources:
+        mem_mb=8000,
+        qname="small",
+    shell:
+        "samtools index -@ {threads} -o {output.crai} {input.cram}"
 
 
 rule samtools_create_bai:
@@ -45,56 +60,18 @@ rule samtools_create_bai:
         "samtools index -@ {threads} -b -o {output.bai} {input.bam}"
 
 
-checkpoint generate_linker:
-    """
-    From a sample logbook, generate a simple linker
-    between various sample ID types
-    """
-    output:
-        linker="results/linker.tsv",
-    params:
-        logbook=config["sample-logbook"] if "sample-logbook" in config else None,
-        sex_linker=config["sample-linking"]["sex"]
-        if "sample-linking" in config and "sex" in config["sample-linking"]
-        else None,
-        external_id_linker=config["sample-linking"]["external-ids"]
-        if "sample-linking" in config and "external-ids" in config["sample-linking"]
-        else None,
-    benchmark:
-        "results/performance_benchmarks/generate_linker/linker.tsv"
-    conda:
-        "../envs/r.yaml" if not use_containers else None
-    container:
-        "{}/r.sif".format(apptainer_images) if use_containers else None
-    threads: config_resources["r"]["threads"]
-    resources:
-        mem_mb=config_resources["r"]["memory"],
-        qname=rc.select_queue(
-            config_resources["r"]["queue"], config_resources["queues"]
-        ),
-    script:
-        "../scripts/construct_linker_from_inputs.R"
-
-
 rule copy_gvcfs:
     """
     Get a local copy of gvcfs before analysis.
-
-    In theory, the linker file should not be explicitly required as input,
-    as it's implied by the use of the checkpoints object; but apparently
-    snakemake needs the hint.
     """
     input:
-        linker="results/linker.tsv",
-        gvcf=lambda wildcards: tc.link_gvcfs_by_id(
-            wildcards, checkpoints, gvcf_manifest, True
-        ),
+        gvcf=lambda wildcards: tc.link_gvcfs_by_id(wildcards, gvcf_manifest, True),
     output:
-        gvcf="results/gvcfs/{projectid}/{sampleid}.g.vcf.gz",
+        gvcf="results/gvcfs/{sampleid}.g.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
     benchmark:
-        "results/performance_benchmarks/copy_gvcfs/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/copy_gvcfs/{sampleid}.tsv"
     threads: 1
     resources:
         mem_mb=1000,
@@ -109,15 +86,13 @@ rule copy_vcfs:
     Get a local copy of vcfs before analysis
     """
     input:
-        vcf=lambda wildcards: tc.link_gvcfs_by_id(
-            wildcards, checkpoints, gvcf_manifest, False
-        ),
+        vcf=lambda wildcards: tc.link_gvcfs_by_id(wildcards, gvcf_manifest, False),
     output:
-        vcf="results/vcfs/{projectid}/{sampleid}.vcf.gz",
+        vcf="results/vcfs/{sampleid}.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
     benchmark:
-        "results/performance_benchmarks/copy_vcfs/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/copy_vcfs/{sampleid}.tsv"
     threads: 1
     resources:
         mem_mb=1000,
@@ -132,12 +107,12 @@ rule slice_vcf:
     Select a subset of a vcf for use in various applications
     """
     input:
-        vcf="results/vcfs/{projectid}/{filename}.vcf.gz",
+        vcf="results/vcfs/{filename}.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf=temp("results/sliced_vcfs/{splitnum}/{projectid}/{filename}.vcf.gz"),
+        vcf=temp("results/sliced_vcfs/{splitnum}/{filename}.vcf.gz"),
     benchmark:
-        "results/performance_benchmarks/slice_vcf/{splitnum}/{projectid}/{filename}.vcf.tsv"
+        "results/performance_benchmarks/slice_vcf/{splitnum}/{filename}.vcf.tsv"
     conda:
         "../envs/bedtools.yaml" if not use_containers else None
     threads: config_resources["bedtools"]["threads"]
@@ -152,9 +127,9 @@ rule slice_vcf:
 
 use rule slice_vcf as slice_gvcf with:
     input:
-        vcf="results/gvcfs/{projectid}/{filename}.g.vcf.gz",
+        vcf="results/gvcfs/{filename}.g.vcf.gz",
         bed="results/deeptrio/split_ranges/{splitnum}.bed",
     output:
-        vcf=temp("results/sliced_gvcfs/{splitnum}/{projectid}/{filename}.g.vcf.gz"),
+        vcf=temp("results/sliced_gvcfs/{splitnum}/{filename}.g.vcf.gz"),
     benchmark:
-        "results/performance_benchmarks/slice_gvcf/{splitnum}/{projectid}/{filename}.g.vcf.tsv"
+        "results/performance_benchmarks/slice_gvcf/{splitnum}/{filename}.g.vcf.tsv"

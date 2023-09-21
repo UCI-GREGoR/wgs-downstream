@@ -26,12 +26,11 @@ checkpoint expansionhunter_denovo_create_manifest:
     """
     input:
         affected_status=config["expansionhunter_denovo"]["affected-status"],
-        linker="results/linker.tsv",
+        sex_manifest=config["sample-sex"],
         exclusions=config["expansionhunter_denovo"]["excluded-samples"],
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",
     params:
-        projectids=bam_manifest["projectid"],
         sampleids=bam_manifest["sampleid"],
     conda:
         "../envs/r.yaml"
@@ -48,16 +47,16 @@ rule expansionhunter_denovo_profile_subject:
     Run single-sample STR profiling with expansionhunter_denovo
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
     output:
-        json="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.str_profile.json",
-        motif="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.motif.tsv",
-        locus="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.locus.tsv",
+        json="results/expansionhunter_denovo/profiles/{sampleid}.str_profile.json",
+        motif="results/expansionhunter_denovo/profiles/{sampleid}.motif.tsv",
+        locus="results/expansionhunter_denovo/profiles/{sampleid}.locus.tsv",
     params:
-        outprefix="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}",
+        outprefix="results/expansionhunter_denovo/profiles/{sampleid}",
         min_anchor_mapq=50,
         max_irr_mapq=40,
     conda:
@@ -67,7 +66,7 @@ rule expansionhunter_denovo_profile_subject:
         mem_mb=8000,
         qname="small",
     shell:
-        "ExpansionHunterDenovo profile --reads {input.bam} "
+        "ExpansionHunterDenovo profile --reads {input.cram} "
         "--reference {input.fasta} "
         "--output-prefix {params.outprefix} "
         "--min-anchor-mapq {params.min_anchor_mapq} "
@@ -82,10 +81,8 @@ rule expansionhunter_denovo_merge_profiles:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            cram_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -116,10 +113,8 @@ rule expansionhunter_denovo_locus_outliers:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            cram_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -146,10 +141,8 @@ rule expansionhunter_denovo_motif_outliers:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            cram_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),

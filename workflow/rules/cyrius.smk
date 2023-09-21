@@ -29,9 +29,9 @@ rule cyrius_create_manifest:
     absolute or relative.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
+        cram="results/crams/{sampleid}.cram",
     output:
-        tsv=temp("results/cyrius/{projectid}/{sampleid}.input_manifest.tsv"),
+        tsv=temp("results/cyrius/{sampleid}.input_manifest.tsv"),
     shell:
         "echo '{input}' > {output}"
 
@@ -41,18 +41,19 @@ rule cyrius_run:
     Execute cyrius star caller for CYP2D6 alleles.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
-        tsv="results/cyrius/{projectid}/{sampleid}.input_manifest.tsv",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
+        tsv="results/cyrius/{sampleid}.input_manifest.tsv",
+        fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         repo="results/cyrius/repo",
     output:
-        tsv=temp("results/cyrius/{projectid}/{sampleid}.tsv"),
-        json=temp("results/cyrius/{projectid}/{sampleid}.json"),
+        tsv=temp("results/cyrius/{sampleid}.tsv"),
+        json=temp("results/cyrius/{sampleid}.json"),
     params:
-        outdir="results/cyrius/{projectid}",
+        outdir="results/cyrius",
         prefix="{sampleid}",
     benchmark:
-        "results/performance_benchmarks/cyrius_run/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/cyrius_run/{sampleid}.tsv"
     conda:
         "../envs/cyrius.yaml"
     threads: 2
@@ -60,7 +61,8 @@ rule cyrius_run:
         mem_mb=8000,
         qname="large",
     shell:
-        "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
+        "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --reference {input.fasta} "
+        "--prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
 
 
 localrules:
@@ -73,9 +75,7 @@ rule cyrius_combine_results:
     """
     input:
         tsvs=lambda wildcards: tc.select_cyrius_subjects(
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            cram_manifest["sampleid"],
             config["cyrius"]["excluded-samples"],
             "results/cyrius",
             "tsv",
