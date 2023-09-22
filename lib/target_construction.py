@@ -106,9 +106,9 @@ def get_valid_subjectids(wildcards, sampleids, prefix, suffix):
         if "subset" in wildcards:
             fid = get_fid(sampleid)
             if wildcards.subset == "all" or wildcards.subset == fid:
-                res.append("{}/{}{}".format(prefix, sampleid, suffix))
+                res.append("{}{}{}".format(prefix, sampleid, suffix))
         else:
-            res.append("{}/{}{}".format(prefix, sampleid, suffix))
+            res.append("{}{}{}".format(prefix, sampleid, suffix))
     return res
 
 
