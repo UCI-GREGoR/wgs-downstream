@@ -100,7 +100,7 @@ rule expansionhunter_combine_vcfs:
         "../envs/bcftools.yaml"
     threads: 2
     resources:
-        mem_mb=16000,
+        mem_mb=32000,
         qname="small",
     shell:
         "bcftools merge --threads {threads} -Oz -o {output} {input.vcf}"
