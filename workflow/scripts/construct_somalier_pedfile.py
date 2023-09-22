@@ -59,7 +59,7 @@ def add_affected_status(df: pd.DataFrame, affected_status: str) -> pd.DataFrame:
 
 
 def run_construct_somalier_pedfile(
-    sex_manifest: str,
+    sex_manifest_fn: str,
     affected_status: str,
     sampleids: list,
     valid_subjectids: list,
@@ -90,6 +90,10 @@ def run_construct_somalier_pedfile(
             parent_data[
                 "{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])
             ] = sampleid
+
+    sex_manifest = pd.read_csv(sex_manifest_fn, sep="\t").set_index(
+        "sampleid", drop=False
+    )
 
     for sampleid in sampleids:
         if sampleid in sex_manifest.index:
