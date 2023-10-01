@@ -31,7 +31,7 @@ checkpoint expansionhunter_denovo_create_manifest:
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",
     params:
-        sampleids=cram_manifest["sampleid"],
+        sampleids=reads_manifest["sampleid"],
     conda:
         "../envs/r.yaml"
     threads: 1
@@ -82,7 +82,7 @@ rule expansionhunter_denovo_merge_profiles:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             checkpoints,
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -114,7 +114,7 @@ rule expansionhunter_denovo_locus_outliers:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             checkpoints,
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -142,7 +142,7 @@ rule expansionhunter_denovo_motif_outliers:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
             checkpoints,
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -238,7 +238,7 @@ rule create_expansionhunter_denovo_report:
         "results/expansionhunter_denovo/expansionhunter_denovo.html",
     params:
         locus_count=config["expansionhunter_denovo"]["plot-locus-count"],
-        min_nonzero_subjects=lambda wildcards: len(cram_manifest) * 0.75,
+        min_nonzero_subjects=lambda wildcards: len(reads_manifest) * 0.75,
     conda:
         "../envs/r.yaml"
     threads: 1

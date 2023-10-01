@@ -82,14 +82,14 @@ rule expansionhunter_combine_vcfs:
     input:
         vcf=lambda wildcards: tc.select_expansionhunter_subjects(
             sex_manifest,
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz",
             config["expansionhunter"]["excluded-samples"],
         ),
         tbi=lambda wildcards: tc.select_expansionhunter_subjects(
             sex_manifest,
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz.tbi",
             config["expansionhunter"]["excluded-samples"],

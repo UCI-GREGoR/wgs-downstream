@@ -46,20 +46,26 @@ tempDir = (
     if "tmpdir" in config_resources
     else tempfile.gettempdir()
 )
-cram_manifest = config["cram_manifest"]
+reads_manifest = config["reads_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
-cram_manifest = pd.read_csv(cram_manifest, sep="\t").set_index("sampleid", drop=False)
+reads_manifest = pd.read_csv(reads_manifest, sep="\t").set_index("sampleid", drop=False)
 gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t").set_index("sampleid", drop=False)
 sex_manifest = config["sample-sex"]
 sex_manifest = pd.read_csv(sex_manifest, sep="\t").set_index("sampleid", drop=False)
 
-validate(cram_manifest, "../schema/cram_manifest_schema.yaml")
+validate(reads_manifest, "../schema/reads_manifest_schema.yaml")
 validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
 validate(sex_manifest, "../schema/sex_manifest_schema.yaml")
 
-cram_manifest["internal-cram-paths"] = [
-    "results/crams/{}.cram".format(x) for x in cram_manifest["sampleid"]
-]
+internal_reads_paths = []
+for sampleid, alignment in zip(reads_manifest["sampleid"], reads_manifest["alignment"]):
+    internal_reads_paths.append(
+        "results/crams/{}.cram".format(sampleid)
+        if alignment.endswith("cram")
+        else "results/external_bams/{}.bam".format(sampleid)
+    )
+
+reads_manifest["internal-reads-paths"] = internal_reads_paths
 
 reference_build = config["genome-build"]
 caller_num_intervals = tc.caller_interval_file_count(config)

@@ -1,23 +1,23 @@
-rule copy_crams:
+rule copy_reads:
     """
-    Get a local copy of crams before analysis
+    Get a local copy of reads before analysis
     """
     input:
-        cram=lambda wildcards: tc.link_crams_by_id(wildcards, cram_manifest),
+        reads=lambda wildcards: tc.link_reads_by_id(wildcards, reads_manifest),
     output:
-        cram="results/crams/{sampleid}.cram",
+        reads="results/{readtype,cram|bam}s/{sampleid}.{readtype}",
     params:
-        symlink_target=config["behaviors"]["symlink-crams"],
+        symlink_target=config["behaviors"]["symlink-reads"],
     benchmark:
-        "results/performance_benchmarks/copy_crams/{sampleid}.tsv"
+        "results/performance_benchmarks/copy_{readtype}s/{sampleid}.tsv"
     threads: 1
     resources:
         mem_mb=500,
         qname="small",
     shell:
         'if [[ "{params.symlink_target}" == "True" ]] ; then '
-        "ln -s $(readlink -m {input.cram}) {output.cram} ; "
-        "else cp {input.cram} {output.cram} ; fi"
+        "ln -s $(readlink -m {input.reads}) {output.reads} ; "
+        "else cp {input.reads} {output.reads} ; fi"
 
 
 rule samtools_create_crai:

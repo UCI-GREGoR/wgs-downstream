@@ -1,7 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: global configuration
 properties:
-  cram_manifest:
+  reads_manifest:
     type: string
   gvcf_manifest:
     type: string
@@ -17,10 +17,10 @@ properties:
   behaviors:
     type: object
     properties:
-      symlink-crams:
+      symlink-reads:
         type: boolean
     required:
-      - symlink-crams
+      - symlink-reads
     additionalProperties: no
   references:
     type: object
@@ -166,7 +166,7 @@ properties:
       - grch38
     additionalProperties: no
 required:
-  - cram_manifest
+  - reads_manifest
   - gvcf_manifest
   - sample-sex
   - multiqc-config

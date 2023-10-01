@@ -112,19 +112,21 @@ def get_valid_subjectids(wildcards, sampleids, prefix, suffix):
     return res
 
 
-def link_crams_by_id(wildcards, cram_manifest):
+def link_reads_by_id(wildcards, reads_manifest):
     """
     This function had substantially more logic associated with it before
-    the modernization/cramification process; this is flagged for refactoring.
+    the modernization process; this is flagged for refactoring.
     """
-    res = cram_manifest.loc[cram_manifest["sampleid"] == wildcards.sampleid, "cram"]
+    res = reads_manifest.loc[
+        reads_manifest["sampleid"] == wildcards.sampleid, "alignment"
+    ]
     return [annotate_remote_file(x) for x in res]
 
 
 def link_gvcfs_by_id(wildcards, gvcf_manifest, use_gvcf):
     """
     This function had substantially more logic associated with it before
-    the modernization/cramification process; this is flagged for refactoring.
+    the modernization process; this is flagged for refactoring.
     """
     res = gvcf_manifest.loc[
         gvcf_manifest["sampleid"] == wildcards.sampleid, "gvcf" if use_gvcf else "vcf"
@@ -134,7 +136,7 @@ def link_gvcfs_by_id(wildcards, gvcf_manifest, use_gvcf):
 
 def select_cyrius_subjects(sampleids, exclusions, prefix, suffix) -> list:
     """
-    Get set of crams for subjects to be analyzed by cyrius
+    Get set of alignments for subjects to be analyzed by cyrius
     """
     res = []
 

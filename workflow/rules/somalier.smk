@@ -36,7 +36,7 @@ checkpoint somalier_relate:
     input:
         somalier=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            cram_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),
@@ -94,10 +94,10 @@ rule somalier_build_pedfile:
     benchmark:
         "results/performance_benchmarks/somalier_build_pedfile/somalier.tsv"
     params:
-        sampleids=lambda wildcards: cram_manifest["sampleid"].to_list(),
+        sampleids=lambda wildcards: reads_manifest["sampleid"].to_list(),
         valid_subjectids=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            cram_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "",
             "",
         ),
@@ -142,7 +142,7 @@ rule somalier_ancestry:
         somalier_reference="results/somalier/references",
         somalier_experimental=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            cram_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),

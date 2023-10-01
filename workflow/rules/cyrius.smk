@@ -75,7 +75,7 @@ rule cyrius_combine_results:
     """
     input:
         tsvs=lambda wildcards: tc.select_cyrius_subjects(
-            cram_manifest["sampleid"],
+            reads_manifest["sampleid"],
             config["cyrius"]["excluded-samples"],
             "results/cyrius/per_sample_data",
             "tsv",
