@@ -107,8 +107,6 @@ rule slivar_filter_dnm_all:
         "--info 'variant.ALT[0] != \"*\" ' "
         '--trio "denovo:kid.het && mom.hom_ref && dad.hom_ref && kid.DP > 12 && mom.DP > 12 && dad.DP > 12 && (mom.AD[1] + dad.AD[1]) == 0 '
         ' && kid.GQ > 20 && mom.GQ > 20 && dad.GQ > 20" '
-        '--trio "informative:kid.GQ > 20 && dad.GQ > 20 && mom.GQ > 20 && kid.alts == 1 && ((mom.alts == 1 && dad.alts == 0) || (mom.alts == 0 && dad.alts == 1))" '
-        '--trio "recessive:trio_autosomal_recessive(kid, mom, dad)" '
 
 
 rule slivar_compound_hets:
