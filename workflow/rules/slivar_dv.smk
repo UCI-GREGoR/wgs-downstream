@@ -154,7 +154,9 @@ rule slivar_combine_dnm_count_summary:
     input:
         tsv=expand(
             "results/slivar/{family_cluster}/dnm_summary.tsv",
-            family_cluster=tc.get_probands_with_structure(gvcf_manifest),
+            family_cluster=[
+                x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
+            ],
         ),
     output:
         tsv="results/slivar/dnm_count_summary.tsv",
