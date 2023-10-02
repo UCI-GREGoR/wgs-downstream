@@ -53,7 +53,7 @@ def add_affected_status(df: pd.DataFrame, affected_status: str) -> pd.DataFrame:
     affected = pd.read_table(affected_status, sep="\t").set_index("participant_id")
     df = df.join([affected])
     df["Pheno"] = df["affected_status"].map(
-        {"Affected": "2", "Unaffected": "1", np.nan: "-9"}
+        {"Affected": "2", "Unaffected": "1", np.nan: "1"}
     )
     return df[df.columns[range(6)]]
 
@@ -185,7 +185,7 @@ def run_construct_somalier_pedfile(
                 "Pat": [construct_final_id(str(y), use_somalier_ids) for y in pat_id],
                 "Mat": [construct_final_id(str(y), use_somalier_ids) for y in mat_id],
                 "Sex": self_reported_sex,
-                "Pheno": ["-9" for x in sampleids],
+                "Pheno": ["1" for x in sampleids],
             }
         )
         .sort_values(by=["FID", "Sample"])
