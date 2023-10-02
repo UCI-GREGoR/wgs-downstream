@@ -88,8 +88,6 @@ rule slivar_filter_dnm_all:
     input:
         vcf="results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
         js="reference_data/slivar/functions.js",
-        gnomad="reference_data/slivar/{}/gnomad.zip".format(reference_build),
-        topmed="reference_data/slivar/{}/topmed.zip".format(reference_build),
         bed="reference_data/slivar/{}/low.complexity.bed.gz".format(reference_build),
         ped="results/deeptrio/{family_cluster}.ped",
     output:
@@ -104,7 +102,7 @@ rule slivar_filter_dnm_all:
     conda:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
-        "slivar expr --js {input.js} -g {input.gnomad} {params.topmed_g} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
+        "slivar expr --js {input.js} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
         "--pass-only -o {output.vcf} --skip-non-variable "
         "--info 'variant.ALT[0] != \"*\" ' "
         '--trio "denovo:kid.het && mom.hom_ref && dad.hom_ref && kid.DP > 12 && mom.DP > 12 && dad.DP > 12 && (mom.AD[1] + dad.AD[1]) == 0 '
