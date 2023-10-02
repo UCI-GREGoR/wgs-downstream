@@ -4,18 +4,18 @@ import numpy as np
 import pandas as pd
 
 
-def convert_sex_representation(sample_sex: str) -> int:
+def convert_sex_representation(sample_sex: str) -> str:
     """
     Take a self-reported sex representation written out as
-    an English word, and convert to a plink-style integer
+    an English word, and convert to a plink-style integer (as string)
     representation. 0 -> Unknown, 2 -> Female, 1 -> Male
     """
     if sample_sex.lower() == "female":
-        return 2
+        return "2"
     elif sample_sex.lower() == "male":
-        return 1
+        return "1"
     else:
-        return 0
+        return "0"
 
 
 def add_problem(problems: dict, sampleid: str, problem: str) -> dict:
@@ -53,7 +53,7 @@ def add_affected_status(df: pd.DataFrame, affected_status: str) -> pd.DataFrame:
     affected = pd.read_table(affected_status, sep="\t").set_index("participant_id")
     df = df.join([affected])
     df["Pheno"] = df["affected_status"].map(
-        {"Affected": 2, "Unaffected": 1, np.nan: -9}
+        {"Affected": "2", "Unaffected": "1", np.nan: "-9"}
     )
     return df[df.columns[range(6)]]
 
@@ -112,11 +112,11 @@ def run_construct_somalier_pedfile(
                 invalid_family_structure = True
             sex_representation = convert_sex_representation(sample_sex)
             invalid_sex_configuration = False
-            if sex_representation != 0:
+            if sex_representation != "0":
                 if (
                     is_verifiable
                     and parsed_sample_id[3] == "1"
-                    and sex_representation != 1
+                    and sex_representation != "1"
                 ):
                     problems = add_problem(
                         problems,
@@ -127,7 +127,7 @@ def run_construct_somalier_pedfile(
                 elif (
                     is_verifiable
                     and parsed_sample_id[3] == "2"
-                    and sex_representation != 2
+                    and sex_representation != "2"
                 ):
                     problems = add_problem(
                         problems,
@@ -138,13 +138,13 @@ def run_construct_somalier_pedfile(
                 if not invalid_sex_configuration:
                     self_reported_sex.append(sex_representation)
                 else:
-                    self_reported_sex.append(0)
+                    self_reported_sex.append("0")
             elif is_verifiable and parsed_sample_id[3] == "1":
                 self_reported_sex.append(convert_sex_representation("Male"))
             elif is_verifiable and parsed_sample_id[3] == "2":
                 self_reported_sex.append(convert_sex_representation("Female"))
             else:
-                self_reported_sex.append(0)
+                self_reported_sex.append("0")
             if (
                 is_verifiable
                 and "{}-1".format(parsed_sample_id[1]) in parent_data
@@ -166,9 +166,9 @@ def run_construct_somalier_pedfile(
             else:
                 family_id.append(sampleid)
         else:
-            self_reported_sex.append(0)
-            mat_id.append(0)
-            pat_id.append(0)
+            self_reported_sex.append("0")
+            mat_id.append("0")
+            pat_id.append("0")
             family_id.append(sampleid)
             problems = add_problem(
                 problems, sampleid, "self-reported sex missing from annotations"
