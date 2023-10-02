@@ -126,3 +126,44 @@ rule slivar_compound_hets:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
         "slivar compound-hets -v {input.vcf} --sample-field comphet_side --sample-field denovo -p {input.ped} -o {output.vcf}"
+
+
+rule slivar_summarize_dnm_counts:
+    """
+    For each proband, determine how many de novos were detected before and after impactfulness/frequency filtering.
+    """
+    input:
+        dnm_all="results/slivar/{family_cluster}/putative_dnm_all.vcf.gz",
+        dnm_impactful="results/slivar/{family_cluster}/putative_dnm_impactful.vcf.gz",
+    output:
+        tsv="results/slivar/{family_cluster}/dnm_summary.tsv",
+    threads: 1
+    resources:
+        mem_mb=1000,
+        qname="small",
+    shell:
+        "echo -e \"{wildcards.family_cluster}\\t$(gunzip -c {input.dnm_all} | awk '! /^#/' | wc -l)\\t$(gunzip -c {input.dnm_impactful} | awk '! /^#/' | wc -l)\" > {output.tsv"
+
+
+localrules:
+    slivar_combine_dnm_count_summary,
+
+
+rule slivar_combine_dnm_count_summary:
+    """
+    Combine the de novo counts from all probands into a single tsv.
+    """
+    input:
+        tsv=expand(
+            "results/slivar/{family_cluster}/dnm_summary.tsv",
+            family_cluster=tc.get_probands_with_structure(gvcf_manifest),
+        ),
+    output:
+        tsv="results/slivar/dnm_count_summary.tsv",
+    run:
+        res = ["proband_id\ttotal_dnm_count\timpactful_and_rare_dnms\n"]
+        for fn in input.tsv:
+            with open(fn, "r") as f:
+                res.extend(f.readlines())
+        with open(output.tsv, "w") as f:
+            f.writelines(res)
