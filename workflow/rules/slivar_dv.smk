@@ -73,16 +73,12 @@ rule slivar_filter_dnm:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
         "slivar expr --js {input.js} -g {input.gnomad} {params.topmed_g} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
-        '--info \'INFO.impactful && INFO.gnomad_popmax_af < {params.gnomad_popmax_af} {params.topmed_filter} && variant.filter == "PASS" && variant.ALT[0] != "*" \' '
-        "--family-expr 'denovo:fam.every(segregating_denovo) && INFO.gnomad_popmax_af < {params.gnomad_popmax_af} {params.topmed_filter} ' "
-        "--family-expr 'x_denovo:variant.CHROM == \"chrX\" && fam.every(segregating_denovo_x) && INFO.gnomad_popmax_af < {params.gnomad_popmax_af} {params.topmed_filter} ' "
-        "--trio 'comphet_side:comphet_side(kid, mom, dad) && INFO.gnomad_nhomalt < {params.gnomad_nhomalt_max} && "
-        "kid.het && mom.hom_ref && dad.hom_ref && "
-        "kid.DP > {params.dp_min} && mom.DP > {params.dp_min} && dad.DP > {params.dp_min} && "
-        "(mom.AD[1] + dad.AD[1]) == 0 && "
-        "kid.AB > {params.ab_het_min} && kid.AB < {params.ab_het_max} && "
-        "mom.AB < {params.ab_homref_max} && dad.AB < {params.ab_homref_max}' "
-        "--pass-only -o {output.vcf} --skip-non-variable"
+        "--pass-only -o {output.vcf} --skip-non-variable "
+        "--info 'INFO.impactful && INFO.gnomad_popmax_af < {params.gnomad_popmax_af} {params.topmed_filter} && variant.ALT[0] != \"*\" ' "
+        '--trio "denovo:kid.het && mom.hom_ref && dad.hom_ref && kid.DP > 12 && mom.DP > 12 && dad.DP > 12 && (mom.AD[1] + dad.AD[1]) == 0 '
+        ' && kid.GQ > 20 && mom.GQ > 20 && dad.GQ > 20" '
+        '--trio "informative:kid.GQ > 20 && dad.GQ > 20 && mom.GQ > 20 && kid.alts == 1 && ((mom.alts == 1 && dad.alts == 0) || (mom.alts == 0 && dad.alts == 1))" '
+        '--trio "recessive:trio_autosomal_recessive(kid, mom, dad)" '
 
 
 rule slivar_compound_hets:
