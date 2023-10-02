@@ -149,7 +149,7 @@ rule slivar:
             family_cluster=[
                 x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
             ],
-            vartype=["dnm", "ch"],
+            vartype=["dnm_all", "dnm_impactful"],
         ),
 
 

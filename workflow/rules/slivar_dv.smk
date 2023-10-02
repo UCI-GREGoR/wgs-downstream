@@ -43,7 +43,7 @@ rule slice_joint_callset:
         "bcftools +split -Oz -o {params.outdir} -G {input.groups} {input.vcf}"
 
 
-rule slivar_filter_dnm:
+rule slivar_filter_dnm_impactful:
     """
     Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
     """
@@ -55,7 +55,7 @@ rule slivar_filter_dnm:
         bed="reference_data/slivar/{}/low.complexity.bed.gz".format(reference_build),
         ped="results/deeptrio/{family_cluster}.ped",
     output:
-        vcf="results/slivar/{family_cluster}/putative_dnm.vcf.gz",
+        vcf="results/slivar/{family_cluster}/putative_dnm_impactful.vcf.gz",
     params:
         dp_min=12,
         ab_het_min=0.25,
@@ -68,13 +68,45 @@ rule slivar_filter_dnm:
         else "",
         topmed_filter=" " if "topmed-zip" in config["slivar"][reference_build] else "",
     benchmark:
-        "results/performance_benchmarks/slivar_filter_trios/{family_cluster}/putative_dnm.tsv"
+        "results/performance_benchmarks/slivar_filter_trios/{family_cluster}/putative_dnm_impactful.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
         "slivar expr --js {input.js} -g {input.gnomad} {params.topmed_g} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
         "--pass-only -o {output.vcf} --skip-non-variable "
         "--info 'INFO.impactful && INFO.gnomad_popmax_af < {params.gnomad_popmax_af} {params.topmed_filter} && variant.ALT[0] != \"*\" ' "
+        '--trio "denovo:kid.het && mom.hom_ref && dad.hom_ref && kid.DP > 12 && mom.DP > 12 && dad.DP > 12 && (mom.AD[1] + dad.AD[1]) == 0 '
+        ' && kid.GQ > 20 && mom.GQ > 20 && dad.GQ > 20" '
+        '--trio "informative:kid.GQ > 20 && dad.GQ > 20 && mom.GQ > 20 && kid.alts == 1 && ((mom.alts == 1 && dad.alts == 0) || (mom.alts == 0 && dad.alts == 1))" '
+        '--trio "recessive:trio_autosomal_recessive(kid, mom, dad)" '
+
+
+rule slivar_filter_dnm_all:
+    """
+    Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
+    """
+    input:
+        vcf="results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
+        js="reference_data/slivar/functions.js",
+        gnomad="reference_data/slivar/{}/gnomad.zip".format(reference_build),
+        topmed="reference_data/slivar/{}/topmed.zip".format(reference_build),
+        bed="reference_data/slivar/{}/low.complexity.bed.gz".format(reference_build),
+        ped="results/deeptrio/{family_cluster}.ped",
+    output:
+        vcf="results/slivar/{family_cluster}/putative_dnm_all.vcf.gz",
+    params:
+        dp_min=12,
+        ab_het_min=0.25,
+        ab_het_max=0.75,
+        ab_homref_max=0.02,
+    benchmark:
+        "results/performance_benchmarks/slivar_filter_trios/{family_cluster}/putative_dnm_all.tsv"
+    conda:
+        "../envs/slivar.yaml" if not use_containers else None
+    shell:
+        "slivar expr --js {input.js} -g {input.gnomad} {params.topmed_g} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
+        "--pass-only -o {output.vcf} --skip-non-variable "
+        "--info 'variant.ALT[0] != \"*\" ' "
         '--trio "denovo:kid.het && mom.hom_ref && dad.hom_ref && kid.DP > 12 && mom.DP > 12 && dad.DP > 12 && (mom.AD[1] + dad.AD[1]) == 0 '
         ' && kid.GQ > 20 && mom.GQ > 20 && dad.GQ > 20" '
         '--trio "informative:kid.GQ > 20 && dad.GQ > 20 && mom.GQ > 20 && kid.alts == 1 && ((mom.alts == 1 && dad.alts == 0) || (mom.alts == 0 && dad.alts == 1))" '
