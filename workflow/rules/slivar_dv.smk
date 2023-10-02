@@ -10,7 +10,7 @@ rule create_bcftools_split_groups:
     output:
         groups="results/slivar/group_split_file.tsv",
     params:
-        samples=reads_manifest.index,
+        samples=tc.get_probands_with_structure(gvcf_manifest),
     run:
         with open(output.groups, "w") as f:
             f.writelines(
