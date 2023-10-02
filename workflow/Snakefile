@@ -142,6 +142,17 @@ rule glnexus:
         "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
 
 
+rule slivar:
+    input:
+        expand(
+            "results/slivar/{family_cluster}/putative_{vartype}.vcf.gz",
+            family_cluster=[
+                x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
+            ],
+            vartype=["dnm", "ch"],
+        ),
+
+
 include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
 include: "rules/bcftools_stats.smk"
@@ -155,4 +166,4 @@ include: "rules/references.smk"
 include: "rules/somalier.smk"
 include: "rules/split_joint_calls.smk"
 include: "rules/deeptrio.smk"
-include: "rules/slivar.smk"
+include: "rules/slivar_dv.smk"
