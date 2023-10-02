@@ -140,7 +140,7 @@ rule slivar_summarize_dnm_counts:
         mem_mb=1000,
         qname="small",
     shell:
-        "echo -e \"{wildcards.family_cluster}\\t$(gunzip -c {input.dnm_all} | awk '! /^#/' | wc -l)\\t$(gunzip -c {input.dnm_impactful} | awk '! /^#/' | wc -l)\" > {output.tsv"
+        "echo -e \"{wildcards.family_cluster}\\t$(gunzip -c {input.dnm_all} | awk '! /^#/' | wc -l)\\t$(gunzip -c {input.dnm_impactful} | awk '! /^#/' | wc -l)\" > {output.tsv}"
 
 
 localrules:
