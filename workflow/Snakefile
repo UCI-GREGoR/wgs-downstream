@@ -147,7 +147,8 @@ rule slivar:
         expand(
             "results/slivar/{family_cluster}/putative_{vartype}.vcf.gz",
             family_cluster=[
-                x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
+                x.split("-")[2]
+                for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
             vartype=["dnm_all", "dnm_impactful"],
         ),

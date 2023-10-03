@@ -244,10 +244,12 @@ def get_family_clusters(manifest_gvcf):
     return family_ids
 
 
-def get_probands_with_structure(gvcf_manifest):
+def get_probands_with_structure(gvcf_manifest, force_complete=False):
     """
     From the gvcf manifest, get proband-flagged subjects
-    with at least one parent also present in the dataset
+    with at least one parent also present in the dataset.
+    If user requests completeness, then only return proband-flagged
+    subjects with full trios available.
     """
     sampleids = gvcf_manifest.index
     parents = {}
@@ -262,8 +264,17 @@ def get_probands_with_structure(gvcf_manifest):
                 parents[split_id[2] + "-" + split_id[3]] = sampleid.rstrip()
     for cluster, child in children.items():
         if (
-            "{}-1".format(cluster) in parents.keys()
-            or "{}-2".format(cluster) in parents.keys()
+            not force_complete
+            and (
+                "{}-1".format(cluster) in parents.keys()
+                or "{}-2".format(cluster) in parents.keys()
+            )
+        ) or (
+            force_complete
+            and (
+                "{}-1".format(cluster) in parents.keys()
+                and "{}-2".format(cluster) in parents.keys()
+            )
         ):
             results.append(child)
     return results

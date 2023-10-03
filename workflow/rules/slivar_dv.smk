@@ -10,7 +10,7 @@ rule create_bcftools_split_groups:
     output:
         groups="results/slivar/group_split_file.tsv",
     params:
-        samples=tc.get_probands_with_structure(gvcf_manifest),
+        samples=tc.get_probands_with_structure(gvcf_manifest, True),
     run:
         with open(output.groups, "w") as f:
             f.writelines(
@@ -32,7 +32,8 @@ rule slice_joint_callset:
         vcf=expand(
             "results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
             family_cluster=[
-                x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
+                x.split("-")[2]
+                for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
         ),
     params:
@@ -155,7 +156,8 @@ rule slivar_combine_dnm_count_summary:
         tsv=expand(
             "results/slivar/{family_cluster}/dnm_summary.tsv",
             family_cluster=[
-                x.split("-")[2] for x in tc.get_probands_with_structure(gvcf_manifest)
+                x.split("-")[2]
+                for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
         ),
     output:
