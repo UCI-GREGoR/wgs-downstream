@@ -105,6 +105,7 @@ def get_valid_subjectids(
 ):
     """
     If exclude_unknown_rels, remove subjects with "-3" suffixes from pedigrees.
+    Evidently there can sometimes aberrantly be suffixes greater than 3.
     """
     res = []
     for sampleid in sampleids:
@@ -113,7 +114,7 @@ def get_valid_subjectids(
             if (wildcards.subset == "all") or (
                 (wildcards.subset == fid)
                 and (
-                    (exclude_unknown_rels and (not sampleid.endswith("-3")))
+                    (exclude_unknown_rels and (int(sampleid.split("-")[3]) < 3))
                     or (not exclude_unknown_rels)
                 )
             ):
@@ -286,7 +287,7 @@ def get_probands_with_structure(gvcf_manifest, force_complete=False):
                 "{}-1".format(cluster) in parents.keys()
                 and "{}-2".format(cluster) in parents.keys()
             )
-            and (sampleid.split("-")[3] != "3")
+            and (int(sampleid.split("-")[3]) < 3)
         ):
             results.append(child)
     return results
