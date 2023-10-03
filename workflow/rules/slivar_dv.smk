@@ -44,7 +44,7 @@ rule slice_joint_callset:
         "bcftools +split -Oz -o {params.outdir} -G {input.groups} {input.vcf}"
 
 
-rule slivar_filter_dnm_impactful:
+rule slivar_dv_filter_dnm_impactful:
     """
     Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
     """
@@ -69,7 +69,7 @@ rule slivar_filter_dnm_impactful:
         else "",
         topmed_filter=" " if "topmed-zip" in config["slivar"][reference_build] else "",
     benchmark:
-        "results/performance_benchmarks/slivar_filter_trios/{family_cluster}/putative_dnm_impactful.tsv"
+        "results/performance_benchmarks/slivar_dv_filter_trios/{family_cluster}/putative_dnm_impactful.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
@@ -82,7 +82,7 @@ rule slivar_filter_dnm_impactful:
         '--trio "recessive:trio_autosomal_recessive(kid, mom, dad)" '
 
 
-rule slivar_filter_dnm_all:
+rule slivar_dv_filter_dnm_all:
     """
     Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
     """
@@ -99,7 +99,7 @@ rule slivar_filter_dnm_all:
         ab_het_max=0.75,
         ab_homref_max=0.02,
     benchmark:
-        "results/performance_benchmarks/slivar_filter_trios/{family_cluster}/putative_dnm_all.tsv"
+        "results/performance_benchmarks/slivar_dv_filter_trios/{family_cluster}/putative_dnm_all.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
@@ -110,7 +110,7 @@ rule slivar_filter_dnm_all:
         ' && kid.GQ > 20 && mom.GQ > 20 && dad.GQ > 20" '
 
 
-rule slivar_compound_hets:
+rule slivar_dv_compound_hets:
     """
     Run slivar to compute compound heterozygotes
     """
@@ -120,7 +120,7 @@ rule slivar_compound_hets:
     output:
         vcf="results/slivar/dv/{family_cluster}/putative_ch.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/slivar_compound_hets/{family_cluster}/putative_ch.tsv"
+        "results/performance_benchmarks/slivar_dv_compound_hets/{family_cluster}/putative_ch.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
     shell:
@@ -132,10 +132,10 @@ rule slivar_summarize_dnm_counts:
     For each proband, determine how many de novos were detected before and after impactfulness/frequency filtering.
     """
     input:
-        dnm_all="results/slivar/dv/{family_cluster}/putative_dnm_all.vcf.gz",
-        dnm_impactful="results/slivar/dv/{family_cluster}/putative_dnm_impactful.vcf.gz",
+        dnm_all="results/slivar/{gvcf_type}/{family_cluster}/putative_dnm_all.vcf.gz",
+        dnm_impactful="results/slivar/{gvcf_type}/{family_cluster}/putative_dnm_impactful.vcf.gz",
     output:
-        tsv="results/slivar/dv/{family_cluster}/dnm_summary.tsv",
+        tsv="results/slivar/{gvcf_type}/{family_cluster}/dnm_summary.tsv",
     threads: 1
     resources:
         mem_mb=1000,
@@ -154,14 +154,14 @@ rule slivar_combine_dnm_count_summary:
     """
     input:
         tsv=expand(
-            "results/slivar/dv/{family_cluster}/dnm_summary.tsv",
+            "results/slivar/{gvcf_type}/{family_cluster}/dnm_summary.tsv",
             family_cluster=[
                 x.split("-")[2]
                 for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
         ),
     output:
-        tsv="results/slivar/dv/dnm_count_summary.tsv",
+        tsv="results/slivar/{gvcf_type}/dnm_count_summary.tsv",
     run:
         res = ["proband_id\ttotal_dnm_count\timpactful_and_rare_dnms\n"]
         for fn in input.tsv:
