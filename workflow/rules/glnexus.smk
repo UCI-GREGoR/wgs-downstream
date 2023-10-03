@@ -39,9 +39,9 @@ rule glnexus_joint_calling:
     input:
         gvcfs=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            reads_manifest.index,
-            "results/{}".format("gvcfs" if wildcards.subset == "all" else "deeptrio"),
-            ".g.vcf.gz",
+            gvcf_manifest["sampleid"].to_list(),
+            "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
+            ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
         ),
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(
