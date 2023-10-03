@@ -37,10 +37,11 @@ rule glnexus_joint_calling:
     Given gvcfs, create a joint called dataset.
     """
     input:
-        gvcfs=lambda wildcards: expand(
-            "results/{sourcetype}/{sampleid}.g.vcf.gz",
-            sourcetype="gvcfs" if wildcards.subset == "all" else "deeptrio",
-            sampleid=gvcf_manifest.index,
+        gvcfs=lambda wildcards: tc.get_valid_subjectids(
+            wildcards,
+            reads_manifest.index,
+            "results/{}".format("gvcfs" if wildcards.subset == "all" else "deeptrio"),
+            ".g.vcf.gz",
         ),
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(
