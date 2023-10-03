@@ -37,6 +37,10 @@ deeptrio:
   call_variants_memory: 240000
   postprocess_variants_memory: 32000
   queue: "large"
+expansionhunter:
+  threads: 1
+  memory: 8000
+  queue: "short"
 expansionhunter_denovo:
   threads: 1
   memory: 8000
