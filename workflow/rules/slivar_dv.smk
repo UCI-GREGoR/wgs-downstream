@@ -8,7 +8,7 @@ rule create_bcftools_split_groups:
     create split family vcf files, to avoid multiple processing.
     """
     output:
-        groups="results/slivar/group_split_file.tsv",
+        groups="results/slivar/dv/group_split_file.tsv",
     params:
         samples=tc.get_probands_with_structure(gvcf_manifest, True),
     run:
@@ -27,17 +27,17 @@ rule slice_joint_callset:
     """
     input:
         vcf="results/glnexus/all/merged_callset.filtered.regions.csq.vcf.gz",
-        groups="results/slivar/group_split_file.tsv",
+        groups="results/slivar/dv/group_split_file.tsv",
     output:
         vcf=expand(
-            "results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
+            "results/slivar/dv/family_{family_cluster}_dv_joint_calls.vcf.gz",
             family_cluster=[
                 x.split("-")[2]
                 for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
         ),
     params:
-        outdir="results/slivar",
+        outdir="results/slivar/dv",
     conda:
         "../envs/bcftools.yaml" if not use_containers else None
     shell:
@@ -49,14 +49,14 @@ rule slivar_filter_dnm_impactful:
     Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
     """
     input:
-        vcf="results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
+        vcf="results/slivar/dv/family_{family_cluster}_dv_joint_calls.vcf.gz",
         js="reference_data/slivar/functions.js",
         gnomad="reference_data/slivar/{}/gnomad.zip".format(reference_build),
         topmed="reference_data/slivar/{}/topmed.zip".format(reference_build),
         bed="reference_data/slivar/{}/low.complexity.bed.gz".format(reference_build),
         ped="results/deeptrio/{family_cluster}.ped",
     output:
-        vcf="results/slivar/{family_cluster}/putative_dnm_impactful.vcf.gz",
+        vcf="results/slivar/dv/{family_cluster}/putative_dnm_impactful.vcf.gz",
     params:
         dp_min=12,
         ab_het_min=0.25,
@@ -87,12 +87,12 @@ rule slivar_filter_dnm_all:
     Use slivar logic to perform trio filtering adjusted for various brentp-assorted criteria
     """
     input:
-        vcf="results/slivar/family_{family_cluster}_dv_joint_calls.vcf.gz",
+        vcf="results/slivar/dv/family_{family_cluster}_dv_joint_calls.vcf.gz",
         js="reference_data/slivar/functions.js",
         bed="reference_data/slivar/{}/low.complexity.bed.gz".format(reference_build),
         ped="results/deeptrio/{family_cluster}.ped",
     output:
-        vcf="results/slivar/{family_cluster}/putative_dnm_all.vcf.gz",
+        vcf="results/slivar/dv/{family_cluster}/putative_dnm_all.vcf.gz",
     params:
         dp_min=12,
         ab_het_min=0.25,
@@ -115,10 +115,10 @@ rule slivar_compound_hets:
     Run slivar to compute compound heterozygotes
     """
     input:
-        vcf="results/slivar/{family_cluster}/putative_dnm.vcf.gz",
+        vcf="results/slivar/dv/{family_cluster}/putative_dnm.vcf.gz",
         ped="results/deeptrio/{family_cluster}.ped",
     output:
-        vcf="results/slivar/{family_cluster}/putative_ch.vcf.gz",
+        vcf="results/slivar/dv/{family_cluster}/putative_ch.vcf.gz",
     benchmark:
         "results/performance_benchmarks/slivar_compound_hets/{family_cluster}/putative_ch.tsv"
     conda:
@@ -132,10 +132,10 @@ rule slivar_summarize_dnm_counts:
     For each proband, determine how many de novos were detected before and after impactfulness/frequency filtering.
     """
     input:
-        dnm_all="results/slivar/{family_cluster}/putative_dnm_all.vcf.gz",
-        dnm_impactful="results/slivar/{family_cluster}/putative_dnm_impactful.vcf.gz",
+        dnm_all="results/slivar/dv/{family_cluster}/putative_dnm_all.vcf.gz",
+        dnm_impactful="results/slivar/dv/{family_cluster}/putative_dnm_impactful.vcf.gz",
     output:
-        tsv="results/slivar/{family_cluster}/dnm_summary.tsv",
+        tsv="results/slivar/dv/{family_cluster}/dnm_summary.tsv",
     threads: 1
     resources:
         mem_mb=1000,
@@ -154,14 +154,14 @@ rule slivar_combine_dnm_count_summary:
     """
     input:
         tsv=expand(
-            "results/slivar/{family_cluster}/dnm_summary.tsv",
+            "results/slivar/dv/{family_cluster}/dnm_summary.tsv",
             family_cluster=[
                 x.split("-")[2]
                 for x in tc.get_probands_with_structure(gvcf_manifest, True)
             ],
         ),
     output:
-        tsv="results/slivar/dnm_count_summary.tsv",
+        tsv="results/slivar/dv/dnm_count_summary.tsv",
     run:
         res = ["proband_id\ttotal_dnm_count\timpactful_and_rare_dnms\n"]
         for fn in input.tsv:
