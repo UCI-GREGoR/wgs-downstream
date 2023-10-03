@@ -56,10 +56,12 @@ rule cyrius_run:
         "results/performance_benchmarks/cyrius_run/{sampleid}.tsv"
     conda:
         "../envs/cyrius.yaml"
-    threads: 2
+    threads: config_resources["cyrius"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="large",
+        mem_mb=config_resources["cyrius"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["cyrius"]["queue"], config_resources["queues"]
+        ),
     shell:
         "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --reference {input.fasta} "
         "--prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
@@ -98,9 +100,11 @@ rule create_cyrius_report:
         "results/cyrius/cyrius_report.html",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        time="1:00:00",
-        mem=2000,
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/cyrius.Rmd"

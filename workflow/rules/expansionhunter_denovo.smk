@@ -34,10 +34,12 @@ checkpoint expansionhunter_denovo_create_manifest:
         sampleids=reads_manifest["sampleid"],
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/create_expansionhunter_denovo_manifest.R"
 
@@ -61,10 +63,13 @@ rule expansionhunter_denovo_profile_subject:
         max_irr_mapq=40,
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "ExpansionHunterDenovo profile --reads {input.cram} "
         "--reference {input.fasta} "
@@ -94,10 +99,13 @@ rule expansionhunter_denovo_merge_profiles:
         outprefix="results/expansionhunter_denovo/profiles/combined_profiles",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "ExpansionHunterDenovo merge --reference {input.fasta} "
         "--manifest {input.manifest} "
@@ -124,10 +132,13 @@ rule expansionhunter_denovo_locus_outliers:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "{input.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
@@ -152,10 +163,13 @@ rule expansionhunter_denovo_motif_outliers:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "{input.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
@@ -174,10 +188,12 @@ rule annovar_extract_tarball:
         tarball=lambda wildcards: config["expansionhunter_denovo"]["annovar-tarball"]
         if "annovar-tarball" in config["expansionhunter_denovo"]
         else "",
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "tar -C results -xvzf {params.tarball}"
 
@@ -192,10 +208,12 @@ rule annovar_download_references:
         directory("results/annovar_humandb"),
     conda:
         "../envs/annovar.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "perl {input}/annotate_variation.pl -buildver hg38 -downdb -webfrom annovar refGene {output}"
 
@@ -215,10 +233,12 @@ rule expansionhunter_denovo_annotate:
         tsv="results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv",
     conda:
         "../envs/annovar.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bash {input.expansionhunter_denovo}/scripts/annotate_ehdn.sh "
         "--ehdn-results {input.locus_results} "
@@ -241,9 +261,11 @@ rule create_expansionhunter_denovo_report:
         min_nonzero_subjects=lambda wildcards: len(reads_manifest) * 0.75,
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/expansionhunter_denovo.Rmd"

@@ -68,7 +68,7 @@ rule glnexus_joint_calling:
     resources:
         mem_mb=lambda wildcards, attempt: attempt
         * config_resources["glnexus"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["glnexus"]["queue"], config_resources["queues"]
         ),
         tmpdir=lambda wildcards: "{}/results/glnexus/{}".format(
@@ -98,10 +98,12 @@ rule prepare_joint_calling_output:
         "results/performance_benchmarks/prepare_joint_calling_output/{subset}/merged_callset.tsv"
     conda:
         "../envs/bcftools.yaml"
-    threads: 4
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools concat {input.bcf} --threads {threads} -O z -o {output.vcf}"
 
@@ -124,10 +126,12 @@ rule filter_joint_calling_output:
         "results/performance_benchmarks/filtered_joint_calling_output/{subset}/merged_callset.filtered.tsv"
     conda:
         "../envs/bcftools.yaml"
-    threads: 4
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-downstreamVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O u {input} | '
         'bcftools view -i \'(FILTER = "PASS" | FILTER = ".")\' -O u | '
@@ -152,9 +156,11 @@ rule remove_snv_region_exclusions:
         "results/performance_benchmarks/remove_snv_region_exclusions/{subset}/results.tsv"
     conda:
         "../envs/bedtools.yaml"
-    threads: 1
+    threads: config_resources["bedtools"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["bedtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bedtools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bedtools intersect -a {input.vcf} -b {input.bed} -wa -v -header | bgzip -c > {output}"

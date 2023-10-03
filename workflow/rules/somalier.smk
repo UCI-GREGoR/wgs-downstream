@@ -16,10 +16,12 @@ rule somalier_extract:
         extract_dir="results/somalier/extract",
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier extract -d {params.extract_dir} "
         "--sites {input.sites_vcf} "
@@ -51,10 +53,12 @@ checkpoint somalier_relate:
         outprefix="results/somalier/relate/somalier",
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier relate --ped {input.ped} -o {params.outprefix} {input.somalier}"
 
@@ -68,10 +72,12 @@ checkpoint somalier_split_by_family:
         tsv="results/somalier/relate/somalier.pairs.tsv",
     output:
         pairs="results/somalier/relate/by_family/{family_id}.pairs.tsv",
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         'grep -E "#sample|-{wildcards.family_id}-" {input.tsv} > {output.pairs}'
 
@@ -102,10 +108,12 @@ rule somalier_build_pedfile:
             "",
         ),
         use_somalier_ids=True,
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/construct_somalier_pedfile.py"
 
@@ -120,10 +128,12 @@ rule somalier_get_reference_files:
         directory("results/somalier/references"),
     benchmark:
         "results/performance_benchmarks/somalier_get_reference_files/out.tsv"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "mkdir -p {output} && "
         "tar --directory={output} -z -x -v -f {input} && "
@@ -155,10 +165,12 @@ rule somalier_ancestry:
         "results/performance_benchmarks/somalier_ancestry/out.tsv"
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "
         "{input.somalier_reference}/*somalier ++ {input.somalier_experimental}"
@@ -175,9 +187,11 @@ rule somalier_plot_pca:
         plotname="results/somalier/ancestry/results.somalier-ancestry.pcplot.png",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/plot_pca.R"

@@ -24,6 +24,9 @@ rule create_bcftools_split_groups:
 rule slice_joint_callset:
     """
     Extract trio members from the joint callset.
+
+    Don't think this is actually thread-aware, but worth a shot. Without threading
+    and with ~600 subjects, this takes 10 hours :(
     """
     input:
         vcf="results/glnexus/all/merged_callset.filtered.regions.csq.vcf.gz",
@@ -40,8 +43,14 @@ rule slice_joint_callset:
         outdir="results/slivar/dv",
     conda:
         "../envs/bcftools.yaml" if not use_containers else None
+    threads: config_resources["bcftools"]["threads"]
+    resources:
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "bcftools +split -Oz -o {params.outdir} -G {input.groups} {input.vcf}"
+        "bcftools +split --threads {threads} -Oz -o {params.outdir} -G {input.groups} {input.vcf}"
 
 
 rule slivar_dv_filter_dnm_impactful:
@@ -72,6 +81,12 @@ rule slivar_dv_filter_dnm_impactful:
         "results/performance_benchmarks/slivar_dv_filter_trios/{family_cluster}/putative_dnm_impactful.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
+    threads: config_resources["slivar"]["threads"]
+    resources:
+        mem_mb=config_resources["slivar"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["slivar"]["queue"], config_resources["queues"]
+        ),
     shell:
         "slivar expr --js {input.js} -g {input.gnomad} {params.topmed_g} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
         "--pass-only -o {output.vcf} --skip-non-variable "
@@ -102,6 +117,12 @@ rule slivar_dv_filter_dnm_all:
         "results/performance_benchmarks/slivar_dv_filter_trios/{family_cluster}/putative_dnm_all.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
+    threads: config_resources["slivar"]["threads"]
+    resources:
+        mem_mb=config_resources["slivar"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["slivar"]["queue"], config_resources["queues"]
+        ),
     shell:
         "slivar expr --js {input.js} --vcf {input.vcf} --ped {input.ped} -x {input.bed} "
         "--pass-only -o {output.vcf} --skip-non-variable "
@@ -123,6 +144,12 @@ rule slivar_dv_compound_hets:
         "results/performance_benchmarks/slivar_dv_compound_hets/{family_cluster}/putative_ch.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
+    threads: config_resources["slivar"]["threads"]
+    resources:
+        mem_mb=config_resources["slivar"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["slivar"]["queue"], config_resources["queues"]
+        ),
     shell:
         "slivar compound-hets -v {input.vcf} --sample-field comphet_side --sample-field denovo -p {input.ped} -o {output.vcf}"
 
@@ -136,10 +163,12 @@ rule slivar_summarize_dnm_counts:
         dnm_impactful="results/slivar/{gvcf_type}/{family_cluster}/putative_dnm_impactful.vcf.gz",
     output:
         tsv="results/slivar/{gvcf_type}/{family_cluster}/dnm_summary.tsv",
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "echo -e \"{wildcards.family_cluster}\\t$(gunzip -c {input.dnm_all} | grep denovo | awk '! /^#/' | wc -l)\\t$(gunzip -c {input.dnm_impactful} | grep denovo | awk '! /^#/' | wc -l)\" > {output.tsv}"
 

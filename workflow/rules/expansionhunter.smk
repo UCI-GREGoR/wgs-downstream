@@ -42,10 +42,12 @@ rule expansionhunter_run:
         analysis_mode="seeking",
     conda:
         "../envs/expansionhunter.yaml"
-    threads: 2
+    threads: config_resources["expansionhunter"]["threads"]
     resources:
-        mem=2000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter"]["queue"], config_resources["queues"]
+        ),
     shell:
         "ExpansionHunter --reads {input.cram} --reference {input.fasta} "
         "--variant-catalog {params.variant_catalog} "
@@ -67,10 +69,12 @@ rule expansionhunter_filter_vcfs:
         output="results/expansionhunter/{sampleid}.filtered.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools view --threads {threads} -f 'PASS' -Oz -o {output} {input.vcf}"
 
@@ -98,10 +102,12 @@ rule expansionhunter_combine_vcfs:
         "results/expansionhunter/expansionhunter_all_subjects.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
-    threads: 2
+    threads: config_resources["bcftools_merge"]["threads"]
     resources:
-        mem_mb=32000,
-        qname="small",
+        mem_mb=config_resources["bcftools_merge"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools_merge"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools merge --threads {threads} -Oz -o {output} {input.vcf}"
 
@@ -119,9 +125,11 @@ rule expansionhunter_create_report:
         output_tsv="results/expansionhunter/expansionhunter_report.tsv",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/expansionhunter.Rmd"

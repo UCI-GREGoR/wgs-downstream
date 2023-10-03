@@ -19,9 +19,17 @@ bcftools:
   threads: 4
   memory: 8000
   queue: "small"
+bcftools_merge:
+  threads: 2
+  memory: 32000
+  queue: "small"
 bedtools:
   threads: 1
   memory: 2000
+  queue: "small"
+cyrius:
+  threads: 2
+  memory: 8000
   queue: "small"
 deeptrio:
   threads: 16
@@ -29,6 +37,14 @@ deeptrio:
   call_variants_memory: 240000
   postprocess_variants_memory: 32000
   queue: "large"
+expansionhunter_denovo:
+  threads: 1
+  memory: 8000
+  queue: "short"
+gatk_createsequencedictionary:
+  threads: 1
+  memory: 10000
+  queue: "short"
 glnexus:
   threads: 4
   memory: 128000
@@ -37,11 +53,23 @@ r:
   threads: 1
   memory: 4000
   queue: "small"
+rtg:
+  threads: 1
+  memory: 16000
+  queue: "small"
 samtools:
   threads: 4
   memory: 8000
+  queue: "small"
+slivar:
+  threads: 1
+  memory: 4000
   queue: "small"
 somalier:
   threads: 1
   memory: 1000
   queue: "small"
+telomerecat:
+  threads: 4
+  memory: 64000
+  queue: "large"

@@ -12,12 +12,14 @@ rule bcftools_stats:
         stats="{prefix}.vcf.stats.txt",
     conda:
         "../envs/bcftools.yaml"
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "bcftools stats --af-bins 0.01,0.05,0.1,1 -F {input.fasta} -s- {input.vcf} > {output.stats}"
+        "bcftools stats --threads {threads} --af-bins 0.01,0.05,0.1,1 -F {input.fasta} -s- {input.vcf} > {output.stats}"
 
 
 rule plot_vcfstats:
@@ -35,7 +37,9 @@ rule plot_vcfstats:
         "../envs/bcftools.yaml"
     threads: 1
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "plot-vcfstats -P -p {params.outdir} {input}"

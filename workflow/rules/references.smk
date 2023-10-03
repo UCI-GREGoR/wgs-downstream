@@ -20,10 +20,12 @@ rule download_reference_data:
         "results/performance_benchmarks/download_reference_data/{reference_file}.tsv"
     conda:
         "../envs/awscli.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         'if [[ "{params}" == "s3://"* ]] ; then aws s3 cp {params} {output}.staging ; '
         'elif [[ "{params}" == "http://"* ]] || [[ "{params}" == "https://"* ]] || [[ "{params}" == "ftp://"* ]] ; then wget -O {output}.staging {params} ; '
@@ -44,30 +46,33 @@ rule index_vcf:
         "results/performance_benchmarks/index_vcf/{prefix}.tsv"
     conda:
         "../envs/bcftools.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "tabix -p vcf {input}"
 
 
+localrules:
+    adjust_fasta_formatting,
+
+
 rule adjust_fasta_formatting:
     """
-    exclusively because of idiosyncrasies in tiddit>=3, the fasta description lines can only
-    contain the ">" character as the first character of the description line. any other instances
-    of that character will cause tiddit>=3 to crash with a very cryptic error about list indices
+    Once upon a time, this was supposed to adjust formatting in the input fasta
+    to force compatibility between certain versions of tiddit and a custom (inherited, janky)
+    build of GRCh37. However, since GRCh37 is very much not supported, and if you want it
+    you should use the public version anyway, this is getting replaced.
     """
     input:
         "reference_data/references/{}/ref.fasta".format(reference_build),
     output:
         "reference_data/{{aligner}}/{}/ref.fasta".format(reference_build),
-    threads: 1
-    resources:
-        mem_mb=1000,
-        qname="small",
     shell:
-        "sed 's/>/_/g' {input} | sed 's/^_/>/' > {output}"
+        "ln -s $(readlink -m {input}) {output}"
 
 
 rule samtools_index_fasta:
@@ -82,9 +87,11 @@ rule samtools_index_fasta:
         "results/performance_benchmarks/samtools_index_fasta/{prefix}fasta.fai.tsv"
     conda:
         "../envs/samtools.yaml"
-    threads: 1
+    threads: config_resources["samtools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["samtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["samtools"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "samtools faidx {input}"
+        "samtools faidx -@ {threads} {input}"

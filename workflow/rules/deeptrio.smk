@@ -109,7 +109,7 @@ rule deeptrio_make_examples_full_trio:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
@@ -210,7 +210,7 @@ rule deeptrio_make_examples_mother_only:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
@@ -310,7 +310,7 @@ rule deeptrio_make_examples_father_only:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
@@ -384,7 +384,7 @@ rule deeptrio_call_variants:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["call_variants_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -459,7 +459,7 @@ rule deeptrio_postprocess_variants:
     threads: 1
     resources:
         mem_mb=config_resources["deeptrio"]["postprocess_variants_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -492,7 +492,7 @@ rule deeptrio_combine_regions:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -542,7 +542,7 @@ rule deeptrio_rename_vcf_outputs:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -563,10 +563,12 @@ rule rtg_create_sdf:
         "results/performance_benchmarks/create_sdf/{genome}.tsv"
     conda:
         "../envs/vcfeval.yaml"
-    threads: 1
+    threads: config_resources["rtg"]["threads"]
     resources:
-        qname="small",
-        mem_mb=16000,
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["rtg"]["queue"], config_resources["queues"]
+        ),
+        mem_mb=config_resources["rtg"]["memory"],
     shell:
         "rtg RTG_MEM=12G format -f fasta -o {output} {input}"
 
@@ -601,10 +603,12 @@ rule rtg_annotate_vcf:
         vcf="results/deeptrio/{family_cluster}.annotated.vcf.gz",
     conda:
         "../envs/vcfeval.yaml"
-    threads: 1
+    threads: config_resources["rtg"]["threads"]
     resources:
-        qname="small",
-        mem_mb=16000,
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["rtg"]["queue"], config_resources["queues"]
+        ),
+        mem_mb=config_resources["rtg"]["memory"],
     shell:
         "rtg RTG_MEM=12G mendelian -i {input.vcf} -o {output.vcf} --pedigree {input.ped} -t {input.sdf}"
 
@@ -625,11 +629,11 @@ rule bcftools_add_csq:
         "../envs/bcftools.yaml" if not use_containers else None
     container:
         "{}/bcftools.sif".format(apptainer_images) if use_containers else None
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
-        "bcftools csq -s - -f {input.fasta} -g {input.gff} -O z -o {output.vcf} {input.vcf}"
+        "bcftools csq --threads {threads} -s - -f {input.fasta} -g {input.gff} -O z -o {output.vcf} {input.vcf}"

@@ -25,10 +25,12 @@ rule run_multiqc_cross_flowcell:
         ),
     conda:
         "../envs/multiqc.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "multiqc {params.target_dirs} "
         "--config {input.multiqc_config} "

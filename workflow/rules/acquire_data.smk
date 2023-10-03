@@ -10,10 +10,12 @@ rule copy_reads:
         symlink_target=config["behaviors"]["symlink-reads"],
     benchmark:
         "results/performance_benchmarks/copy_{readtype}s/{sampleid}.tsv"
-    threads: 1
+    threads: config_resources["default"]["memory"]
     resources:
-        mem_mb=500,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         'if [[ "{params.symlink_target}" == "True" ]] ; then '
         "ln -s $(readlink -m {input.reads}) {output.reads} ; "
@@ -32,10 +34,12 @@ rule samtools_create_crai:
         "results/performance_benchmarks/samtools_create_crai/{prefix}.tsv"
     conda:
         "../envs/samtools.yaml"
-    threads: 4
+    threads: config_resources["samtools"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["samtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["samtools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "samtools index -@ {threads} -o {output.crai} {input.cram}"
 
@@ -52,10 +56,12 @@ rule samtools_create_bai:
         "results/performance_benchmarks/samtools_create_bai/{prefix}.tsv"
     conda:
         "../envs/samtools.yaml"
-    threads: 4
+    threads: config_resources["samtools"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["samtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["samtools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "samtools index -@ {threads} -b -o {output.bai} {input.bam}"
 
@@ -72,10 +78,12 @@ rule copy_gvcfs:
         "../envs/bcftools.yaml"
     benchmark:
         "results/performance_benchmarks/copy_gvcfs/{sampleid}.tsv"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "gunzip -c {input.gvcf} | awk -v id={wildcards.sampleid} "
         "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"
@@ -93,10 +101,12 @@ rule copy_vcfs:
         "../envs/bcftools.yaml"
     benchmark:
         "results/performance_benchmarks/copy_vcfs/{sampleid}.tsv"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "gunzip -c {input} | awk -v id={wildcards.sampleid} "
         "'/^#CHROM/ {{OFS = \"\\t\" ; $10 = id ; print $0}} ; ! /#CHROM/' | bgzip -c > {output}"

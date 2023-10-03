@@ -11,10 +11,12 @@ rule telomerecat_bam_to_telbam:
         outdir="results/telomerecat/{projectid}",
     conda:
         "../envs/telomerecat.yaml"
-    threads: 4
+    threads: config_resources["telomerecat"]["threads"]
     resources:
-        mem_mb=64000,
-        qname="large",
+        mem_mb=config_resources["telomerecat"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["telomerecat"]["queue"], config_resources["queues"]
+        ),
     shell:
         "telomerecat bam2telbam -p {threads} --outbam_dir {params.outdir} {input.bam}"
 
@@ -31,10 +33,12 @@ rule telomerecat_telbam_to_csv:
         max_handles=2,
     conda:
         "../envs/telomerecat.yaml"
-    threads: 4
+    threads: config_resources["telomerecat"]["threads"]
     resources:
-        mem_mb=32000,
-        qname="large",
+        mem_mb=config_resources["telomerecat"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["telomerecat"]["queue"], config_resources["queues"]
+        ),
     shell:
         "telomerecat telbam2length -p {threads} --output {output.csv} {input.bam}"
 

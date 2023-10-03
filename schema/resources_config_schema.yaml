@@ -48,7 +48,11 @@ properties:
     <<: *defaults
   bcftools:
     <<: *defaults
+  bcftools_merge:
+    <<: *defaults
   bedtools:
+    <<: *defaults
+  cyrius:
     <<: *defaults
   deeptrio:
     type: object
@@ -74,22 +78,43 @@ properties:
       - postprocess_variants_memory
       - queue
     additionalProperties: false
+  expansionhunter_denovo:
+    <<: *defaults
+  expansionhunter:
+    <<: *defaults
+  gatk_createsequencedictionary:
+    <<: *defaults
   glnexus:
     <<: *defaults
   r:
     <<: *defaults
+  rtg:
+    <<: *defaults
   samtools:
     <<: *defaults
+  slivar:
+    <<: *defaults
   somalier:
+    <<: *defaults
+  telomerecat:
     <<: *defaults
 required:
   - queues
   - default
   - awscli
   - bcftools
+  - bcftools_merge
   - bedtools
+  - cyrius
   - deeptrio
+  - expansionhunter_denovo
+  - expansionhunter
+  - gatk_createsequencedictionary
+  - glnexus
   - r
+  - rtg
   - samtools
+  - slivar
   - somalier
+  - telomerecat
 additionalProperties: false

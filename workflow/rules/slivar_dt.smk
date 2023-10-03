@@ -37,5 +37,11 @@ rule slivar_dt_compound_hets:
         "results/performance_benchmarks/slivar_compound_hets/{family_cluster}/putative_ch.tsv"
     conda:
         "../envs/slivar.yaml" if not use_containers else None
+    threads: config_resources["slivar"]["threads"]
+    resources:
+        mem_mb=config_resources["slivar"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["slivar"]["queue"], config_resources["queues"]
+        ),
     shell:
         "slivar compound-hets -v {input.vcf} --sample-field comphet_side --sample-field denovo -p {input.ped} -o {output.vcf}"
