@@ -15,6 +15,7 @@ rule glnexus_create_gvcf_list:
             gvcf_manifest["sampleid"].to_list(),
             "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
             ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
+            wildcards.subset != "all",
         ),
     run:
         with open(output.tsv, "w") as f:
@@ -42,6 +43,7 @@ rule glnexus_joint_calling:
             gvcf_manifest["sampleid"].to_list(),
             "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
             ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
+            wildcards.subset != "all",
         ),
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(

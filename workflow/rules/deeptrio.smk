@@ -550,6 +550,7 @@ use rule somalier_build_pedfile as rtg_create_cluster_pedigree with:
             reads_manifest["sampleid"].to_list(),
             "",
             "",
+            True,
         ),
         use_somalier_ids=False,
 

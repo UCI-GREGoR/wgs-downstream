@@ -100,12 +100,23 @@ def get_fid(sampleid):
         return split_id[2]
 
 
-def get_valid_subjectids(wildcards, sampleids, prefix, suffix):
+def get_valid_subjectids(
+    wildcards, sampleids, prefix, suffix, exclude_unknown_rels=False
+):
+    """
+    If exclude_unknown_rels, remove subjects with "-3" suffixes from pedigrees.
+    """
     res = []
     for sampleid in sampleids:
         if "subset" in wildcards:
             fid = get_fid(sampleid)
-            if wildcards.subset == "all" or wildcards.subset == fid:
+            if wildcards.subset == "all" or (
+                wildcards.subset == fid
+                and (
+                    (exclude_unknown_rels and not sampleid.endswith("-3"))
+                    or (not exclude_unknown_rels)
+                )
+            ):
                 res.append("{}{}{}".format(prefix, sampleid, suffix))
         else:
             res.append("{}{}{}".format(prefix, sampleid, suffix))
@@ -275,6 +286,7 @@ def get_probands_with_structure(gvcf_manifest, force_complete=False):
                 "{}-1".format(cluster) in parents.keys()
                 and "{}-2".format(cluster) in parents.keys()
             )
+            and (sampleid.split("-")[3] != "3")
         ):
             results.append(child)
     return results
