@@ -460,7 +460,6 @@ def caller_relevant_intervals(
                         wildcards,
                         wildcards.sampleid.split("-")[2],
                         2 if wildcards.relation == "parent2" else 0,
-                        gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
                         "results/sliced_{}/{}/".format(
                             "gvcfs" if use_gvcf else "vcfs", linecount
