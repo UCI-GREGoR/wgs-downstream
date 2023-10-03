@@ -108,12 +108,12 @@ def get_valid_subjectids(
     """
     res = []
     for sampleid in sampleids:
-        if "subset" in wildcards:
+        if "subset" in wildcards.keys():
             fid = get_fid(sampleid)
-            if wildcards.subset == "all" or (
-                wildcards.subset == fid
+            if (wildcards.subset == "all") or (
+                (wildcards.subset == fid)
                 and (
-                    (exclude_unknown_rels and not sampleid.endswith("-3"))
+                    (exclude_unknown_rels and (not sampleid.endswith("-3")))
                     or (not exclude_unknown_rels)
                 )
             ):
