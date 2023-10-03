@@ -595,20 +595,3 @@ rule bcftools_add_csq:
         ),
     shell:
         "bcftools csq -s - -f {input.fasta} -g {input.gff} -O z -o {output.vcf} {input.vcf}"
-
-
-rule aggregate_deeptrio_output:
-    """
-    Dispatch "deeptrio" runs for any proband who also has
-    at least one parent present
-    """
-    input:
-        lambda wildcards: expand(
-            "results/slivar/{proband}/putative_{model}.vcf.gz",
-            proband=tc.get_probands_with_structure(gvcf_manifest),
-            model=["dnm", "ch"],
-        ),
-    output:
-        temp("results/deeptrio/.deeptrio_calls_split"),
-    shell:
-        "touch {output}"

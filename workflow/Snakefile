@@ -155,6 +155,21 @@ rule slivar_dv:
         "results/slivar/dv/dnm_count_summary.tsv",
 
 
+rule slivar_dt:
+    """
+    Dispatch "deeptrio" runs for any proband who has a complete trio.
+    The trio completeness can potentially be relaxed, but it's more straightforward
+    to look at trios first.
+    """
+    input:
+        lambda wildcards: expand(
+            "results/slivar/dt/{proband}/putative_{model}.vcf.gz",
+            proband=tc.get_probands_with_structure(gvcf_manifest, True),
+            model=["dnm_all", "dnm_impactful"],
+        ),
+        "results/slivar/dt/dnm_count_summary.tsv",
+
+
 include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
 include: "rules/bcftools_stats.smk"
