@@ -332,12 +332,12 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
     mother_id = ""
     father_id = ""
     for subject_id in subject_ids:
-        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
+        split_id = subject_id.split("-")
         if len(split_id) == 4:
             if split_id[2] == str(family_id) and split_id[3] == "1":
-                father_id = subject_id.split("/")[1]
+                father_id = subject_id
             if split_id[2] == str(family_id) and split_id[3] == "2":
-                mother_id = subject_id.split("/")[1]
+                mother_id = subject_id
 
     # check for parent relatedness in somalier output
     somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
@@ -356,14 +356,14 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
             (somalier_pairs_df["sample_a"] == mother_id)
             | (somalier_pairs_df["sample_b"] == mother_id)
         ]
-        if (mother_relatedness["relatedness"] < 0.3535534).bool():
+        if float(mother_relatedness["relatedness"].iloc[0]) < 0.3535534:
             mother_id = ""
     if father_id != "":
         father_relatedness = somalier_pairs_df[
             (somalier_pairs_df["sample_a"] == father_id)
             | (somalier_pairs_df["sample_b"] == father_id)
         ]
-        if (father_relatedness["relatedness"] < 0.3535534).bool():
+        if float(father_relatedness["relatedness"].iloc[0]) < 0.3535534:
             father_id = ""
 
     if mother_id == "" and father_id == "":
