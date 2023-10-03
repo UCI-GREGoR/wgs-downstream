@@ -25,22 +25,33 @@ rule deeptrio_make_examples_full_trio:
     X-nonPAR for female proband
     """
     input:
-        child_cram="results/crams/PMGRC-{childid}-{childid}-0.cram",
-        parent1_cram=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            wildcards.childid,
-            1,
-            reads_manifest["sampleid"],
-            "results/crams/",
-            ".cram",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
         ),
-        parent2_cram=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            wildcards.childid,
-            2,
-            reads_manifest["sampleid"],
-            "results/crams/",
-            ".cram",
+        parent1_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                1,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
+        ),
+        parent2_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                2,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -103,7 +114,11 @@ rule deeptrio_make_examples_full_trio:
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent1_cram}) "
+        "-B $(dirname {input.parent2_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
@@ -122,14 +137,22 @@ rule deeptrio_make_examples_mother_only:
     proband lacking a paternal sample for whatever reason
     """
     input:
-        child_cram="results/crams/PMGRC-{childid}-{childid}-0.cram",
-        parent2_cram=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            wildcards.childid,
-            2,
-            reads_manifest["sampleid"],
-            "results/crams/",
-            ".cram",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
+        ),
+        parent2_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                2,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -192,7 +215,10 @@ rule deeptrio_make_examples_mother_only:
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent2_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
@@ -211,14 +237,22 @@ rule deeptrio_make_examples_father_only:
     proband lacking a maternal sample for whatever reason
     """
     input:
-        child_cram="results/crams/PMGRC-{childid}-{childid}-0.cram",
-        parent1_cram=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            wildcards.childid,
-            1,
-            reads_manifest["sampleid"],
-            "results/crams/",
-            ".cram",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
+        ),
+        parent1_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                1,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -281,7 +315,10 @@ rule deeptrio_make_examples_father_only:
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent1_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "

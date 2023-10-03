@@ -527,3 +527,22 @@ def determine_trio_structure(
         if "non-PAR" in interval and sample_is_male:
             return "father_only"
     return "full_trio"
+
+
+def prepare_deeptrio_input(fn: str, manifest: pd.DataFrame) -> str:
+    """
+    DeepTrio has somewhat tedious requirements for input specification.
+    """
+    sampleid = re.sub(".cram", "", fn.split("/")[2])
+    entry = manifest.loc[sampleid, "alignment"]
+    res = fn
+    if entry.endswith(".bam"):
+        res = "results/bams/{}.bam".format(sampleid)
+    ## DeepTrio cannot handle symlinks
+    if not (
+        entry.startswith("s3://")
+        or entry.startswith("https://")
+        or entry.startswith("http://")
+    ):
+        res = entry
+    return res
