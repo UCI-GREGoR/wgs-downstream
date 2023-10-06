@@ -3,29 +3,31 @@ rule somalier_extract:
     Run somalier extract on a single bam.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
         sites_vcf="reference_data/somalier/{}/ref.sites.vcf.gz".format(reference_build),
     output:
-        "results/somalier/extract/{projectid}/{sampleid}.somalier",
+        "results/somalier/extract/{sampleid}.somalier",
     benchmark:
-        "results/performance_benchmarks/somalier_extract/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/somalier_extract/{sampleid}.tsv"
     params:
-        extract_dir="results/somalier/extract/{projectid}",
+        extract_dir="results/somalier/extract",
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier extract -d {params.extract_dir} "
         "--sites {input.sites_vcf} "
-        "-f {input.fasta} --sample-prefix {wildcards.sampleid}_ {input.bam} ; "
-        'if [[ "$(samtools samples {input.bam} | cut -f 1)" != "{wildcards.sampleid}" ]] ; then '
-        "mv {params.extract_dir}/$(samtools samples {input.bam} | cut -f 1).somalier {output} ; "
+        "-f {input.fasta} --sample-prefix {wildcards.sampleid}_ {input.cram} ; "
+        'if [[ "$(samtools samples {input.cram} | cut -f 1)" != "{wildcards.sampleid}" ]] ; then '
+        "mv {params.extract_dir}/$(samtools samples {input.cram} | cut -f 1).somalier {output} ; "
         "fi"
 
 
@@ -36,9 +38,7 @@ checkpoint somalier_relate:
     input:
         somalier=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            bam_manifest["projectid"].to_list(),
-            bam_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),
@@ -53,10 +53,12 @@ checkpoint somalier_relate:
         outprefix="results/somalier/relate/somalier",
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier relate --ped {input.ped} -o {params.outprefix} {input.somalier}"
 
@@ -70,10 +72,12 @@ checkpoint somalier_split_by_family:
         tsv="results/somalier/relate/somalier.pairs.tsv",
     output:
         pairs="results/somalier/relate/by_family/{family_id}.pairs.tsv",
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         'grep -E "#sample|-{wildcards.family_id}-" {input.tsv} > {output.pairs}'
 
@@ -89,28 +93,27 @@ rule somalier_build_pedfile:
     once that is actually implemented and operational.
     """
     input:
-        linker="results/linker.tsv",
+        sex_manifest=config["sample-sex"],
     output:
         ped="results/somalier/somalier.ped",
         problems="results/somalier/discordant_annotations.tsv",
     benchmark:
         "results/performance_benchmarks/somalier_build_pedfile/somalier.tsv"
     params:
-        projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
-        subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
+        sampleids=lambda wildcards: reads_manifest["sampleid"].to_list(),
         valid_subjectids=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            bam_manifest["projectid"].to_list(),
-            bam_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "",
             "",
         ),
         use_somalier_ids=True,
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/construct_somalier_pedfile.py"
 
@@ -125,10 +128,12 @@ rule somalier_get_reference_files:
         directory("results/somalier/references"),
     benchmark:
         "results/performance_benchmarks/somalier_get_reference_files/out.tsv"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "mkdir -p {output} && "
         "tar --directory={output} -z -x -v -f {input} && "
@@ -147,9 +152,7 @@ rule somalier_ancestry:
         somalier_reference="results/somalier/references",
         somalier_experimental=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            bam_manifest["projectid"].to_list(),
-            bam_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "results/somalier/extract/",
             ".somalier",
         ),
@@ -162,10 +165,12 @@ rule somalier_ancestry:
         "results/performance_benchmarks/somalier_ancestry/out.tsv"
     conda:
         "../envs/somalier.yaml"
-    threads: 1
+    threads: config_resources["somalier"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["somalier"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["somalier"]["queue"], config_resources["queues"]
+        ),
     shell:
         "somalier ancestry --labels {input.reference_labels} -o {params.outprefix} "
         "{input.somalier_reference}/*somalier ++ {input.somalier_experimental}"
@@ -182,9 +187,11 @@ rule somalier_plot_pca:
         plotname="results/somalier/ancestry/results.somalier-ancestry.pcplot.png",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/plot_pca.R"

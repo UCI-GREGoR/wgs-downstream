@@ -3,8 +3,11 @@
 This workflow is intended to be the R&D space for PMGRC WGS downstream (post-alignment or calling) analyses. Target analyses are as follows:
 
 - Cross-flowcell QC with [somalier](https://github.com/brentp/somalier)
+- [Cyrius](https://github.com/Illumina/Cyrius)
+- [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
 - [ExpansionHunter Denovo](https://github.com/Illumina/ExpansionHunterDenovo)
 - Joint calling with [GLnexus](https://github.com/dnanexus-rnd/GLnexus)
+- Recalling of trios with [DeepTrio](https://github.com/google/deepvariant)
 - others TBD
 
 New global targets should be added in `workflow/Snakefile`. Content in `workflow/Snakefile` and the snakefiles in `workflow/rules` should be specifically _rules_; python infrastructure should be composed as subroutines under `lib/` and constructed in such a manner as to be testable with [pytest](https://docs.pytest.org/en/7.2.x/). Rules can call embedded scripts (in python or R/Rmd) from `workflow/scripts`; again, these should be constructed to be testable with pytest or [testthat](https://testthat.r-lib.org/).
@@ -26,20 +29,20 @@ Note that this requires local git ssh key configuration; see [here](https://docs
 
 ### Step 2: Configure workflow
 
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `bam_manifest.tsv` or `gvcf_manifest.tsv` to specify your sample setup.
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `cram_manifest.tsv` or `gvcf_manifest.tsv` to specify your sample setup.
 
 The following settings are recognized in `config/config.yaml`.
 
 |Configuration Setting|Description|
 |---|---|
-|`bam_manifest`|Relative path to aligned read file manifest|
+|`cram_manifest`|Relative path to aligned read file manifest|
 |`gvcf_manifest`|Relative path to g.vcf file manifest|
-|`sample-logbook`|Local Excel spreadsheet clone of sample manifest information from Google docs. This is upstream input. A local cloned file is preferred due to the possibility of uncontrolled upstream changes|
+|`sample-sex`|Relative path to plaintext linker between sample ID and self-reported sex (Female, Male, Unknown)|
 |`data-model`|Local Excel spreadsheet clone of data model information from Google docs. This file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo. This is a local cloned file for the same reasons as listed above|
 |`multiqc-config`|Relative path to configuration settings for cross-flowcell multiQC report|
 |`genome-build`|Requested genome reference build to use for this analysis run. This should match the tags used in the reference data blocks below|
 |`behaviors`|User-configurable modifiers to how the pipeline will run|
-||- `symlink-bams`: whether to copy (no) or symlink (yes) input bams into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
+||- `symlink-crams`: whether to copy (no) or symlink (yes) input crams into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
 |`references`|Human genome reference data applicable to multiple tools. An arbitrary number of groupings can be specified under this key, meant to be named after the relevant human reference build. `grch38` is minimally required|
 ||- `fasta`: human sequence fasta file|
 ||- `exclusion-regions-bed`: set of bed regions to be excluded from output SNV data. expected to be from https://doi.org/10.1038/s41598-019-45839-z|
@@ -60,20 +63,18 @@ The following settings are recognized in `config/config.yaml`.
 ||Reference data specific to DeepTrio. An arbitrary number of groupings can be specified under genome-specific keys, of the form `grch.*`. `grch38` is minimally required|
 ||- `calling-ranges`: path to file containing list of filenames of calling range bedfiles|
 
-The following columns are expected in the aligned read (bam) manifest, by default at `config/bam_manifest.tsv`:
+The following columns are expected in the aligned read (cram) manifest, by default at `config/cram_manifest.tsv`:
 
 |Column Header|Description|
 |---|---|
-|`projectid`|Run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
-|`sampleid`|Sequencing ID for sample|
-|`bam`|Absolute or relative path to sample alignment (post-BQSR) bam file|
+|`sampleid`|External ID for sample|
+|`cram`|Absolute or relative path to sample alignment (post-BQSR) cram file|
 
 The following columns are expected in the g.vcf manifest, by default at `config/gvcf_manifest.tsv`:
 
 |Column Header|Description|
 |---|---|
-|`projectid`|Run ID, or other desired grouping of sequencing samples. this will be a subdirectory under individual tools in `results/`|
-|`sampleid`|Sequencing ID for sample|
+|`sampleid`|External ID for sample|
 |`gvcf`|Absolute or relative path to sample gvcf file|
 
 ### Step 3: Install Snakemake
@@ -120,9 +121,9 @@ add the option to disable some of the tools in userspace, but there's no need cu
 you can run the phony rule named after each tool (e.g. `somalier` or `expansionhunter_denovo`).
 The actual files considered by the tools are pulled from the input manifest with certain restrictions:
 
-- somalier considers all bams in the user manifest (e.g. `config/bam_manifest.tsv`).
+- somalier considers all crams in the user manifest (e.g. `config/cram_manifest.tsv`).
 - for ExpansionHunterDenovo, which expects some amount of case/control annotation, only samples that are present in both the
-  user manifest (e.g. `config/bam_manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
+  user manifest (e.g. `config/cram_manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
   among other things, that the flowcell control low-depth NA24385 samples are always excluded from analysis.
 - glnexus pulls all gvcfs from the relevant user manifest (by default, `config/gvcf_manifest.tsv`).
 - DeepTrio is still in initial development, but the draft behavior is that the workflow will detect probands with at
@@ -135,14 +136,14 @@ The actual files considered by the tools are pulled from the input manifest with
 
 This workflow is expected to be run periodically from the same installation. At some point, if there's enough iteration and
 interest, I may update this workflow to handle perfect updating automatically. In lieu of that, here's how you can make
-sure the pipeline runs the tools again correctly when new input samples are added to the bam manifest:
+sure the pipeline runs the tools again correctly when new input samples are added to the cram manifest:
 
 - you can always delete the `results/` directory entirely. this will purge all analysis to date. this works perfectly,
   but obviously involves redundant computation
 - for somalier, reruns are gated on the contents of the linker file the workflow generates from the input. to force the
   pipeline to reevaluate its inputs and rerun if necessary, delete the file `results/linker.tsv` and relaunch
 - for ExpansionHunterDenovo, reruns are gated on the contents of the linker file the workflow generates as well as
-  the manifest the workflow generates from the combined information from the user bam manifest and the data model. as such,
+  the manifest the workflow generates from the combined information from the user cram manifest and the data model. as such,
   to force the pipeline to reevaluate its inputs and rerun if necessary, delete the files `results/linker.tsv` and
   `results/expansionhunter_denovo/manifest.tsv` and relaunch
 - both DeepTrio and glnexus joint calling are tracked via single tracking files installed under `results/`. as always,
@@ -175,6 +176,14 @@ one present and one absent parent in dataset. This is flagged for update.
 #### somalier
 
 Somalier's results are processed by MultiQC and emitted as a report `results/multiqc/multiqc.cross-flowcell.html`.
+
+#### Cyrius
+
+WIP
+
+#### ExpansionHunter
+
+WIP
 
 #### ExpansionHunterDenovo
 

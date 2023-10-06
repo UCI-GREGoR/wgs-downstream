@@ -1,25 +1,25 @@
 localrules:
-    expansionhunter_rename_bai,
+    expansionhunter_rename_crai,
 
 
-rule expansionhunter_rename_bai:
+rule expansionhunter_rename_crai:
     """
-    The path to the bam index is not exposed as a controllable
+    The path to the cram index is not exposed as a controllable
     parameter by expansionhunter. As such, copy the standard
-    bai index to the modified extension .bam.bai.
+    crai index to the modified extension .cram.crai.
 
-    Due to ambiguity with other bai generation rules,
-    this specifies both the bam and the bai with the
-    original naming, though technically the bam is not required
+    Due to ambiguity with other crai generation rules,
+    this specifies both the cram and the crai with the
+    original naming, though technically the cram is not required
     for this operation.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
     output:
-        bai=temp("results/bams/{projectid}/{sampleid}.bam.bai"),
+        crai=temp("results/crams/{sampleid}.cram.crai"),
     shell:
-        "cp {input.bai} {output.bai}"
+        "cp {input.crai} {output.crai}"
 
 
 rule expansionhunter_run:
@@ -27,28 +27,29 @@ rule expansionhunter_run:
     Run ExpansionHunter using user-configured run settings.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bam.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.cram.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
-        linker="results/linker.tsv",
     output:
-        "results/expansionhunter/{projectid}/{sampleid}.output.vcf",
-        "results/expansionhunter/{projectid}/{sampleid}.output.json",
+        "results/expansionhunter/{sampleid}.output.vcf",
+        "results/expansionhunter/{sampleid}.output.json",
     params:
         variant_catalog="$CONDA_PREFIX/share/ExpansionHunter/variant_catalog/grch38/variant_catalog.json",
-        output_prefix="results/expansionhunter/{projectid}/{sampleid}.output",
+        output_prefix="results/expansionhunter/{sampleid}.output",
         region_extension_length=config["expansionhunter"]["region-extension-length"],
-        sex=lambda wildcards: tc.get_sample_sex(wildcards, checkpoints),
+        sex=lambda wildcards: tc.get_sample_sex(wildcards, sex_manifest),
         aligner=config["expansionhunter"]["aligner"],
         analysis_mode="seeking",
     conda:
         "../envs/expansionhunter.yaml"
-    threads: 2
+    threads: config_resources["expansionhunter"]["threads"]
     resources:
-        mem=2000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "ExpansionHunter --reads {input.bam} --reference {input.fasta} "
+        "ExpansionHunter --reads {input.cram} --reference {input.fasta} "
         "--variant-catalog {params.variant_catalog} "
         "--output-prefix {params.output_prefix} "
         "--region-extension-length {params.region_extension_length} "
@@ -63,15 +64,17 @@ rule expansionhunter_filter_vcfs:
     Filter expansionhunter raw output on PASS.
     """
     input:
-        vcf="results/expansionhunter/{projectid}/{sampleid}.output.vcf",
+        vcf="results/expansionhunter/{sampleid}.output.vcf",
     output:
-        output="results/expansionhunter/{projectid}/{sampleid}.filtered.vcf.gz",
+        output="results/expansionhunter/{sampleid}.filtered.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools view --threads {threads} -f 'PASS' -Oz -o {output} {input.vcf}"
 
@@ -82,19 +85,15 @@ rule expansionhunter_combine_vcfs:
     """
     input:
         vcf=lambda wildcards: tc.select_expansionhunter_subjects(
-            wildcards,
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            sex_manifest,
+            reads_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz",
             config["expansionhunter"]["excluded-samples"],
         ),
         tbi=lambda wildcards: tc.select_expansionhunter_subjects(
-            wildcards,
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            sex_manifest,
+            reads_manifest["sampleid"],
             "results/expansionhunter",
             "filtered.vcf.gz.tbi",
             config["expansionhunter"]["excluded-samples"],
@@ -103,10 +102,12 @@ rule expansionhunter_combine_vcfs:
         "results/expansionhunter/expansionhunter_all_subjects.vcf.gz",
     conda:
         "../envs/bcftools.yaml"
-    threads: 2
+    threads: config_resources["bcftools_merge"]["threads"]
     resources:
-        mem_mb=16000,
-        qname="small",
+        mem_mb=config_resources["bcftools_merge"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools_merge"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools merge --threads {threads} -Oz -o {output} {input.vcf}"
 
@@ -124,9 +125,11 @@ rule expansionhunter_create_report:
         output_tsv="results/expansionhunter/expansionhunter_report.tsv",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/expansionhunter.Rmd"

@@ -1,0 +1,13 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: an entry in the aligned cram manifest
+properties:
+  sampleid:
+    type: string
+    description: "external ID for sample"
+  sex:
+    type: string
+    description: "self-reported sex for sample: one of Female, Male, Unknown"
+required:
+  - sampleid
+  - sex
+additionalProperties: no

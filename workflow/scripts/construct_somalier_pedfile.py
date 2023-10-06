@@ -4,18 +4,18 @@ import numpy as np
 import pandas as pd
 
 
-def convert_sex_representation(sample_sex: str) -> int:
+def convert_sex_representation(sample_sex: str) -> str:
     """
     Take a self-reported sex representation written out as
-    an English word, and convert to a plink-style integer
+    an English word, and convert to a plink-style integer (as string)
     representation. 0 -> Unknown, 2 -> Female, 1 -> Male
     """
     if sample_sex.lower() == "female":
-        return 2
+        return "2"
     elif sample_sex.lower() == "male":
-        return 1
+        return "1"
     else:
-        return 0
+        return "0"
 
 
 def add_problem(problems: dict, sampleid: str, problem: str) -> dict:
@@ -30,12 +30,12 @@ def add_problem(problems: dict, sampleid: str, problem: str) -> dict:
     return problems
 
 
-def construct_final_id(sampleid: str, indexid: str, use_somalier_id: bool) -> str:
+def construct_final_id(sampleid: str, use_somalier_id: bool) -> str:
     """
     Adjust sample ID format for use in either somalier or, really, everything else
     """
     if use_somalier_id:
-        res = sampleid if "_SQ" in sampleid else sampleid + "_" + indexid
+        res = sampleid
     else:
         id_parse = re.match("^(.*)_SQ[0-9]{4}$", sampleid)
         res = id_parse[1] if id_parse else sampleid
@@ -53,15 +53,14 @@ def add_affected_status(df: pd.DataFrame, affected_status: str) -> pd.DataFrame:
     affected = pd.read_table(affected_status, sep="\t").set_index("participant_id")
     df = df.join([affected])
     df["Pheno"] = df["affected_status"].map(
-        {"Affected": 2, "Unaffected": 1, np.nan: -9}
+        {"Affected": "2", "Unaffected": "1", np.nan: "1"}
     )
     return df[df.columns[range(6)]]
 
 
 def run_construct_somalier_pedfile(
-    linker: str,
+    sex_manifest_fn: str,
     affected_status: str,
-    projectids: list,
     sampleids: list,
     valid_subjectids: list,
     use_somalier_ids: bool,
@@ -74,34 +73,6 @@ def run_construct_somalier_pedfile(
     Currently, this populates the sex entry for all subjects with placeholder 0 for unknown.
     """
 
-    ## strip project IDs
-    valid_subjectids = [x.split("/")[1] for x in valid_subjectids]
-
-    ## load linker information formatted from the lab logbook
-    linker_data = pd.read_csv(linker, sep="\t")
-
-    ## Grab subjectids from linker
-    aligned_subjectids = []
-    for projectid, sampleid in zip(projectids, sampleids):
-        res = linker_data.loc[
-            ((linker_data["project"] == projectid) | linker_data["project"].isna())
-            & (linker_data["index"] == sampleid),
-            "subject",
-        ]
-        if len(res) == 0:
-            aligned_subjectids.append(projectid + "_" + sampleid)
-        else:
-            aligned_subjectids.append(res.to_list()[0])
-
-    ## Do not tolerate duplicates. This shouldn't actually happen, but hey.
-    ids = pd.DataFrame(
-        data={
-            "projectid": projectids,
-            "sampleid": sampleids,
-            "subjectid": aligned_subjectids,
-        }
-    ).drop_duplicates()
-
     ## track detected problems with ID consistency
     problems = {}
 
@@ -111,31 +82,23 @@ def run_construct_somalier_pedfile(
     mat_id = []
     pat_id = []
     parent_data = {}
-    for subjectid, projectid, indexid in zip(
-        linker_data["subject"], linker_data["project"], linker_data["index"]
-    ):
-        if not (projectid in projectids):
-            continue
-        if not (subjectid in valid_subjectids):
-            parent_data[str(projectid) + "_" + str(indexid)] = (
-                str(projectid) + "_" + str(indexid)
-            )
+    for sampleid in sampleids:
+        if not (sampleid in valid_subjectids):
+            parent_data[sampleid] = sampleid
         else:
-            parsed_sample_id = subjectid.split("-")
-            parent_data["{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])] = (
-                str(subjectid) + "_" + str(indexid)
-            )
+            parsed_sample_id = sampleid.split("-")
+            parent_data[
+                "{}-{}".format(parsed_sample_id[2], parsed_sample_id[3])
+            ] = sampleid
 
-    for projectid, sampleid, subject_id in zip(
-        ids["projectid"], ids["sampleid"], ids["subjectid"]
-    ):
-        sample_sex = linker_data.loc[
-            ((linker_data["project"] == projectid) | linker_data["project"].isna())
-            & (linker_data["index"] == sampleid),
-            "sex",
-        ]
-        if len(sample_sex) == 1:
-            parsed_sample_id = subject_id.split("-")
+    sex_manifest = pd.read_csv(sex_manifest_fn, sep="\t").set_index(
+        "sampleid", drop=False
+    )
+
+    for sampleid in sampleids:
+        if sampleid in sex_manifest.index:
+            sample_sex = sex_manifest.loc[sampleid, "sex"]
+            parsed_sample_id = sampleid.split("-")
             is_verifiable = len(parsed_sample_id) == 4
             invalid_family_structure = False
             if (
@@ -147,13 +110,13 @@ def run_construct_somalier_pedfile(
                     problems, sampleid, "subject with proband ID is not flagged -0"
                 )
                 invalid_family_structure = True
-            sex_representation = convert_sex_representation(sample_sex.to_list()[0])
+            sex_representation = convert_sex_representation(sample_sex)
             invalid_sex_configuration = False
-            if sex_representation != 0:
+            if sex_representation != "0":
                 if (
                     is_verifiable
                     and parsed_sample_id[3] == "1"
-                    and sex_representation != 1
+                    and sex_representation != "1"
                 ):
                     problems = add_problem(
                         problems,
@@ -164,7 +127,7 @@ def run_construct_somalier_pedfile(
                 elif (
                     is_verifiable
                     and parsed_sample_id[3] == "2"
-                    and sex_representation != 2
+                    and sex_representation != "2"
                 ):
                     problems = add_problem(
                         problems,
@@ -175,13 +138,13 @@ def run_construct_somalier_pedfile(
                 if not invalid_sex_configuration:
                     self_reported_sex.append(sex_representation)
                 else:
-                    self_reported_sex.append(0)
+                    self_reported_sex.append("0")
             elif is_verifiable and parsed_sample_id[3] == "1":
                 self_reported_sex.append(convert_sex_representation("Male"))
             elif is_verifiable and parsed_sample_id[3] == "2":
                 self_reported_sex.append(convert_sex_representation("Female"))
             else:
-                self_reported_sex.append(0)
+                self_reported_sex.append("0")
             if (
                 is_verifiable
                 and "{}-1".format(parsed_sample_id[1]) in parent_data
@@ -201,11 +164,11 @@ def run_construct_somalier_pedfile(
             if is_verifiable:
                 family_id.append(parsed_sample_id[2])
             else:
-                family_id.append(projectid + "_" + subject_id)
+                family_id.append(sampleid)
         else:
-            self_reported_sex.append(0)
-            mat_id.append(0)
-            pat_id.append(0)
+            self_reported_sex.append("0")
+            mat_id.append("0")
+            pat_id.append("0")
             family_id.append(sampleid)
             problems = add_problem(
                 problems, sampleid, "self-reported sex missing from annotations"
@@ -216,17 +179,13 @@ def run_construct_somalier_pedfile(
             data={
                 "FID": family_id,
                 "Sample": [
-                    construct_final_id(subjectid, indexid, use_somalier_ids)
-                    for subjectid, indexid in zip(ids["subjectid"], ids["sampleid"])
+                    construct_final_id(sampleid, use_somalier_ids)
+                    for sampleid in sampleids
                 ],
-                "Pat": [
-                    construct_final_id(str(y), "", use_somalier_ids) for y in pat_id
-                ],
-                "Mat": [
-                    construct_final_id(str(y), "", use_somalier_ids) for y in mat_id
-                ],
+                "Pat": [construct_final_id(str(y), use_somalier_ids) for y in pat_id],
+                "Mat": [construct_final_id(str(y), use_somalier_ids) for y in mat_id],
                 "Sex": self_reported_sex,
-                "Pheno": ["-9" for x in ids["sampleid"]],
+                "Pheno": ["1" for x in sampleids],
             }
         )
         .sort_values(by=["FID", "Sample"])
@@ -242,12 +201,11 @@ def run_construct_somalier_pedfile(
 
 
 run_construct_somalier_pedfile(
-    snakemake.input["linker"],  # noqa: F821
+    snakemake.input["sex_manifest"],  # noqa: F821
     snakemake.input["affected_status"]  # noqa: F821
     if "affected_status" in snakemake.input.keys()  # noqa: F821
     else None,
-    snakemake.params["projectids"],  # noqa: F821
-    snakemake.params["subjectids"],  # noqa: F821
+    snakemake.params["sampleids"],  # noqa: F821
     snakemake.params["valid_subjectids"],  # noqa: F821
     snakemake.params["use_somalier_ids"],  # noqa: F821
     snakemake.output["ped"],  # noqa: F821

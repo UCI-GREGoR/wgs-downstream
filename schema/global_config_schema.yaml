@@ -1,20 +1,12 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 description: global configuration
 properties:
-  bam_manifest:
+  reads_manifest:
     type: string
   gvcf_manifest:
     type: string
-  sample-logbook:
+  sample-sex:
     type: string
-  sample-linking:
-    type: object
-    properties:
-      sex:
-        type: string
-      external-ids:
-        type: string
-    additionalProperties: false
   data-model:
     type: string
   multiqc-config:
@@ -25,10 +17,10 @@ properties:
   behaviors:
     type: object
     properties:
-      symlink-bams:
+      symlink-reads:
         type: boolean
     required:
-      - symlink-bams
+      - symlink-reads
     additionalProperties: no
   references:
     type: object
@@ -174,10 +166,9 @@ properties:
       - grch38
     additionalProperties: no
 required:
-  - bam_manifest
+  - reads_manifest
   - gvcf_manifest
-  - sample-logbook
-  - sample-linking
+  - sample-sex
   - multiqc-config
   - genome-build
   - behaviors

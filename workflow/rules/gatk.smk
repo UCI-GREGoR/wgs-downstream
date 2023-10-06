@@ -19,10 +19,13 @@ rule create_sequence_dictionary:
         ),
     conda:
         "../envs/gatk4.yaml"
-    threads: 1
+    threads: config_resources["gatk_createsequencedictionary"]["threads"]
     resources:
-        mem_mb="10000",
-        qname="small",
+        mem_mb=config_resources["gatk_createsequencedictionary"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["gatk_createsequencedictionary"]["queue"],
+            config_resources["queues"],
+        ),
         tmpdir=tempDir,
     shell:
         "mkdir -p {params.tmpdir} && "

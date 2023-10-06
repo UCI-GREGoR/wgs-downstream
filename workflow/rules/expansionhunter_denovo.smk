@@ -26,19 +26,20 @@ checkpoint expansionhunter_denovo_create_manifest:
     """
     input:
         affected_status=config["expansionhunter_denovo"]["affected-status"],
-        linker="results/linker.tsv",
+        sex_manifest=config["sample-sex"],
         exclusions=config["expansionhunter_denovo"]["excluded-samples"],
     output:
         tsv="results/expansionhunter_denovo/manifest.tsv",
     params:
-        projectids=bam_manifest["projectid"],
-        sampleids=bam_manifest["sampleid"],
+        sampleids=reads_manifest["sampleid"],
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/create_expansionhunter_denovo_manifest.R"
 
@@ -48,26 +49,29 @@ rule expansionhunter_denovo_profile_subject:
     Run single-sample STR profiling with expansionhunter_denovo
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
     output:
-        json="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.str_profile.json",
-        motif="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.motif.tsv",
-        locus="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}.locus.tsv",
+        json="results/expansionhunter_denovo/profiles/{sampleid}.str_profile.json",
+        motif="results/expansionhunter_denovo/profiles/{sampleid}.motif.tsv",
+        locus="results/expansionhunter_denovo/profiles/{sampleid}.locus.tsv",
     params:
-        outprefix="results/expansionhunter_denovo/profiles/{projectid}/{sampleid}",
+        outprefix="results/expansionhunter_denovo/profiles/{sampleid}",
         min_anchor_mapq=50,
         max_irr_mapq=40,
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
-        "ExpansionHunterDenovo profile --reads {input.bam} "
+        "ExpansionHunterDenovo profile --reads {input.cram} "
         "--reference {input.fasta} "
         "--output-prefix {params.outprefix} "
         "--min-anchor-mapq {params.min_anchor_mapq} "
@@ -82,10 +86,8 @@ rule expansionhunter_denovo_merge_profiles:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -97,10 +99,13 @@ rule expansionhunter_denovo_merge_profiles:
         outprefix="results/expansionhunter_denovo/profiles/combined_profiles",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "ExpansionHunterDenovo merge --reference {input.fasta} "
         "--manifest {input.manifest} "
@@ -116,10 +121,8 @@ rule expansionhunter_denovo_locus_outliers:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -129,10 +132,13 @@ rule expansionhunter_denovo_locus_outliers:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.tsv",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "{input.repo}/scripts/outlier.py locus --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
@@ -146,10 +152,8 @@ rule expansionhunter_denovo_motif_outliers:
     input:
         manifest="results/expansionhunter_denovo/manifest.tsv",
         jsons=lambda wildcards: tc.select_expansionhunter_denovo_subjects(
-            wildcards,
             checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            reads_manifest["sampleid"],
             "results/expansionhunter_denovo/profiles",
             "str_profile.json",
         ),
@@ -159,10 +163,13 @@ rule expansionhunter_denovo_motif_outliers:
         "results/expansionhunter_denovo/outlier_analysis/results.outlier_motif.tsv",
     conda:
         "../envs/expansionhunter_denovo.yaml"
-    threads: 1
+    threads: config_resources["expansionhunter_denovo"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["expansionhunter_denovo"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["expansionhunter_denovo"]["queue"],
+            config_resources["queues"],
+        ),
     shell:
         "{input.repo}/scripts/outlier.py motif --manifest {input.manifest} --multisample-profile {input.combined_json} --output {output}"
 
@@ -181,10 +188,12 @@ rule annovar_extract_tarball:
         tarball=lambda wildcards: config["expansionhunter_denovo"]["annovar-tarball"]
         if "annovar-tarball" in config["expansionhunter_denovo"]
         else "",
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "tar -C results -xvzf {params.tarball}"
 
@@ -199,10 +208,12 @@ rule annovar_download_references:
         directory("results/annovar_humandb"),
     conda:
         "../envs/annovar.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "perl {input}/annotate_variation.pl -buildver hg38 -downdb -webfrom annovar refGene {output}"
 
@@ -222,10 +233,12 @@ rule expansionhunter_denovo_annotate:
         tsv="results/expansionhunter_denovo/outlier_analysis/results.outlier_locus.annotated.tsv",
     conda:
         "../envs/annovar.yaml"
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bash {input.expansionhunter_denovo}/scripts/annotate_ehdn.sh "
         "--ehdn-results {input.locus_results} "
@@ -245,12 +258,14 @@ rule create_expansionhunter_denovo_report:
         "results/expansionhunter_denovo/expansionhunter_denovo.html",
     params:
         locus_count=config["expansionhunter_denovo"]["plot-locus-count"],
-        min_nonzero_subjects=lambda wildcards: len(bam_manifest) * 0.75,
+        min_nonzero_subjects=lambda wildcards: len(reads_manifest) * 0.75,
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/expansionhunter_denovo.Rmd"

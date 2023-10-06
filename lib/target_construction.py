@@ -100,130 +100,69 @@ def get_fid(sampleid):
         return split_id[2]
 
 
-def get_valid_subjectids(wildcards, checkpoints, projectids, sampleids, prefix, suffix):
-    valid_samples = {}
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    for projectid, sampleid in zip(projectids, sampleids):
-        if projectid.startswith("RU"):
-            df_matches = df.loc[
-                (df["project"] == projectid) & (df["index"] == sampleid), "subject"
-            ]
-        else:
-            df_matches = df.loc[
-                df["project"].isna() & (df["index"] == sampleid), "subject"
-            ]
-
-        if len(df_matches) == 1:
-            ## ad hoc handler for rerun samples: pick the later project id
-            if df_matches.to_list()[0] in valid_samples.keys():
-                if projectid > valid_samples[df_matches.to_list()[0]]:
-                    valid_samples[df_matches.to_list()[0]] = projectid
-            else:
-                valid_samples[df_matches.to_list()[0]] = projectid
+def get_valid_subjectids(
+    wildcards, sampleids, prefix, suffix, exclude_unknown_rels=False
+):
+    """
+    If exclude_unknown_rels, remove subjects with "-3" suffixes from pedigrees.
+    Evidently there can sometimes aberrantly be suffixes greater than 3.
+    """
     res = []
-    for sampleid, projectid in valid_samples.items():
-        if "subset" in wildcards:
+    for sampleid in sampleids:
+        if "subset" in wildcards.keys():
             fid = get_fid(sampleid)
-            if wildcards.subset == "all" or wildcards.subset == fid:
-                res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
+            if (wildcards.subset == "all") or (
+                (wildcards.subset == fid)
+                and (
+                    (exclude_unknown_rels and (int(sampleid.split("-")[3]) < 3))
+                    or (not exclude_unknown_rels)
+                )
+            ):
+                res.append("{}{}{}".format(prefix, sampleid, suffix))
         else:
-            res.append("{}{}/{}{}".format(prefix, projectid, sampleid, suffix))
+            res.append("{}{}{}".format(prefix, sampleid, suffix))
     return res
 
 
-def link_bams_by_id(wildcards, checkpoints, bam_manifest):
-    sampleid = ""
-    projectid = wildcards.projectid
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    if projectid.startswith("RU"):
-        df_sampleid = df.loc[
-            (df["subject"] == wildcards.sampleid) & (df["project"] == projectid),
-            "index",
-        ]
-    else:
-        df_sampleid = df.loc[
-            (df["subject"] == wildcards.sampleid) & df["project"].isna(),
-            "index",
-        ]
-    if len(df_sampleid) == 1:
-        sampleid = df_sampleid.to_list()[0]
-    else:
-        raise ValueError(
-            "cannot find subject id in manifest: {}, {}".format(
-                wildcards.sampleid, wildcards.projectid
-            )
-        )
-    res = bam_manifest.loc[
-        (bam_manifest["sampleid"] == sampleid)
-        & (bam_manifest["projectid"] == projectid),
-        "bam",
+def link_reads_by_id(wildcards, reads_manifest):
+    """
+    This function had substantially more logic associated with it before
+    the modernization process; this is flagged for refactoring.
+    """
+    res = reads_manifest.loc[
+        reads_manifest["sampleid"] == wildcards.sampleid, "alignment"
     ]
     return [annotate_remote_file(x) for x in res]
 
 
-def link_gvcfs_by_id(wildcards, checkpoints, gvcf_manifest, use_gvcf):
-    sampleid = ""
-    projectid = wildcards.projectid
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    if projectid.startswith("RU"):
-        df_sampleid = df.loc[
-            (df["subject"] == wildcards.sampleid) & (df["project"] == projectid),
-            "index",
-        ]
-    else:
-        df_sampleid = df.loc[
-            (df["subject"] == wildcards.sampleid) & df["project"].isna(), "index"
-        ]
-    if len(df_sampleid) == 1:
-        sampleid = df_sampleid.to_list()[0]
-    else:
-        raise ValueError(
-            "cannot find subject id in manifest: {}".format(wildcards.sampleid)
-        )
+def link_gvcfs_by_id(wildcards, gvcf_manifest, use_gvcf):
+    """
+    This function had substantially more logic associated with it before
+    the modernization process; this is flagged for refactoring.
+    """
     res = gvcf_manifest.loc[
-        (gvcf_manifest["sampleid"] == sampleid)
-        & (gvcf_manifest["projectid"] == projectid),
-        "gvcf" if use_gvcf else "vcf",
+        gvcf_manifest["sampleid"] == wildcards.sampleid, "gvcf" if use_gvcf else "vcf"
     ]
     return [annotate_remote_file(x) for x in res]
 
 
-def select_cyrius_subjects(
-    checkpoints, projectids, sampleids, exclusions, prefix, suffix
-) -> list:
+def select_cyrius_subjects(sampleids, exclusions, prefix, suffix) -> list:
     """
-    Get set of bams for subjects to be analyzed by cyrius
+    Get set of alignments for subjects to be analyzed by cyrius
     """
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_table(outfn, sep="\t")
     res = []
 
     with open(exclusions, "r") as f:
         excluded_ids = [x.rstrip() for x in f.readlines()]
 
-    for projectid, sampleid in zip(projectids, sampleids):
-        if projectid.startswith("RU"):
-            linker_sampleid = linker.loc[
-                (linker["project"] == projectid) & (linker["index"] == sampleid),
-                "subject",
-            ]
-        else:
-            linker_sampleid = linker.loc[
-                linker["project"].isna() & (linker["index"] == sampleid),
-                "subject",
-            ]
-        if len(linker_sampleid) == 1:
-            subjectid = linker_sampleid.to_list()[0]
-            if subjectid not in excluded_ids:
-                res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
+    for sampleid in sampleids:
+        if sampleid not in excluded_ids:
+            res.append("{}/{}.{}".format(prefix, sampleid, suffix))
     return res
 
 
 def select_expansionhunter_denovo_subjects(
-    wildcards, checkpoints, projectids, sampleids, prefix, suffix
+    checkpoints, sampleids, prefix, suffix
 ) -> list:
     """
     Access checkpoint output to determine the subset of input manifest
@@ -232,82 +171,45 @@ def select_expansionhunter_denovo_subjects(
     """
     fn = str(checkpoints.expansionhunter_denovo_create_manifest.get().output[0])
     df = pd.read_table(fn, sep="\t", header=None, names=["sample", "status", "json"])
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_table(outfn, sep="\t")
     res = []
-    for projectid, sampleid in zip(projectids, sampleids):
-        if projectid.startswith("RU"):
-            linker_sampleid = linker.loc[
-                (linker["project"] == projectid) & (linker["index"] == sampleid),
-                "subject",
-            ]
-        else:
-            linker_sampleid = linker.loc[
-                linker["project"].isna() & (linker["index"] == sampleid),
-                "subject",
-            ]
-        if len(linker_sampleid) == 1:
-            subjectid = linker_sampleid.to_list()[0]
-            if subjectid in df["sample"].to_list():
-                res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
+    for sampleid in sampleids:
+        if sampleid in df["sample"].to_list():
+            res.append("{}/{}.{}".format(prefix, sampleid, suffix))
     return res
 
 
 def select_expansionhunter_subjects(
-    wildcards, checkpoints, projectids, sampleids, prefix, suffix, excluded_samples_fn
+    sex_manifest, sampleids, prefix, suffix, excluded_samples_fn
 ) -> list:
     """
     Determine which samples have sufficient information to be run
     through ExpansionHunter. The current requirements are:
 
-    - linker maps to valid sex annotation
+    - has a valid sex annotation
     - ID not in config exclusion override list
     """
-    linker_fn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_table(linker_fn, sep="\t")
     with open(excluded_samples_fn, "r") as f:
         excluded_samples = [x.rstrip() for x in f.readlines()]
     res = []
-    for projectid, sampleid in zip(projectids, sampleids):
-        if projectid.startswith("RU"):
-            linker_sampleid = linker.loc[
-                (linker["project"] == projectid)
-                & (linker["sex"] != "Unknown")
-                & (linker["index"] == sampleid),
-                "subject",
-            ]
-        else:
-            linker_sampleid = linker.loc[
-                linker["project"].isna()
-                & (linker["sex"] != "Unknown")
-                & (linker["index"] == sampleid),
-                "subject",
-            ]
-        if len(linker_sampleid) == 1:
-            subjectid = linker_sampleid.to_list()[0]
-            if subjectid not in excluded_samples:
-                res.append("{}/{}/{}.{}".format(prefix, projectid, subjectid, suffix))
+    for sampleid in sampleids:
+        valid_subject = (
+            (sampleid not in excluded_samples)
+            and (sampleid in sex_manifest.index)
+            and (sex_manifest.loc[sampleid, "sex"] != "Unknown")
+        )
+        if valid_subject:
+            res.append("{}/{}.{}".format(prefix, sampleid, suffix))
     return res
 
 
-def get_sample_sex(wildcards, checkpoints) -> str:
+def get_sample_sex(wildcards, sex_manifest) -> str:
     """
     For ExpansionHunter, get self-reported sex from sample linker.
     """
-    linker_fn = str(checkpoints.generate_linker.get().output[0])
-    linker = pd.read_table(linker_fn, sep="\t")
-    projectid = wildcards.projectid
     sampleid = wildcards.sampleid
-    if projectid.startswith("RU"):
-        linker_sex = linker.loc[
-            (linker["project"] == projectid) & (linker["subject"] == sampleid), "sex"
-        ]
-    else:
-        linker_sex = linker.loc[
-            linker["project"].isna() & (linker["subject"] == sampleid), "sex"
-        ]
-    sample_sex = linker_sex.to_list()[0]
-    return sample_sex.lower()
+    if sampleid in sex_manifest.index:
+        return sex_manifest.loc[sampleid, "sex"].lower()
+    return "unknown"
 
 
 def get_calling_range_by_chrom(wildcards: Wildcards, ranges: str):
@@ -339,45 +241,53 @@ def get_all_calling_ranges(ranges: str):
     return res
 
 
-def get_family_clusters(checkpoints):
+def get_family_clusters(manifest_gvcf):
     """
-    From the joint call set, compute the
+    From the gvcf manifest, compute the
     set of family clusters present in the
     filtered vcf
     """
-    subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get().output[0].open() as f:
-        subject_ids = f.readlines()
+    sampleids = manifest_gvcf.index
     family_ids = []
-    for subject_id in subject_ids:
-        split_id = subject_id.split("-")
+    for sampleid in sampleids:
+        split_id = sampleid.split("-")
         if len(split_id) == 4:
             family_ids.append(split_id[2])
     return family_ids
 
 
-def get_probands_with_structure(checkpoints):
+def get_probands_with_structure(gvcf_manifest, force_complete=False):
     """
-    From the joint call set, get proband-flagged subjects
-    with at least one parent also present in the dataset
+    From the gvcf manifest, get proband-flagged subjects
+    with at least one parent also present in the dataset.
+    If user requests completeness, then only return proband-flagged
+    subjects with full trios available.
     """
-    subject_ids = ""
-    with checkpoints.get_sample_list_from_vcf.get(subset="all").output[0].open() as f:
-        subject_ids = f.readlines()
+    sampleids = gvcf_manifest.index
     parents = {}
     children = {}
     results = []
-    for subject_id in subject_ids:
-        split_id = subject_id.rstrip().split("-")
+    for sampleid in sampleids:
+        split_id = sampleid.rstrip().split("-")
         if len(split_id) == 4:
             if split_id[3] == "0":
-                children[split_id[2]] = subject_id.rstrip()
+                children[split_id[2]] = sampleid.rstrip()
             elif split_id[3] == "1" or split_id[3] == "2":
-                parents[split_id[2] + "-" + split_id[3]] = subject_id.rstrip()
+                parents[split_id[2] + "-" + split_id[3]] = sampleid.rstrip()
     for cluster, child in children.items():
         if (
-            "{}-1".format(cluster) in parents.keys()
-            or "{}-2".format(cluster) in parents.keys()
+            not force_complete
+            and (
+                "{}-1".format(cluster) in parents.keys()
+                or "{}-2".format(cluster) in parents.keys()
+            )
+        ) or (
+            force_complete
+            and (
+                "{}-1".format(cluster) in parents.keys()
+                and "{}-2".format(cluster) in parents.keys()
+            )
+            and (int(sampleid.split("-")[3]) < 3)
         ):
             results.append(child)
     return results
@@ -385,10 +295,8 @@ def get_probands_with_structure(checkpoints):
 
 def get_subjects_by_family(
     wildcards,
-    checkpoints,
     family_id,
     relationship_code,
-    projectids,
     sampleids,
     prefix,
     suffix,
@@ -398,9 +306,7 @@ def get_subjects_by_family(
     subjects that belong to a specified family
     cluster
     """
-    subject_ids = get_valid_subjectids(
-        wildcards, checkpoints, projectids, sampleids, prefix, suffix
-    )
+    subject_ids = get_valid_subjectids(wildcards, sampleids, prefix, suffix)
     family_subjects = []
     for subject_id in subject_ids:
         split_id = pathlib.PurePosixPath(subject_id).name.split("-")
@@ -418,9 +324,7 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
     """
     somalier_samples = str(checkpoints.somalier_relate.get().output["samples"])
 
-    subject_ids = get_valid_subjectids(
-        wildcards, checkpoints, manifest["projectid"], manifest["sampleid"], "", ""
-    )
+    subject_ids = get_valid_subjectids(wildcards, manifest["sampleid"], "", "")
     family_id = sampleid.split("-")[2]
     somalier_pairs = str(
         checkpoints.somalier_split_by_family.get(family_id=family_id).output["pairs"]
@@ -428,12 +332,12 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
     mother_id = ""
     father_id = ""
     for subject_id in subject_ids:
-        split_id = pathlib.PurePosixPath(subject_id).name.split("-")
+        split_id = subject_id.split("-")
         if len(split_id) == 4:
             if split_id[2] == str(family_id) and split_id[3] == "1":
-                father_id = subject_id.split("/")[1]
+                father_id = subject_id
             if split_id[2] == str(family_id) and split_id[3] == "2":
-                mother_id = subject_id.split("/")[1]
+                mother_id = subject_id
 
     # check for parent relatedness in somalier output
     somalier_pairs_df = pd.read_table(somalier_pairs, sep="\t")
@@ -452,14 +356,14 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
             (somalier_pairs_df["sample_a"] == mother_id)
             | (somalier_pairs_df["sample_b"] == mother_id)
         ]
-        if (mother_relatedness["relatedness"] < 0.3535534).bool():
+        if float(mother_relatedness["relatedness"].iloc[0]) < 0.3535534:
             mother_id = ""
     if father_id != "":
         father_relatedness = somalier_pairs_df[
             (somalier_pairs_df["sample_a"] == father_id)
             | (somalier_pairs_df["sample_b"] == father_id)
         ]
-        if (father_relatedness["relatedness"] < 0.3535534).bool():
+        if float(father_relatedness["relatedness"].iloc[0]) < 0.3535534:
             father_id = ""
 
     if mother_id == "" and father_id == "":
@@ -476,36 +380,13 @@ def get_trio_data(wildcards, checkpoints, manifest, sampleid):
     return mother_id, father_id, sample_is_male
 
 
-def compute_expected_single_samples(manifest, checkpoints):
-    valid_samples = {}
-    outfn = str(checkpoints.generate_linker.get().output[0])
-    df = pd.read_table(outfn, sep="\t")
-    for projectid, sampleid in zip(manifest["projectid"], manifest["sampleid"]):
-        df_matches = df.loc[(df["project"] == projectid) & (df["index"] == sampleid), :]
-        if len(df_matches["subject"]) == 1:
-            ## ad hoc handler for rerun samples: pick the later project id
-            if df_matches["subject"].to_list()[0] in valid_samples.keys():
-                if projectid > valid_samples[df_matches["subject"].to_list()[0]]:
-                    valid_samples[df_matches["subject"].to_list()[0]] = (
-                        projectid,
-                        "{}_{}_{}".format(
-                            df_matches["subject"].to_list()[0],
-                            df_matches["analyte"].to_list()[0],
-                            df_matches["index"].to_list()[0],
-                        ),
-                    )
-            else:
-                valid_samples[df_matches["subject"].to_list()[0]] = (
-                    projectid,
-                    "{}_{}_{}".format(
-                        df_matches["subject"].to_list()[0],
-                        df_matches["analyte"].to_list()[0],
-                        df_matches["index"].to_list()[0],
-                    ),
-                )
+def compute_expected_single_samples(manifest):
+    """
+    This operation required more logic previously, and is flagged for refactoring.
+    """
     res = [
         "results/split_joint_calls/{}.snv.vcf.gz".format(x[1][1])
-        for x in valid_samples.items()
+        for x in manifest.index
     ]
     return res
 
@@ -552,10 +433,8 @@ def caller_relevant_intervals(
                 res.extend(
                     get_subjects_by_family(
                         wildcards,
-                        checkpoints,
                         wildcards.sampleid.split("-")[2],
                         1 if wildcards.relation == "parent1" else 0,
-                        gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
                         "results/sliced_{}/{}/".format(
                             "gvcfs" if use_gvcf else "vcfs", linecount
@@ -565,8 +444,7 @@ def caller_relevant_intervals(
                 )
             else:
                 res.append(
-                    "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
-                        wildcards.projectid,
+                    "results/deeptrio/postprocess_variants/{}_{}.{}.{}.gz".format(
                         wildcards.sampleid,
                         wildcards.relation,
                         linecount,
@@ -580,10 +458,8 @@ def caller_relevant_intervals(
                 res.extend(
                     get_subjects_by_family(
                         wildcards,
-                        checkpoints,
                         wildcards.sampleid.split("-")[2],
                         2 if wildcards.relation == "parent2" else 0,
-                        gvcf_manifest["projectid"],
                         gvcf_manifest["sampleid"],
                         "results/sliced_{}/{}/".format(
                             "gvcfs" if use_gvcf else "vcfs", linecount
@@ -593,8 +469,7 @@ def caller_relevant_intervals(
                 )
             else:
                 res.append(
-                    "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
-                        wildcards.projectid,
+                    "results/deeptrio/postprocess_variants/{}_{}.{}.{}.gz".format(
                         wildcards.sampleid,
                         wildcards.relation,
                         linecount,
@@ -603,8 +478,7 @@ def caller_relevant_intervals(
                 )
         else:
             res.append(
-                "results/deeptrio/{}/postprocess_variants/{}_{}.{}.{}.gz".format(
-                    wildcards.projectid,
+                "results/deeptrio/postprocess_variants/{}_{}.{}.{}.gz".format(
                     wildcards.sampleid,
                     wildcards.relation,
                     linecount,
@@ -653,3 +527,22 @@ def determine_trio_structure(
         if "non-PAR" in interval and sample_is_male:
             return "father_only"
     return "full_trio"
+
+
+def prepare_deeptrio_input(fn: str, manifest: pd.DataFrame) -> str:
+    """
+    DeepTrio has somewhat tedious requirements for input specification.
+    """
+    sampleid = re.sub(".cram", "", fn.split("/")[2])
+    entry = manifest.loc[sampleid, "alignment"]
+    res = fn
+    if entry.endswith(".bam"):
+        res = "results/bams/{}.bam".format(sampleid)
+    ## DeepTrio cannot handle symlinks
+    if not (
+        entry.startswith("s3://")
+        or entry.startswith("https://")
+        or entry.startswith("http://")
+    ):
+        res = entry
+    return res

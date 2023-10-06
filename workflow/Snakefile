@@ -46,18 +46,26 @@ tempDir = (
     if "tmpdir" in config_resources
     else tempfile.gettempdir()
 )
-bam_manifest = config["bam_manifest"]
+reads_manifest = config["reads_manifest"]
 gvcf_manifest = config["gvcf_manifest"]
-bam_manifest = pd.read_csv(bam_manifest, sep="\t")
-gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t")
+reads_manifest = pd.read_csv(reads_manifest, sep="\t").set_index("sampleid", drop=False)
+gvcf_manifest = pd.read_csv(gvcf_manifest, sep="\t").set_index("sampleid", drop=False)
+sex_manifest = config["sample-sex"]
+sex_manifest = pd.read_csv(sex_manifest, sep="\t").set_index("sampleid", drop=False)
 
-validate(bam_manifest, "../schema/bam_manifest_schema.yaml")
+validate(reads_manifest, "../schema/reads_manifest_schema.yaml")
 validate(gvcf_manifest, "../schema/gvcf_manifest_schema.yaml")
+validate(sex_manifest, "../schema/sex_manifest_schema.yaml")
 
-bam_manifest["internal-bam-paths"] = [
-    "results/{}/{}.bam".format(x, y)
-    for x, y in zip(bam_manifest["projectid"], bam_manifest["sampleid"])
-]
+internal_reads_paths = []
+for sampleid, alignment in zip(reads_manifest["sampleid"], reads_manifest["alignment"]):
+    internal_reads_paths.append(
+        "results/crams/{}.cram".format(sampleid)
+        if alignment.endswith("cram")
+        else "results/external_bams/{}.bam".format(sampleid)
+    )
+
+reads_manifest["internal-reads-paths"] = internal_reads_paths
 
 reference_build = config["genome-build"]
 caller_num_intervals = tc.caller_interval_file_count(config)
@@ -72,7 +80,6 @@ TARGETS = [
     "results/expansionhunter/expansionhunter_report.html",
     "results/cyrius/cyrius_all_subjects.tsv",
     "results/cyrius/cyrius_report.html",
-    "results/telomerecat/tracker.tsv",
 ]
 
 if "annovar-tarball" in config["expansionhunter_denovo"]:
@@ -89,6 +96,7 @@ if "annovar-tarball" in config["expansionhunter_denovo"]:
 ## reference file naming convention, I'll use a snakemake functionality
 ## for resolving ambiguous rule determination that I really dislike otherwise.
 ## This is flagged for possible better resolution in the future.
+ruleorder: expansionhunter_rename_crai > samtools_create_crai
 ruleorder: samtools_index_fasta > download_reference_data
 ruleorder: create_sequence_dictionary > download_reference_data
 ruleorder: index_vcf > download_reference_data
@@ -134,6 +142,37 @@ rule glnexus:
         "results/glnexus/all/merged_callset.filtered.regions.vcf.gz",
 
 
+rule slivar_dv:
+    input:
+        expand(
+            "results/slivar/dv/{family_cluster}/putative_{vartype}.vcf.gz",
+            family_cluster=[
+                x.split("-")[2]
+                for x in tc.get_probands_with_structure(gvcf_manifest, True)
+            ],
+            vartype=["dnm_all", "dnm_impactful"],
+        ),
+        "results/slivar/dv/dnm_count_summary.tsv",
+
+
+rule slivar_dt:
+    """
+    Dispatch "deeptrio" runs for any proband who has a complete trio.
+    The trio completeness can potentially be relaxed, but it's more straightforward
+    to look at trios first.
+    """
+    input:
+        lambda wildcards: expand(
+            "results/slivar/dt/{proband}/putative_{model}.vcf.gz",
+            proband=[
+                x.split("-")[2]
+                for x in tc.get_probands_with_structure(gvcf_manifest, True)
+            ],
+            model=["dnm_all", "dnm_impactful"],
+        ),
+        "results/slivar/dt/dnm_count_summary.tsv",
+
+
 include: "rules/acquire_data.smk"
 include: "rules/apptainer.smk"
 include: "rules/bcftools_stats.smk"
@@ -147,5 +186,5 @@ include: "rules/references.smk"
 include: "rules/somalier.smk"
 include: "rules/split_joint_calls.smk"
 include: "rules/deeptrio.smk"
-include: "rules/slivar.smk"
-include: "rules/telomerecat.smk"
+include: "rules/slivar_dv.smk"
+include: "rules/slivar_dt.smk"

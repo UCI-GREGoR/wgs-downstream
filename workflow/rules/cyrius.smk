@@ -29,9 +29,9 @@ rule cyrius_create_manifest:
     absolute or relative.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
+        cram="results/crams/{sampleid}.cram",
     output:
-        tsv=temp("results/cyrius/{projectid}/{sampleid}.input_manifest.tsv"),
+        tsv=temp("results/cyrius/input_manifests/{sampleid}.tsv"),
     shell:
         "echo '{input}' > {output}"
 
@@ -41,26 +41,30 @@ rule cyrius_run:
     Execute cyrius star caller for CYP2D6 alleles.
     """
     input:
-        bam="results/bams/{projectid}/{sampleid}.bam",
-        bai="results/bams/{projectid}/{sampleid}.bai",
-        tsv="results/cyrius/{projectid}/{sampleid}.input_manifest.tsv",
+        cram="results/crams/{sampleid}.cram",
+        crai="results/crams/{sampleid}.crai",
+        tsv="results/cyrius/input_manifests/{sampleid}.tsv",
+        fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         repo="results/cyrius/repo",
     output:
-        tsv=temp("results/cyrius/{projectid}/{sampleid}.tsv"),
-        json=temp("results/cyrius/{projectid}/{sampleid}.json"),
+        tsv=temp("results/cyrius/per_sample_data/{sampleid}.tsv"),
+        json=temp("results/cyrius/per_sample_data/{sampleid}.json"),
     params:
-        outdir="results/cyrius/{projectid}",
+        outdir="results/cyrius/per_sample_data",
         prefix="{sampleid}",
     benchmark:
-        "results/performance_benchmarks/cyrius_run/{projectid}/{sampleid}.tsv"
+        "results/performance_benchmarks/cyrius_run/{sampleid}.tsv"
     conda:
         "../envs/cyrius.yaml"
-    threads: 2
+    threads: config_resources["cyrius"]["threads"]
     resources:
-        mem_mb=8000,
-        qname="large",
+        mem_mb=config_resources["cyrius"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["cyrius"]["queue"], config_resources["queues"]
+        ),
     shell:
-        "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
+        "python3 {input.repo}/star_caller.py --manifest {input.tsv} --genome 38 --reference {input.fasta} "
+        "--prefix {params.prefix} --outDir {params.outdir} --threads {threads}"
 
 
 localrules:
@@ -73,11 +77,9 @@ rule cyrius_combine_results:
     """
     input:
         tsvs=lambda wildcards: tc.select_cyrius_subjects(
-            checkpoints,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
+            reads_manifest["sampleid"],
             config["cyrius"]["excluded-samples"],
-            "results/cyrius",
+            "results/cyrius/per_sample_data",
             "tsv",
         ),
     output:
@@ -98,9 +100,11 @@ rule create_cyrius_report:
         "results/cyrius/cyrius_report.html",
     conda:
         "../envs/r.yaml"
-    threads: 1
+    threads: config_resources["r"]["threads"]
     resources:
-        time="1:00:00",
-        mem=2000,
+        mem_mb=config_resources["r"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["r"]["queue"], config_resources["queues"]
+        ),
     script:
         "../scripts/cyrius.Rmd"

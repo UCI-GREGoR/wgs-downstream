@@ -13,9 +13,11 @@ rule apptainer_deeptrio:
         image_version=config["deeptrio"]["docker-version"],
     conda:
         "../envs/apptainer.yaml" if not use_containers else None
-    threads: 1
+    threads: config_resources["default"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["default"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["default"]["queue"], config_resources["queues"]
+        ),
     shell:
         "apptainer pull --dir {params.outdir} docker://google/deepvariant:{params.image_version}"

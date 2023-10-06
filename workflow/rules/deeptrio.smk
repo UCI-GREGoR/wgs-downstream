@@ -25,26 +25,33 @@ rule deeptrio_make_examples_full_trio:
     X-nonPAR for female proband
     """
     input:
-        child_bam="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bam",
-        parent1_bam=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            1,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bam",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
         ),
-        parent2_bam=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            2,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bam",
+        parent1_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                1,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
+        ),
+        parent2_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                2,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -55,7 +62,7 @@ rule deeptrio_make_examples_full_trio:
     output:
         examples=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -66,7 +73,7 @@ rule deeptrio_make_examples_full_trio:
         ),
         gvcfs=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
                 relation=["child", "parent1", "parent2"],
                 shardnum=[
                     str(i).rjust(5, "0")
@@ -77,7 +84,7 @@ rule deeptrio_make_examples_full_trio:
         ),
         jsons=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
+                "results/deeptrio/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -86,14 +93,14 @@ rule deeptrio_make_examples_full_trio:
             )
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_make_examples/full_trio/{projectid0}/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_make_examples/full_trio/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
     params:
         shard_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         gvcf_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/full_trio/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         tmpdir="/tmp",
@@ -102,16 +109,20 @@ rule deeptrio_make_examples_full_trio:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent1_cram}) "
+        "-B $(dirname {input.parent2_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
-        "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} --reads_parent2 {input.parent2_bam} "
+        "--reads {input.child_cram} --reads_parent1 {input.parent1_cram} --reads_parent2 {input.parent2_cram} "
         "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
@@ -126,16 +137,22 @@ rule deeptrio_make_examples_mother_only:
     proband lacking a paternal sample for whatever reason
     """
     input:
-        child_bam="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bam",
-        parent2_bam=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            2,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bam",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
+        ),
+        parent2_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                2,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -146,7 +163,7 @@ rule deeptrio_make_examples_mother_only:
     output:
         examples=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -157,7 +174,7 @@ rule deeptrio_make_examples_mother_only:
         ),
         gvcfs=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
                 relation=["child", "parent2"],
                 shardnum=[
                     str(i).rjust(5, "0")
@@ -168,7 +185,7 @@ rule deeptrio_make_examples_mother_only:
         ),
         jsons=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
+                "results/deeptrio/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -177,14 +194,14 @@ rule deeptrio_make_examples_mother_only:
             )
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_make_examples/mother_only/{projectid0}/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_make_examples/mother_only/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
     params:
         shard_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         gvcf_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/mother_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         tmpdir="/tmp",
@@ -193,16 +210,19 @@ rule deeptrio_make_examples_mother_only:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent2_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
-        "--reads {input.child_bam} --reads_parent2 {input.parent2_bam} "
+        "--reads {input.child_cram} --reads_parent2 {input.parent2_cram} "
         "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
@@ -217,16 +237,22 @@ rule deeptrio_make_examples_father_only:
     proband lacking a maternal sample for whatever reason
     """
     input:
-        child_bam="results/bams/{projectid0}/PMGRC-{childid}-{childid}-0.bam",
-        parent1_bam=lambda wildcards: tc.get_subjects_by_family(
-            wildcards,
-            checkpoints,
-            wildcards.childid,
-            1,
-            bam_manifest["projectid"],
-            bam_manifest["sampleid"],
-            "results/bams/",
-            ".bam",
+        child_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            "results/crams/PMGRC-{}-{}-0.cram".format(
+                wildcards.childid, wildcards.childid
+            ),
+            reads_manifest,
+        ),
+        parent1_cram=lambda wildcards: tc.prepare_deeptrio_input(
+            tc.get_subjects_by_family(
+                wildcards,
+                wildcards.childid,
+                1,
+                reads_manifest["sampleid"],
+                "results/crams/",
+                ".cram",
+            )[0],
+            reads_manifest,
         ),
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         fai="reference_data/bwa/{}/ref.fasta.fai".format(reference_build),
@@ -237,7 +263,7 @@ rule deeptrio_make_examples_father_only:
     output:
         examples=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -248,7 +274,7 @@ rule deeptrio_make_examples_father_only:
         ),
         gvcfs=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+                "results/deeptrio/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0_{relation}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
                 relation=["child", "parent1"],
                 shardnum=[
                     str(i).rjust(5, "0")
@@ -259,7 +285,7 @@ rule deeptrio_make_examples_father_only:
         ),
         jsons=temp(
             expand(
-                "results/deeptrio/{{projectid0}}/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
+                "results/deeptrio/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz.example_info.json",
                 shardnum=[
                     str(i).rjust(5, "0")
                     for i in range(config_resources["deeptrio"]["threads"])
@@ -268,14 +294,14 @@ rule deeptrio_make_examples_father_only:
             )
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_make_examples/father_only/{projectid0}/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_make_examples/father_only/PMGRC-{childid}-{childid}-0.{splitnum}.tsv"
     params:
         shard_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         gvcf_string=expand(
-            "results/deeptrio/{{projectid0}}/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
+            "results/deeptrio/make_examples/father_only/PMGRC-{{childid}}-{{childid}}-0.{{splitnum}}.gvcf.tfrecord@{shardmax}.gz",
             shardmax=config_resources["deeptrio"]["threads"],
         ),
         tmpdir="/tmp",
@@ -284,16 +310,19 @@ rule deeptrio_make_examples_father_only:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["make_examples_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
         tmpdir="/tmp",
     shell:
-        'apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ {input.sif} sh -c "mkdir -p {params.tmpdir} && '
+        "apptainer exec -B /usr/lib/locale/:/usr/lib/locale/ "
+        "-B $(dirname {input.child_cram}) "
+        "-B $(dirname {input.parent1_cram}) "
+        '{input.sif} sh -c "mkdir -p {params.tmpdir} && '
         "seq 0 $(({threads}-1)) | parallel -j{threads} --tmpdir {params.tmpdir} "
         "make_examples --mode calling "
         "--ref {input.fasta} "
-        "--reads {input.child_bam} --reads_parent1 {input.parent1_bam} "
+        "--reads {input.child_cram} --reads_parent1 {input.parent1_cram} "
         "--regions {input.intervals} "
         "--examples {params.shard_string} --channels insert_size "
         "--gvcf {params.gvcf_string} "
@@ -307,12 +336,12 @@ rule deeptrio_call_variants:
     """
     input:
         gz=lambda wildcards: expand(
-            "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
+            "results/deeptrio/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.tfrecord-{shardnum}-of-{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
                 config,
-                bam_manifest,
+                reads_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -327,19 +356,18 @@ rule deeptrio_call_variants:
         ),
     output:
         gz=temp(
-            "results/deeptrio/{projectid}/call_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.tfrecord.gz",
+            "results/deeptrio/call_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.tfrecord.gz",
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_call_variants/{projectid}/{sampleid}.{splitnum}.{relation}.tsv"
+        "results/performance_benchmarks/deeptrio_call_variants/{sampleid}.{splitnum}.{relation}.tsv"
     params:
         shard_string=lambda wildcards: expand(
-            "results/deeptrio/{projectid}/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.tfrecord@{shardmax}.gz",
-            projectid=wildcards.projectid,
+            "results/deeptrio/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.tfrecord@{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
                 config,
-                bam_manifest,
+                reads_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -356,7 +384,7 @@ rule deeptrio_call_variants:
     threads: config_resources["deeptrio"]["threads"]
     resources:
         mem_mb=config_resources["deeptrio"]["call_variants_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -373,15 +401,15 @@ rule deeptrio_postprocess_variants:
     embarrassingly parallel fashion.
     """
     input:
-        gz="results/deeptrio/{projectid}/call_variants/{sampleid}_{relation}.{splitnum}.tfrecord.gz",
+        gz="results/deeptrio/call_variants/{sampleid}_{relation}.{splitnum}.tfrecord.gz",
         fasta="reference_data/bwa/{}/ref.fasta".format(reference_build),
         gvcf=lambda wildcards: expand(
-            "results/deeptrio/{{projectid}}/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
+            "results/deeptrio/make_examples/{trio_structure}/{{sampleid}}_{{relation}}.{{splitnum}}.gvcf.tfrecord-{shardnum}-of-{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
                 config,
-                bam_manifest,
+                reads_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -397,26 +425,25 @@ rule deeptrio_postprocess_variants:
         ),
     output:
         vcf=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz",
+            "results/deeptrio/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz",
         ),
         gvcf=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.g.vcf.gz",
+            "results/deeptrio/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.g.vcf.gz",
         ),
         tbi=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz.tbi",
+            "results/deeptrio/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.vcf.gz.tbi",
         ),
         html=temp(
-            "results/deeptrio/{projectid}/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.visual_report.html"
+            "results/deeptrio/postprocess_variants/{sampleid}_{relation,child|parent1|parent2}.{splitnum}.visual_report.html"
         ),
     params:
         gvcf_string=lambda wildcards: expand(
-            "results/deeptrio/{projectid}/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.gvcf.tfrecord@{shardmax}.gz",
-            projectid=wildcards.projectid,
+            "results/deeptrio/make_examples/{trio_structure}/{sampleid}_{relation}.{splitnum}.gvcf.tfrecord@{shardmax}.gz",
             trio_structure=tc.determine_trio_structure(
                 wildcards,
                 checkpoints,
                 config,
-                bam_manifest,
+                reads_manifest,
                 wildcards.sampleid,
                 wildcards.splitnum,
             ),
@@ -426,13 +453,13 @@ rule deeptrio_postprocess_variants:
             shardmax=config_resources["deeptrio"]["threads"],
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_postprocess_variants/{projectid}/{sampleid}.{relation}.{splitnum}.tsv"
+        "results/performance_benchmarks/deeptrio_postprocess_variants/{sampleid}.{relation}.{splitnum}.tsv"
     conda:
         "../envs/apptainer.yaml" if not use_containers else None
     threads: 1
     resources:
         mem_mb=config_resources["deeptrio"]["postprocess_variants_memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["deeptrio"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -455,9 +482,9 @@ rule deeptrio_combine_regions:
             wildcards, config, checkpoints, gvcf_manifest, False
         ),
     output:
-        "results/deeptrio/{projectid}/{sampleid}_{relation,child|parent1|parent2}.sorted.vcf.gz",
+        "results/deeptrio/{sampleid}_{relation,child|parent1|parent2}.sorted.vcf.gz",
     benchmark:
-        "results/performance_benchmarks/deeptrio_combine_regions/{projectid}/{sampleid}_{relation}.tsv"
+        "results/performance_benchmarks/deeptrio_combine_regions/{sampleid}_{relation}.tsv"
     conda:
         "../envs/bcftools.yaml" if not use_containers else None
     container:
@@ -465,7 +492,7 @@ rule deeptrio_combine_regions:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -479,10 +506,10 @@ use rule deeptrio_combine_regions as deeptrio_combine_gvcfs with:
         ),
     output:
         temp(
-            "results/deeptrio/{projectid}/{sampleid}_{relation,child|parent1|parent2}.sorted.g.vcf.gz"
+            "results/deeptrio/{sampleid}_{relation,child|parent1|parent2}.sorted.g.vcf.gz"
         ),
     benchmark:
-        "results/performance_benchmarks/deeptrio_combine_gvcfs/{projectid}/{sampleid}_{relation}.tsv"
+        "results/performance_benchmarks/deeptrio_combine_gvcfs/{sampleid}_{relation}.tsv"
 
 
 rule deeptrio_rename_vcf_outputs:
@@ -495,11 +522,9 @@ rule deeptrio_rename_vcf_outputs:
         + "{}.sorted.{{suffix}}".format(
             tc.get_subjects_by_family(
                 wildcards,
-                checkpoints,
                 wildcards.probandid,
                 0,
-                bam_manifest["projectid"],
-                bam_manifest["sampleid"],
+                reads_manifest["sampleid"],
                 "",
                 "_parent{}".format(wildcards.relcode)
                 if wildcards.sampleid != wildcards.probandid
@@ -507,7 +532,7 @@ rule deeptrio_rename_vcf_outputs:
             )[0]
         ),
     output:
-        "results/deeptrio/{projectid}/PMGRC-{sampleid}-{probandid}-{relcode,[0-9]}.sorted.{suffix}",
+        "results/deeptrio/PMGRC-{sampleid}-{probandid}-{relcode,[0-9]}.sorted.{suffix}",
     params:
         full_id="PMGRC-{sampleid}-{probandid}-{relcode}",
     conda:
@@ -517,7 +542,7 @@ rule deeptrio_rename_vcf_outputs:
     threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
@@ -538,17 +563,19 @@ rule rtg_create_sdf:
         "results/performance_benchmarks/create_sdf/{genome}.tsv"
     conda:
         "../envs/vcfeval.yaml"
-    threads: 1
+    threads: config_resources["rtg"]["threads"]
     resources:
-        qname="small",
-        mem_mb=16000,
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["rtg"]["queue"], config_resources["queues"]
+        ),
+        mem_mb=config_resources["rtg"]["memory"],
     shell:
         "rtg RTG_MEM=12G format -f fasta -o {output} {input}"
 
 
 use rule somalier_build_pedfile as rtg_create_cluster_pedigree with:
     input:
-        linker="results/linker.tsv",
+        sex_manifest=config["sample-sex"],
         affected_status="reference_data/slivar/affected.status.tsv",
     output:
         ped="results/deeptrio/{subset}.ped",
@@ -556,15 +583,13 @@ use rule somalier_build_pedfile as rtg_create_cluster_pedigree with:
     benchmark:
         "results/performance_benchmarks/rtg_create_cluster_pedigree/{subset}.tsv"
     params:
-        projectids=lambda wildcards: bam_manifest["projectid"].to_list(),
-        subjectids=lambda wildcards: bam_manifest["sampleid"].to_list(),
+        sampleids=lambda wildcards: reads_manifest["sampleid"].to_list(),
         valid_subjectids=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            bam_manifest["projectid"].to_list(),
-            bam_manifest["sampleid"].to_list(),
+            reads_manifest["sampleid"].to_list(),
             "",
             "",
+            True,
         ),
         use_somalier_ids=False,
 
@@ -578,10 +603,12 @@ rule rtg_annotate_vcf:
         vcf="results/deeptrio/{family_cluster}.annotated.vcf.gz",
     conda:
         "../envs/vcfeval.yaml"
-    threads: 1
+    threads: config_resources["rtg"]["threads"]
     resources:
-        qname="small",
-        mem_mb=16000,
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["rtg"]["queue"], config_resources["queues"]
+        ),
+        mem_mb=config_resources["rtg"]["memory"],
     shell:
         "rtg RTG_MEM=12G mendelian -i {input.vcf} -o {output.vcf} --pedigree {input.ped} -t {input.sdf}"
 
@@ -602,28 +629,11 @@ rule bcftools_add_csq:
         "../envs/bcftools.yaml" if not use_containers else None
     container:
         "{}/bcftools.sif".format(apptainer_images) if use_containers else None
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
         mem_mb=config_resources["bcftools"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["bcftools"]["queue"], config_resources["queues"]
         ),
     shell:
-        "bcftools csq -s - -f {input.fasta} -g {input.gff} -O z -o {output.vcf} {input.vcf}"
-
-
-rule aggregate_deeptrio_output:
-    """
-    Dispatch "deeptrio" runs for any proband who also has
-    at least one parent present
-    """
-    input:
-        lambda wildcards: expand(
-            "results/slivar/{proband}/putative_{model}.vcf.gz",
-            proband=tc.get_probands_with_structure(checkpoints),
-            model=["dnm", "ch"],
-        ),
-    output:
-        temp("results/deeptrio/.deeptrio_calls_split"),
-    shell:
-        "touch {output}"
+        "bcftools csq --threads {threads} -s - -f {input.fasta} -g {input.gff} -O z -o {output.vcf} {input.vcf}"

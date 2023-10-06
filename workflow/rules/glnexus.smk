@@ -7,18 +7,15 @@ rule glnexus_create_gvcf_list:
     Emit target set of gvcf filenames to file in preparation
     for glnexus
     """
-    input:
-        linker="results/linker.tsv",
     output:
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
     params:
         gvcfs=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            gvcf_manifest["projectid"].to_list(),
             gvcf_manifest["sampleid"].to_list(),
             "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
             ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
+            wildcards.subset != "all",
         ),
     run:
         with open(output.tsv, "w") as f:
@@ -41,30 +38,13 @@ rule glnexus_joint_calling:
     Given gvcfs, create a joint called dataset.
     """
     input:
-        gvcfs=lambda wildcards: [
-            "results/{}/{}.{}g.vcf.gz".format(
-            "gvcfs" if wildcards.subset == "all" else "deeptrio",
-            x,
-            "" if wildcards.subset == "all" else "sorted.",
-        )
-        for x in tc.get_valid_subjectids(
+        gvcfs=lambda wildcards: tc.get_valid_subjectids(
             wildcards,
-            checkpoints,
-            gvcf_manifest["projectid"].to_list()
-        if wildcards.subset == "all"
-                else bam_manifest["projectid"].to_list(),
-                gvcf_manifest["sampleid"].to_list()
-                if wildcards.subset == "all"
-                else bam_manifest["sampleid"].to_list(),
-                "",
-            "",
-        )
-        if (
-            re.search(r"^[^/]+/PMGRC-[^-]+-{}-[0-2]$".format(wildcards.subset), x)
-        or wildcards.subset == "all"
-                or re.search(r"^[^/]+/{}$".format(wildcards.subset), x)
-            )
-        ],
+            gvcf_manifest["sampleid"].to_list(),
+            "results/gvcfs/" if wildcards.subset == "all" else "results/deeptrio/",
+            ".g.vcf.gz" if wildcards.subset == "all" else ".sorted.g.vcf.gz",
+            wildcards.subset != "all",
+        ),
         tsv="results/glnexus/{subset}/gvcf_list.tsv",
         calling_ranges=lambda wildcards: tc.get_calling_range_by_chrom(
             wildcards, config["glnexus"]["calling-ranges"]
@@ -88,7 +68,7 @@ rule glnexus_joint_calling:
     resources:
         mem_mb=lambda wildcards, attempt: attempt
         * config_resources["glnexus"]["memory"],
-        qname=rc.select_queue(
+        qname=lambda wildcards: rc.select_queue(
             config_resources["glnexus"]["queue"], config_resources["queues"]
         ),
         tmpdir=lambda wildcards: "{}/results/glnexus/{}".format(
@@ -118,10 +98,12 @@ rule prepare_joint_calling_output:
         "results/performance_benchmarks/prepare_joint_calling_output/{subset}/merged_callset.tsv"
     conda:
         "../envs/bcftools.yaml"
-    threads: 4
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools concat {input.bcf} --threads {threads} -O z -o {output.vcf}"
 
@@ -144,10 +126,12 @@ rule filter_joint_calling_output:
         "results/performance_benchmarks/filtered_joint_calling_output/{subset}/merged_callset.filtered.tsv"
     conda:
         "../envs/bcftools.yaml"
-    threads: 4
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         'bcftools annotate -h <(echo -e "##wgs-downstreamVersion={params.pipeline_version}\\n##reference={params.reference_build}") -O u {input} | '
         'bcftools view -i \'(FILTER = "PASS" | FILTER = ".")\' -O u | '
@@ -172,9 +156,11 @@ rule remove_snv_region_exclusions:
         "results/performance_benchmarks/remove_snv_region_exclusions/{subset}/results.tsv"
     conda:
         "../envs/bedtools.yaml"
-    threads: 1
+    threads: config_resources["bedtools"]["threads"]
     resources:
-        mem_mb=2000,
-        qname="small",
+        mem_mb=config_resources["bedtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bedtools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bedtools intersect -a {input.vcf} -b {input.bed} -wa -v -header | bgzip -c > {output}"

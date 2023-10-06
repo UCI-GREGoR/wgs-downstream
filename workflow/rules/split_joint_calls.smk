@@ -8,10 +8,12 @@ checkpoint get_sample_list_from_vcf:
         temp("results/glnexus/{subset}/joint_called_samples.tsv"),
     conda:
         "../envs/bcftools.yaml"
-    threads: 1
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=1000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools query -l {input} > {output}"
 
@@ -53,10 +55,12 @@ rule split_joint_calls_by_family:
         subject_id="PMGRC-{subject_id}-{family_cluster}-{relationship}",
     conda:
         "../envs/bcftools.yaml"
-    threads: 2
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools view --threads {threads} -S {input.tsv} -O u {input.vcf} | "
         "bcftools view --threads {threads} -c 1 -O u | "
@@ -73,10 +77,12 @@ rule split_joint_calls_single_sample:
         vcf=temp("results/split_joint_calls/NA{giab_code}_family-variants.vcf.gz"),
     conda:
         "../envs/bcftools.yaml"
-    threads: 2
+    threads: config_resources["bcftools"]["threads"]
     resources:
-        mem_mb=4000,
-        qname="small",
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools view --threads {threads} -s NA{wildcards.giab_code} -O u {input.vcf} | "
         "bcftools view --threads {threads} -c 1 -O u -o {output.vcf}"
@@ -97,6 +103,12 @@ rule remove_all_problematic_regions:
         temp("results/split_joint_calls/{subject_id}_nist-filters.vcf.gz"),
     conda:
         "../envs/bedtools.yaml"
+    threads: config_resources["bedtools"]["threads"]
+    resources:
+        mem_mb=config_resources["bedtools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bedtools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bedtools intersect -a {input.vcf} -b {input.regions} -wa -v -header | bgzip -c > {output}"
 
@@ -118,6 +130,12 @@ rule apply_single_sample_qc:
         exportid="{subject_id}_{lsid}_{sqid}",
     conda:
         "../envs/bcftools.yaml"
+    threads: config_resources["bcftools"]["threads"]
+    resources:
+        mem_mb=config_resources["bcftools"]["memory"],
+        qname=lambda wildcards: rc.select_queue(
+            config_resources["bcftools"]["queue"], config_resources["queues"]
+        ),
     shell:
         "bcftools +setGT -O v {input} -- -t q -n . "
         '-e \'((FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) >= 0.2 & FORMAT/AD[0:0] / (FORMAT/AD[0:0] + FORMAT/AD[0:1]) <= 0.8 & GT != "1/1") | '
@@ -134,7 +152,7 @@ rule aggregate_split_joint_calls:
     from a single sample split of a joint call run
     """
     input:
-        lambda wildcards: tc.compute_expected_single_samples(gvcf_manifest, checkpoints),
+        lambda wildcards: tc.compute_expected_single_samples(gvcf_manifest),
     output:
         temp("results/split_joint_calls/.joint_calls_split"),
     shell:
