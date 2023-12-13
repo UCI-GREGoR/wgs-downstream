@@ -14,7 +14,7 @@ New global targets should be added in `workflow/Snakefile`. Content in `workflow
 
 ## Authors
 
-* Lightning Auriga (@lightning.auriga)
+* Lightning Auriga (@lightning-auriga)
 
 ## Usage
 
@@ -22,10 +22,10 @@ New global targets should be added in `workflow/Snakefile`. Content in `workflow
 
 1. Clone this repository to your local system, into the place where you want to perform the data analysis.
 ```
-    git clone git@gitlab.com:lightning.auriga1/wgs-pipeline.git
+    git clone git@github.com:UCI-GREGoR/wgs-pipeline.git
 ```
 
-Note that this requires local git ssh key configuration; see [here](https://docs.gitlab.com/ee/user/ssh.html) for instructions as required.
+Note that this requires local git ssh key configuration; see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) for instructions as required.
 
 ### Step 2: Configure workflow
 
@@ -212,7 +212,7 @@ Whenever you want to synchronize your workflow copy with new developments from u
 
 In case you have also changed or added steps, please consider contributing them back to the original repository. This project follows git flow; feature branches off of dev are welcome.
 
-1. [Clone](https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html) the fork to your local system, to a different place than where you ran your analysis.
+1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the fork to your local system, to a different place than where you ran your analysis.
 2. Check out a branch off of dev:
 ```
 git fetch
@@ -221,7 +221,7 @@ git checkout -b your-new-branch
 ```
 3. Make whatever changes best please you to your feature branch.
 4. Commit and push your changes to your branch.
-5. Create a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/) against dev.
+5. Create a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) against dev.
 
 ## Testing
 
