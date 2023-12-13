@@ -87,11 +87,11 @@ rule samtools_index_fasta:
         "results/performance_benchmarks/samtools_index_fasta/{prefix}fasta.fai.tsv"
     conda:
         "../envs/samtools.yaml"
-    threads: config_resources["samtools"]["threads"]
+    threads: 1
     resources:
         mem_mb=config_resources["samtools"]["memory"],
         qname=lambda wildcards: rc.select_queue(
             config_resources["samtools"]["queue"], config_resources["queues"]
         ),
     shell:
-        "samtools faidx -@ {threads} {input}"
+        "samtools faidx {input}"
