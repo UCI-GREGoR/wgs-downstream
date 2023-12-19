@@ -14,7 +14,7 @@ New global targets should be added in `workflow/Snakefile`. Content in `workflow
 
 ## Authors
 
-* Lightning Auriga (@lightning.auriga)
+* Lightning Auriga (@lightning-auriga)
 
 ## Usage
 
@@ -22,27 +22,27 @@ New global targets should be added in `workflow/Snakefile`. Content in `workflow
 
 1. Clone this repository to your local system, into the place where you want to perform the data analysis.
 ```
-    git clone git@gitlab.com:lightning.auriga1/wgs-pipeline.git
+    git clone git@github.com:UCI-GREGoR/wgs-pipeline.git
 ```
 
-Note that this requires local git ssh key configuration; see [here](https://docs.gitlab.com/ee/user/ssh.html) for instructions as required.
+Note that this requires local git ssh key configuration; see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) for instructions as required.
 
 ### Step 2: Configure workflow
 
-Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `cram_manifest.tsv` or `gvcf_manifest.tsv` to specify your sample setup.
+Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `manifest_reads.tsv` or `manifest_gvcf.tsv` to specify your sample setup.
 
 The following settings are recognized in `config/config.yaml`.
 
 |Configuration Setting|Description|
 |---|---|
-|`cram_manifest`|Relative path to aligned read file manifest|
+|`reads_manifest`|Relative path to aligned read file manifest|
 |`gvcf_manifest`|Relative path to g.vcf file manifest|
 |`sample-sex`|Relative path to plaintext linker between sample ID and self-reported sex (Female, Male, Unknown)|
 |`data-model`|Local Excel spreadsheet clone of data model information from Google docs. This file is generated as part of the file upload process to AnVIL, and is used for affected status annotations with ExpansionHunterDenovo. This is a local cloned file for the same reasons as listed above|
 |`multiqc-config`|Relative path to configuration settings for cross-flowcell multiQC report|
 |`genome-build`|Requested genome reference build to use for this analysis run. This should match the tags used in the reference data blocks below|
 |`behaviors`|User-configurable modifiers to how the pipeline will run|
-||- `symlink-crams`: whether to copy (no) or symlink (yes) input crams into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
+||- `symlink-reads`: whether to copy (no) or symlink (yes) input bams/crams into workspace. symlinking is faster and more memory-efficient, but less reproducible, as the upstream files may vanish leaving no way to regenerate your analysis from scratch.
 |`references`|Human genome reference data applicable to multiple tools. An arbitrary number of groupings can be specified under this key, meant to be named after the relevant human reference build. `grch38` is minimally required|
 ||- `fasta`: human sequence fasta file|
 ||- `exclusion-regions-bed`: set of bed regions to be excluded from output SNV data. expected to be from https://doi.org/10.1038/s41598-019-45839-z|
@@ -63,14 +63,14 @@ The following settings are recognized in `config/config.yaml`.
 ||Reference data specific to DeepTrio. An arbitrary number of groupings can be specified under genome-specific keys, of the form `grch.*`. `grch38` is minimally required|
 ||- `calling-ranges`: path to file containing list of filenames of calling range bedfiles|
 
-The following columns are expected in the aligned read (cram) manifest, by default at `config/cram_manifest.tsv`:
+The following columns are expected in the aligned read (cram) manifest, by default at `config/manifest_reads.tsv`:
 
 |Column Header|Description|
 |---|---|
 |`sampleid`|External ID for sample|
-|`cram`|Absolute or relative path to sample alignment (post-BQSR) cram file|
+|`alignment`|Absolute or relative path to sample alignment (post-BQSR) bam or cram file|
 
-The following columns are expected in the g.vcf manifest, by default at `config/gvcf_manifest.tsv`:
+The following columns are expected in the g.vcf manifest, by default at `config/manifest_gvcf.tsv`:
 
 |Column Header|Description|
 |---|---|
@@ -121,11 +121,11 @@ add the option to disable some of the tools in userspace, but there's no need cu
 you can run the phony rule named after each tool (e.g. `somalier` or `expansionhunter_denovo`).
 The actual files considered by the tools are pulled from the input manifest with certain restrictions:
 
-- somalier considers all crams in the user manifest (e.g. `config/cram_manifest.tsv`).
+- somalier considers all crams in the user manifest (e.g. `config/manifest_reads.tsv`).
 - for ExpansionHunterDenovo, which expects some amount of case/control annotation, only samples that are present in both the
-  user manifest (e.g. `config/cram_manifest.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
+  user manifest (e.g. `config/manifest_reads.tsv`) _and_ the data model spreadsheet `participant` tab are considered. this means,
   among other things, that the flowcell control low-depth NA24385 samples are always excluded from analysis.
-- glnexus pulls all gvcfs from the relevant user manifest (by default, `config/gvcf_manifest.tsv`).
+- glnexus pulls all gvcfs from the relevant user manifest (by default, `config/manifest_gvcf.tsv`).
 - DeepTrio is still in initial development, but the draft behavior is that the workflow will detect probands with at
   least one parent present in the inputs, and use DeepTrio to regenerate gvcfs for those individuals. Those gvcfs will
   then be joint called together, excluding all other subjects, with glnexus, and the resulting vcf will be annotated
@@ -136,14 +136,14 @@ The actual files considered by the tools are pulled from the input manifest with
 
 This workflow is expected to be run periodically from the same installation. At some point, if there's enough iteration and
 interest, I may update this workflow to handle perfect updating automatically. In lieu of that, here's how you can make
-sure the pipeline runs the tools again correctly when new input samples are added to the cram manifest:
+sure the pipeline runs the tools again correctly when new input samples are added to the read manifest:
 
 - you can always delete the `results/` directory entirely. this will purge all analysis to date. this works perfectly,
   but obviously involves redundant computation
 - for somalier, reruns are gated on the contents of the linker file the workflow generates from the input. to force the
   pipeline to reevaluate its inputs and rerun if necessary, delete the file `results/linker.tsv` and relaunch
 - for ExpansionHunterDenovo, reruns are gated on the contents of the linker file the workflow generates as well as
-  the manifest the workflow generates from the combined information from the user cram manifest and the data model. as such,
+  the manifest the workflow generates from the combined information from the user read manifest and the data model. as such,
   to force the pipeline to reevaluate its inputs and rerun if necessary, delete the files `results/linker.tsv` and
   `results/expansionhunter_denovo/manifest.tsv` and relaunch
 - both DeepTrio and glnexus joint calling are tracked via single tracking files installed under `results/`. as always,
@@ -212,7 +212,7 @@ Whenever you want to synchronize your workflow copy with new developments from u
 
 In case you have also changed or added steps, please consider contributing them back to the original repository. This project follows git flow; feature branches off of dev are welcome.
 
-1. [Clone](https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html) the fork to your local system, to a different place than where you ran your analysis.
+1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the fork to your local system, to a different place than where you ran your analysis.
 2. Check out a branch off of dev:
 ```
 git fetch
@@ -221,7 +221,7 @@ git checkout -b your-new-branch
 ```
 3. Make whatever changes best please you to your feature branch.
 4. Commit and push your changes to your branch.
-5. Create a [merge request](https://docs.gitlab.com/ee/user/project/merge_requests/) against dev.
+5. Create a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) against dev.
 
 ## Testing
 

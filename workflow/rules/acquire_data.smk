@@ -10,7 +10,7 @@ rule copy_reads:
         symlink_target=config["behaviors"]["symlink-reads"],
     benchmark:
         "results/performance_benchmarks/copy_{readtype}s/{sampleid}.tsv"
-    threads: config_resources["default"]["memory"]
+    threads: config_resources["default"]["threads"]
     resources:
         mem_mb=config_resources["default"]["memory"],
         qname=lambda wildcards: rc.select_queue(
